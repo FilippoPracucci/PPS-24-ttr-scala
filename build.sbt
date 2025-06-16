@@ -2,6 +2,12 @@ val scala3Version = "3.3.5"
 
 assembly / assemblyOutputPath := file("./ttr-scala.jar")
 
+enablePlugins(ScalafmtPlugin)
+scalafmtOnCompile := true
+
+enablePlugins(ScoverageSbtPlugin)
+coverageEnabled := true
+
 lazy val root = project
   .in(file("."))
   .settings(
@@ -11,5 +17,5 @@ lazy val root = project
     scalaVersion := scala3Version,
     javacOptions ++= Seq("-source", "17.0", "-target", "17.0"),
 
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.18" % Test
+    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test
   )

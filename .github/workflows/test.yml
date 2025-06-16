@@ -1,0 +1,53 @@
+name: Test
+
+on:
+  workflow_call:
+  push:
+  pull_request:
+
+jobs:
+  test-scala:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: joschi/setup-jdk@v2.3.0
+        with:
+          java-version: 17
+      - name: Install sbt
+        uses: coursier/setup-action@v1
+      - name: Test
+        run: sbt test
+
+  test-coverage:
+    needs: test-scala
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: joschi/setup-jdk@v2.3.0
+        with:
+          java-version: 17
+      - name: Install sbt
+        uses: coursier/setup-action@v1
+      - name: Test Coverage
+        run: sbt clean coverage test coverageReport
+
+  format-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Setup JDK
+        uses: joschi/setup-jdk@v2.3.0
+        with:
+          java-version: 17
+      - name: Install sbt
+        uses: coursier/setup-action@v1
+      - name: Format Check
+        run: sbt scalafmtCheckAll

@@ -24,6 +24,8 @@ jobs:
           java-version: 17
       - name: Install sbt
         uses: coursier/setup-action@v1
+        with:
+          apps: sbt
       - name: Generate JAR
         run: sbt assembly
       - name: Release

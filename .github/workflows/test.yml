@@ -18,6 +18,8 @@ jobs:
           java-version: 17
       - name: Install sbt
         uses: coursier/setup-action@v1
+        with:
+          apps: sbt
       - name: Test
         run: sbt test
 
@@ -34,6 +36,8 @@ jobs:
           java-version: 17
       - name: Install sbt
         uses: coursier/setup-action@v1
+        with:
+          apps: sbt
       - name: Test Coverage
         run: sbt clean coverage test coverageReport
 
@@ -49,5 +53,7 @@ jobs:
           java-version: 17
       - name: Install sbt
         uses: coursier/setup-action@v1
+        with:
+          apps: sbt
       - name: Format Check
         run: sbt scalafmtCheckAll

@@ -3,3 +3,5 @@ description: "Documentation of the PPS-24 project."
 remote_theme: just-the-docs/just-the-docs@v0.10.1
 plugins:
   - jekyll-remote-theme
+mermaid:
+  version: 9.1.3

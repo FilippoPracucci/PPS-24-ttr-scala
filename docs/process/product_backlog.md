@@ -21,6 +21,8 @@ rivalutate.
 | 6        | Gestione delle carte obiettivo                                | 35             |   |
 | 7        | Controllo condizione di fine partita                          | 10             |   |
 
+[Decidere se spostare Definition of done nel processo di sviluppo e specificare la % di coverage]: #
+
 ## Definition of done
 Dichiariamo una feature riguardante il model conclusa quando ha un % di coverage e tutti i test hanno successo, mentre
 per le feature della view esse devono risultare utilizzabili e non ambigue. In entrambi i casi deve inoltre essere

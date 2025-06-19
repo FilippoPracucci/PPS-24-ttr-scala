@@ -32,16 +32,66 @@ Si riterranno soddisfatti i suddetti requisiti di business se:
 Gli elementi principali che compongono il sistema sono:
 
 - **Mappa**: tabellone di gioco composto da un grafo di città collegate da tratte ferroviarie.
-- **Mazzo**: insieme delle carte vagone.
-- **Carta vagone**: carte caratterizzate da un colore, utilizzabili per occupare una tratta.
-- **Obiettivo**: coppia di una città di partenza e una di arrivo da collegare per ottenere un determinato numero di punti.
-- **Città**: punti che definiscono le partenze e gli arrivi delle tratte e degli obiettivi.
 - **Tratta**: collegamento ferroviario tra due città, di una determinata lunghezza e colore.
+- **Città**: punti che definiscono le partenze e gli arrivi delle tratte e degli obiettivi.
+- **Obiettivo**: coppia di una città di partenza e una di arrivo da collegare per ottenere un determinato numero di punti.
 - **Vagone**: marcatore utilizzato per occupare una tratta, di cui è necessaria una quantità pari alla lunghezza della tratta.
-- **Giocatore**.
 - **Mano**: insieme delle carte vagone possedute da un giocatore.
+- **Carta vagone**: carte caratterizzate da un colore, utilizzabili per occupare una tratta.
+- **Mazzo**: insieme delle carte vagone.
+- **Giocatore**: entità che ha un obiettivo da completare e dei vagoni posizionabili per occupare le tratte. Può
+  effettuare due azioni: `pesca` per pescare due carte dal mazzo ed aggiungerle alla propria mano; `piazzaVagoni` per
+  occupare la tratta specificata posizionandoci i propri vagoni.
 
-[Diagrammi UML: delle classi ad alto livello, di sequenza per esempio per occupazione tratta e pescaggio]: #
+```mermaid
+---
+config:
+  class:
+    hideEmptyMembersBox: true
+---
+classDiagram
+    class Giocatore{
+     +pesca()
+     +piazzaVagoni(tratta: Tratta)
+    }
+    Mappa o-- Città
+    Mappa o-- Tratta
+    Tratta o-- "2" Città
+    Obiettivo o-- "2" Città
+    Giocatore -- Obiettivo : ha
+    Giocatore *-- Mano
+    Giocatore -- Vagone : controlla
+    Mano o-- "*" CartaVagone
+    Mazzo o-- CartaVagone
+```
+
+Si modella tramite un diagramma di sequenza la procedura per pescare le carte dal mazzo ed aggiungerle alla mano
+del giocatore.
+
+```mermaid
+sequenceDiagram
+    Giocatore->>Mazzo: pesca()
+    Mazzo->>Mano: aggiungiCarte(2)
+    Mano--)Giocatore: manoAggiornata
+```
+
+Si modella tramite un diagramma di sequenza la procedura per provare ad occupare una tratta posizionando i propri vagoni.
+Il sistema è incaricato di controllare la validità delle carte nella mano del giocatore in base alla tratta scelta, e
+in caso di esito positivo aggiornare la mappa di gioco.
+
+```mermaid
+sequenceDiagram
+    Giocatore->>Sistema: piazzaVagoni(tratta)
+    Sistema->>Mano: controllaValidità(tratta)
+    opt valido 
+        Mano-)Mano: scartaCarte()
+        Mano--)Sistema: manoAggiornata
+        Sistema--)Giocatore: manoAggiornata
+        Sistema->>Mappa: aggiorna(tratta)
+        Mappa--)Sistema: mappaAggiornata
+        Sistema--)Giocatore: mappaAggiornata
+    end
+```
 
 ## Requisiti funzionali
 

@@ -99,7 +99,7 @@ sequenceDiagram
 
 ### Requisiti utente
 
-1. la mappa deve essere visualizzata dal giocatore come un insieme di città collegate tramite tratte ferroviarie di diverse
+1. La mappa deve essere visualizzata dal giocatore come un insieme di città collegate tramite tratte ferroviarie di diverse
 lunghezze ed ognuna caratterizzata da un colore; il giocatore ha la possibilità di scegliere quale tratta occupare;
 2. i giocatori devono poter visualizzare lo stato della mappa, cioè le tratte libere e quelle occupate;
 3. ad ogni turno il giocatore deve avere la possibilità di scegliere se pescare due carte vagone dal mazzo o occupare una tratta;
@@ -115,10 +115,10 @@ I sopracitati requisiti utente vengono validati tramite User Acceptance Tests.
 
 ### Requisiti di sistema
 
-1. il sistema deve gestire l'avvio della partita assegnando:
+1. Il sistema deve gestire l'avvio della partita assegnando:
     1. un numero predefinito (4) di carte vagone casuali;
     2. un numero predefinito (45) di vagoni posizionabili per controllare le tratte;
-   3. una carta obiettivo casuale;
+    3. una carta obiettivo casuale;
 2. il sistema deve decidere casualmente il giocatore di partenza;
 3. il sistema deve assegnare al giocatore che occupa una tratta i punti corrispondenti, a seconda della lunghezza della tratta,
 e quando termina l'obiettivo;

@@ -4,4 +4,4 @@ remote_theme: just-the-docs/just-the-docs@v0.10.1
 plugins:
   - jekyll-remote-theme
 mermaid:
-  version: 9.1.3
+  version: "11.6.0"

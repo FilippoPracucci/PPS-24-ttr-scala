@@ -9,8 +9,14 @@ parent: Report
 # Processo di sviluppo
 
 Il processo di sviluppo adottato si ispira a Scrum, quindi è basato su sprint e task da realizzare.
-Il team viene suddiviso in due ruoli: committente e product owner. Viene utilizzato un product backlog, aggiornato in
-ogni sprint e scomposto negli sprint backlog.
+Viene utilizzato un **Product Backlog**, aggiornato in ogni sprint e scomposto negli **Sprint Backlog**.
+
+## Ruoli
+
+Il team viene suddiviso in due ruoli:
+
+- **Committente e sviluppatore** (Federica Bedeschi): garantisce la qualità e usabilità del prodotto finale.  
+- **Product Owner e sviluppatore** (Filippo Pracucci): gestisce la lista delle priorità e il coordinamento del flusso di lavoro.
 
 ## Sprint planning
 
@@ -31,6 +37,7 @@ La documentazione viene realizzata in formato **Markdown**, contenuta nella dire
 **GitHub Pages**.
 
 ## Versioning
+
 Utilizziamo Git adottando il flusso di lavoro **GitFlow** e la seguente strategia:
 - un branch `main` che contiene le release;
 - un branch `develop` che rappresenta la linea principale di sviluppo;

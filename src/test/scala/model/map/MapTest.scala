@@ -12,7 +12,8 @@ class MapTest extends AnyFlatSpec with Matchers:
   "A Route" should "be initialized correctly" in:
     val connectedCities = (City("Roma"), City("Venezia"))
     val length = 2
-    val mechanic = Route.SpecificColor("Black") // TODO to be integrated with utils.Color
+    val mechanic =
+      Route.SpecificColor("Black") // TODO to be integrated with utils.Color
     val route = Route(connectedCities, length, mechanic)
     route.connectedCities should be(connectedCities)
     route.length should be(length)

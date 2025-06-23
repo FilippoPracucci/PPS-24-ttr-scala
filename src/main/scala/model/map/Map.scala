@@ -21,10 +21,18 @@ object Route:
   trait SpecificColor(color: Color) extends Mechanic
   object SpecificColor:
     def apply(color: String): SpecificColor = SpecificColorImpl(color)
-    private case class SpecificColorImpl(color: Color) extends SpecificColor(color)
+    private case class SpecificColorImpl(color: Color)
+        extends SpecificColor(color)
 
-  def apply(connectedCities: (City, City), length: Int, mechanic: Mechanic): Route =
+  def apply(
+      connectedCities: (City, City),
+      length: Int,
+      mechanic: Mechanic
+  ): Route =
     RouteImpl(connectedCities, length, mechanic)
 
-  private case class RouteImpl(override val connectedCities: (City, City), override val length: Int,
-                               override val mechanic: Mechanic) extends Route
+  private case class RouteImpl(
+      override val connectedCities: (City, City),
+      override val length: Int,
+      override val mechanic: Mechanic
+  ) extends Route

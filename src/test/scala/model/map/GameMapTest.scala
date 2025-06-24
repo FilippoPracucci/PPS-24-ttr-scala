@@ -35,7 +35,7 @@ class GameMapTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
   override def beforeEach(): Unit = gameMap = GameMap(Set(route1, route2, route3))
 
-  "A GameMap" should "be able to return the correct requested route" in:
+  "A GameMap" should "return the correct requested route if present" in:
     gameMap.getRoute(connectedCities) should be(Some(route1))
     gameMap.getRoute(connectedCities.swap) should be(Some(route1))
     gameMap.getRoute(notConnectedCities) should be(None)

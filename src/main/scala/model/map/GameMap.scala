@@ -44,9 +44,7 @@ object GameMap:
     private var claimedRoutes = routes.map(r => (r, None): ClaimedRoute).toMap
 
     private def getClaimedRoute(connectedCities: (City, City)): Option[ClaimedRoute] =
-      claimedRoutes.find((r, _) =>
-        r.connectedCities == connectedCities || r.connectedCities == connectedCities.swap
-      )
+      claimedRoutes.find((r, _) => r.connectedCities == connectedCities || r.connectedCities == connectedCities.swap)
 
     override def getPlayerClaimingRoute(connectedCities: (City, City)): Option[PlayerId] =
       getClaimedRoute(connectedCities).filter((_, o) => o.nonEmpty).map((_, o) => o.get)
@@ -56,10 +54,9 @@ object GameMap:
 
     override def claimRoute(connectedCities: (City, City), player: PlayerId): Unit =
       claimedRoutes = claimedRoutes.updated(
-        getClaimedRoute(connectedCities).filter((_, o) => o.isEmpty).getOrElse(
-          throw new IllegalArgumentException(
-            s"Route $connectedCities not present or already claimed"
-          )
-        )._1,
+        getClaimedRoute(connectedCities)
+          .filter((_, o) => o.isEmpty)
+          .getOrElse(throw new IllegalArgumentException(s"Route $connectedCities not present or already claimed"))
+          ._1,
         Some(player)
       )

@@ -41,16 +41,25 @@ object GameMap:
 
   private class GameMapImpl(routes: Set[Route]) extends GameMap:
     private type ClaimedRoute = (Route, Option[PlayerId])
-    private val claimedRoutes: Set[ClaimedRoute] = routes.map(r => (r, None))
+    private var claimedRoutes = routes.map(r => (r, None): ClaimedRoute).toMap
 
     private def getClaimedRoute(connectedCities: (City, City)): Option[ClaimedRoute] =
       claimedRoutes.find((r, _) =>
         r.connectedCities == connectedCities || r.connectedCities == connectedCities.swap
       )
 
-    override def getPlayerClaimingRoute(connectedCities: (City, City)): Option[PlayerId] = ???
+    override def getPlayerClaimingRoute(connectedCities: (City, City)): Option[PlayerId] =
+      getClaimedRoute(connectedCities).filter((_, o) => o.nonEmpty).map((_, o) => o.get)
 
     override def getRoute(connectedCities: (City, City)): Option[Route] =
       getClaimedRoute(connectedCities).map((r, _) => r)
 
-    override def claimRoute(connectedCities: (City, City), player: PlayerId): Unit = ???
+    override def claimRoute(connectedCities: (City, City), player: PlayerId): Unit =
+      claimedRoutes = claimedRoutes.updated(
+        getClaimedRoute(connectedCities).filter((_, o) => o.isEmpty).getOrElse(
+          throw new IllegalArgumentException(
+            s"Route $connectedCities not present or already claimed"
+          )
+        )._1,
+        Some(player)
+      )

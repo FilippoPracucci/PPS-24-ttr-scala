@@ -21,18 +21,36 @@ object Route:
   trait SpecificColor(color: Color) extends Mechanic
   object SpecificColor:
     def apply(color: String): SpecificColor = SpecificColorImpl(color)
-    private case class SpecificColorImpl(color: Color)
-        extends SpecificColor(color)
+    private case class SpecificColorImpl(color: Color) extends SpecificColor(color)
 
-  def apply(
-      connectedCities: (City, City),
-      length: Int,
-      mechanic: Mechanic
-  ): Route =
+  def apply(connectedCities: (City, City), length: Int, mechanic: Mechanic): Route =
     RouteImpl(connectedCities, length, mechanic)
 
-  private case class RouteImpl(
-      override val connectedCities: (City, City),
-      override val length: Int,
-      override val mechanic: Mechanic
-  ) extends Route
+  private case class RouteImpl(override val connectedCities: (City, City), override val length: Int,
+      override val mechanic: Mechanic) extends Route
+
+type PlayerId = String // TODO to be integrated in the future
+
+trait Map:
+  def getPlayerClaimingRoute(connectedCities: (City, City)): Option[PlayerId]
+  def getRoute(connectedCities: (City, City)): Option[Route]
+  def claimRoute(connectedCities: (City, City), player: PlayerId): Unit
+
+object Map:
+  def apply(routes: Set[Route]): Map = MapImpl(routes)
+
+  private class MapImpl(routes: Set[Route]) extends Map:
+    private type ClaimedRoute = (Route, Option[PlayerId])
+    private val claimedRoutes: Set[ClaimedRoute] = routes.map(r => (r, None))
+
+    private def getClaimedRoute(connectedCities: (City, City)): Option[ClaimedRoute] =
+      claimedRoutes.find((r, _) =>
+        r.connectedCities == connectedCities || r.connectedCities == connectedCities.swap
+      )
+
+    override def getPlayerClaimingRoute(connectedCities: (City, City)): Option[PlayerId] = ???
+
+    override def getRoute(connectedCities: (City, City)): Option[Route] =
+      getClaimedRoute(connectedCities).map((r, _) => r)
+
+    override def claimRoute(connectedCities: (City, City), player: PlayerId): Unit = ???

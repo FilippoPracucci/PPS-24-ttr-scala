@@ -31,15 +31,15 @@ object Route:
 
 type PlayerId = String // TODO to be integrated in the future
 
-trait Map:
+trait GameMap:
   def getPlayerClaimingRoute(connectedCities: (City, City)): Option[PlayerId]
   def getRoute(connectedCities: (City, City)): Option[Route]
   def claimRoute(connectedCities: (City, City), player: PlayerId): Unit
 
-object Map:
-  def apply(routes: Set[Route]): Map = MapImpl(routes)
+object GameMap:
+  def apply(routes: Set[Route]): GameMap = GameMapImpl(routes)
 
-  private class MapImpl(routes: Set[Route]) extends Map:
+  private class GameMapImpl(routes: Set[Route]) extends GameMap:
     private type ClaimedRoute = (Route, Option[PlayerId])
     private val claimedRoutes: Set[ClaimedRoute] = routes.map(r => (r, None))
 

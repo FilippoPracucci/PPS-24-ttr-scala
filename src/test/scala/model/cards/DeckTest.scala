@@ -16,10 +16,8 @@ class DeckTest extends AnyFlatSpec with Matchers:
     standardDeck.cards.filter(_.color == RED) should have size NUM_CARDS_PER_COLOR
 
   val fixedList: List[Card] = List(Card(RED), Card(YELLOW), Card(RED), Card(BLACK), Card(BLUE))
-  val fixedGenerator = new DeckGenerator:
-    override def generate(): List[Card] = fixedList
-
-  val deckFixed: Deck = CardsDeck()(using fixedGenerator)
+  val deckFixed: Deck = new CardsDeck with DeckGenerator:
+    override def generateDeck(): List[Card] = fixedList
 
   "A deck" should "be created correctly with specific generator" in:
     deckFixed.cards should have size fixedList.size

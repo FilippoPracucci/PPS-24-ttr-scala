@@ -10,17 +10,17 @@ import java.awt.Color as ViewColor
 trait CardView:
   extension (card: Card)
     def cardColor: ViewColor = card.color match
-      case BLACK  => ViewColor.BLACK
-      case WHITE  => ViewColor.WHITE
-      case RED    => ViewColor.RED.darker()
-      case BLUE   => ViewColor.BLUE.darker()
+      case BLACK => ViewColor.BLACK
+      case WHITE => ViewColor.WHITE
+      case RED => ViewColor.RED.darker()
+      case BLUE => ViewColor.BLUE.darker()
       case ORANGE => ViewColor.ORANGE.darker()
       case YELLOW => ViewColor.YELLOW.darker()
-      case GREEN  => ViewColor.GREEN.darker()
-      case PINK   => ViewColor.PINK.darker()
+      case GREEN => ViewColor.GREEN.darker()
+      case PINK => ViewColor.PINK.darker()
     def cardTextColor: ViewColor = card.color match
       case WHITE | PINK | YELLOW => ViewColor.BLACK
-      case _                     => ViewColor.WHITE
+      case _ => ViewColor.WHITE
     def cardComponent: Component
 
 object CardView:
@@ -44,4 +44,4 @@ object CardView:
         component.listenTo(component.mouse.clicks)
         component.reactions.+= match
           case _: MousePressed => component.enabled = !component.enabled
-          case _               => ()
+          case _ => ()

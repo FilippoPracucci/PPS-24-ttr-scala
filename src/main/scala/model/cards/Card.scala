@@ -25,12 +25,8 @@ object Card:
 
 /** A generator of an empty list of train cards. */
 trait CardsGenerator:
-  /** Generate an empty list of train cards.
-    *
-    * @return
-    *   the empty list of train cards created.
-    */
-  def generate(): List[Card] = List.empty
+  /** Generate a list of train cards. */
+  def generate(): List[Card]
 
 /** Factory for [[CardsGenerator]] instances. */
 object CardsGenerator:
@@ -40,14 +36,16 @@ object CardsGenerator:
     *   the train card generator.
     */
   def apply(): CardsGenerator = CardsGeneratorImpl()
-  private case class CardsGeneratorImpl() extends CardsGenerator
 
-/** The standard train card generator.
-  *
-  * @return
-  *   the given instance of the standard train card generator.
-  */
-given CardsGenerator = CardsGenerator()
+  /** The standard train card generator.
+    *
+    * @return
+    *   the given instance of the standard train card generator.
+    */
+  given CardsGenerator = CardsGenerator()
+
+  private case class CardsGeneratorImpl() extends CardsGenerator:
+    override def generate(): List[Card] = List.empty
 
 private class Cards(using generator: CardsGenerator)(private var _cards: List[Card] = generator.generate()):
   def cards: List[Card] = _cards

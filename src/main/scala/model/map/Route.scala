@@ -48,7 +48,7 @@ object Route:
     */
   trait Mechanic
 
-  private type Color = String // TODO to be integrated with utils.Color
+  private type Color = model.utils.Color
 
   /** Trait that represents the mechanic in which a route has a specific color.
     * @param color
@@ -62,7 +62,7 @@ object Route:
       * @return
       *   the created `SpecificColor`
       */
-    def apply(color: String): SpecificColor = SpecificColorImpl(color)
+    def apply(color: Color): SpecificColor = SpecificColorImpl(color)
 
     private case class SpecificColorImpl(color: Color) extends SpecificColor(color)
 

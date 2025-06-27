@@ -10,10 +10,13 @@ class CityTest extends AnyFlatSpec with Matchers:
     city.name should be(name)
 
 class RouteTest extends AnyFlatSpec with Matchers:
+  import model.utils.Color
+  import Color._
+
   "A Route" should "be initialized correctly" in:
     val connectedCities = (City("Roma"), City("Venezia"))
     val length = 2
-    val mechanic = Route.SpecificColor("Black") // TODO to be integrated with utils.Color
+    val mechanic = Route.SpecificColor(BLACK)
     val route = Route(connectedCities, length, mechanic)
     route.connectedCities should be(connectedCities)
     route.length should be(length)

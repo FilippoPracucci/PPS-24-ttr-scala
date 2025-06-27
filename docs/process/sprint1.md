@@ -20,7 +20,7 @@ e statica nell'interfaccia grafica.
 | Feature                                                | Sprint Task                         | Volontario | Stima iniziale | Iniziato | Completato |
 |--------------------------------------------------------|-------------------------------------|------------|:--------------:|:--------:|:----------:|
 | Gestione della mappa di gioco                          | Modellazione della mappa            | Bedeschi   |       40       |    X     |            | 
-|                                                        | Visualizzazione statica della mappa | Bedeschi   |       10       |          |            |
+|                                                        | Visualizzazione statica della mappa | Bedeschi   |       10       |    X     |            |
 | Gestione del mazzo di carte e delle mani dei giocatori | Modellazione carte vagone           | Pracucci   |       30       |          |            |
 |                                                        | Visualizzazione carte vagone        | Pracucci   |       5        |          |            |
 |                                                        | Creazione mazzo delle carte vagone  | Pracucci   |       15       |          |            |

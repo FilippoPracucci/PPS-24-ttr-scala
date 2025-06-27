@@ -17,5 +17,9 @@ lazy val root = project
     scalaVersion := scala3Version,
     javacOptions ++= Seq("-source", "17.0", "-target", "17.0"),
 
-    libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.19" % Test
+    libraryDependencies ++= Seq(
+        "org.scalatest" %% "scalatest" % "3.2.19" % Test,
+        "org.scala-lang.modules" %% "scala-swing" % "3.0.0",
+        "com.github.vlsi.mxgraph" % "jgraphx" % "4.2.2"
+    )
   )

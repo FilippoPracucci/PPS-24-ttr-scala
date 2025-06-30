@@ -45,6 +45,9 @@ object MapView:
   private object MapViewImpl extends MapView:
     import com.mxgraph.view.mxGraph
     import com.mxgraph.swing.mxGraphComponent
+    import com.mxgraph.model.mxCell
+    // Note: The JGraphX library works with vertices and edges as Object (both input and output), although they are
+    //       always mxCell. In an effort to maintain decent type checking, every vertex and edge is cast to mxCell.
 
     private val graph = new mxGraph()
     private val parent = graph.getDefaultParent
@@ -52,7 +55,7 @@ object MapView:
     override val component: Component = Component.wrap(graphComponent)
 
     private type City = String
-    private type Vertex = AnyRef // type of vertices/edges in JGraphX library. It should be com.mxgraph.model.mxCell
+    private type Vertex = mxCell // type of vertices/edges in JGraphX library
     private var vertices: Map[City, Vertex] = Map()
 
     initView()
@@ -65,13 +68,13 @@ object MapView:
       graphControl.listenTo(graphControl.mouse.clicks)
       graphControl.reactions += {
         case e: event.MouseReleased =>
-          val cell = graphComponent.getCellAt(e.point.x, e.point.y)
+          val cell = graphComponent.getCellAt(e.point.x, e.point.y).asInstanceOf[mxCell]
           if (cell != null && graph.getModel.isEdge(cell))
-            println(s"Edge clicked: $cell")
-            changeGraph(graph.setCellStyle("strokeColor=red;dashed=0", Array(cell)))
-            import com.mxgraph.model.mxCell
-            val city1 = graph.getModel.getTerminal(cell, true).asInstanceOf[mxCell]
-            val city2 = graph.getModel.getTerminal(cell, false).asInstanceOf[mxCell]
+            val edge = cell
+            println(s"Edge clicked: $edge")
+            changeGraph(graph.setCellStyle("strokeColor=red;dashed=0", Array(edge)))
+            val city1 = graph.getModel.getTerminal(edge, true).asInstanceOf[mxCell]
+            val city2 = graph.getModel.getTerminal(edge, false).asInstanceOf[mxCell]
             Dialog.showMessage(component, s"Route between ${city1.getId} and ${city2.getId} clicked", title = "Info")
       }
 
@@ -119,7 +122,7 @@ object MapView:
 
     override def addCity(name: String, x: Double, y: Double, width: Double, height: Double): Unit =
       changeGraph {
-        val vertex = graph.insertVertex(parent, name, name, x, y, width, height)
+        val vertex = graph.insertVertex(parent, name, name, x, y, width, height).asInstanceOf[mxCell]
         vertices = vertices.updated(name, vertex)
       }
 

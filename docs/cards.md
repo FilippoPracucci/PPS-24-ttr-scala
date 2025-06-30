@@ -11,8 +11,10 @@ parent: Design di dettaglio
 L'entità carta, intesa come carta vagone, è caratterizzata da un colore. Le carte vengono gestite in un'entità base `Cards`,
 che modella una lista di carte; questa viene estesa per realizzare il concetto di mazzo di carte (`Deck`), ma consentendo
 anche una facile creazione di altre entità che consistono in una lista di carte, per esempio la mano dei giocatori.
-Una lista di carte, quindi anche un mazzo, viene creato tramite un generatore, che viene realizzato come un decoratore,
-tramite l'ausilio dei _mixin_.
+Una lista di carte, quindi anche un mazzo, viene creato tramite un generatore generico, che può essere realizzato per
+creare per esempio un'istanza di `Deck`, ma potrà essere utilizzato per una qualsiasi forma di lista di carte.
+Le entità forniscono un'implementazione di default del generatore, che viene utilizzata nel caso in cui non ne venga
+specificata un'altra.
 
 ```mermaid
 ---
@@ -24,10 +26,8 @@ classDiagram
     Color "1" --o "*" Card
     Card "1..*" --o "0..1" Cards
     Deck --|> Cards
-    Cards "*" ..>  "1" CardsGenerator : use
-    CardsDeck ..|> Deck
-    CardsDeck "*" ..>  "1" DeckGenerator : use
-    DeckGenerator --|> CardsGenerator
+    Cards "*" ..> "1" CardsGenerator~T~: use
+    Deck "*" ..> "1" CardsGenerator~T~: use
     class Color {
         <<Enumeration>>
         BLACK
@@ -42,7 +42,7 @@ classDiagram
     class Card {
         +color: Color
     }
-    class CardsGenerator {
+    class CardsGenerator~T~ {
         <<interface>>
         + generate() List[Card]
     }
@@ -54,9 +54,5 @@ classDiagram
         + shuffle() Unit
         + draw(n: Int) List[Card]
         + reinsertAtTheBottom(card: Card) Unit
-    }
-    class DeckGenerator {
-        <<interface>>
-        + generateDeck() List[Card]
     }
 ```

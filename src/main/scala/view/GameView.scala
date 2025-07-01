@@ -33,7 +33,7 @@ object GameView:
     private val screenSize: Dimension = java.awt.Toolkit.getDefaultToolkit.getScreenSize
     private val mapView = MapView()
     private val frame: MainFrame = new MainFrame {
-      title = "Game"
+      title = "Ticket to Ride"
       contents = mapView.component
       preferredSize = screenSize
       peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)
@@ -45,10 +45,8 @@ object GameView:
     private def initMap(): Unit =
       val topBarHeight = frame.peer.getInsets.top
       val textHeight = 10
-      mapView.addCity("Venezia", 590, 440, 0, 0)
-      mapView.addCity("Roma", 600, 520, 0, 0)
-      mapView.addCity("Brindisi", 680, 540, 0, 0)
-      mapView.addCity("Palermo", screenSize.width / 2, screenSize.height - topBarHeight - textHeight, 0, 0)
+      import CitiesLoader.given
+      CitiesLoader(screenSize.width, screenSize.height - topBarHeight - textHeight).load()
 
     export frame.{open, close}
     export mapView.addRoute

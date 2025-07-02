@@ -1,4 +1,4 @@
-package view
+package view.map
 
 /** Trait that represents the loader of the cities in the map view.
   */

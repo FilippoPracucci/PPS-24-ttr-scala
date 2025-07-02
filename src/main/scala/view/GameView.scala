@@ -1,5 +1,7 @@
 package view
 
+import map.{MapView, CitiesLoader}
+
 /** Trait that represents the view of the game.
   */
 trait GameView:

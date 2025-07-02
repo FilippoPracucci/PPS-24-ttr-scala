@@ -20,7 +20,7 @@ visualizzazione statica; ed infine la creazione del giocatore.
 
 | Feature                                                | Sprint Task                                              | Volontario | Stima iniziale | Iniziato | Completato |
 |--------------------------------------------------------|----------------------------------------------------------|------------|:--------------:|:--------:|:----------:|
-| Gestione della mappa di gioco                          | Creazione e gestione file di configurazione per la mappa | Bedeschi   |       40       |          |            | 
+| Gestione della mappa di gioco                          | Creazione e gestione file di configurazione per la mappa | Bedeschi   |       40       |    X     |            | 
 |                                                        | Integrazione model e view della mappa di gioco           | Bedeschi   |       10       |    X     |            |
 | Gestione del mazzo di carte e delle mani dei giocatori | Modellazione delle mani dei giocatori                    | Pracucci   |       20       |          |            |
 |                                                        | Visualizzazione statica delle mani dei giocatori         | Pracucci   |       5        |          |            |

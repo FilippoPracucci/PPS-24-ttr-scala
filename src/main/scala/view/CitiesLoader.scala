@@ -26,6 +26,9 @@ object CitiesLoader:
     CitiesLoaderImpl(mapWidth, mapHeight)(using configFileName)
 
   private class CitiesLoaderImpl(mapWidth: Int, mapHeight: Int)(using configFileName: String) extends CitiesLoader:
+    require(mapWidth > 0, "mapWidth must be positive")
+    require(mapHeight > 0, "mapHeight must be positive")
+
     import scala.util._
 
     private val cityWidth = 0
@@ -36,7 +39,7 @@ object CitiesLoader:
 
     override def load(): Unit = readConfigData() match
       case Success(configData) => configData.cities.foreach(city => addCity(configData, city))
-      case Failure(e) => println(s"Error loading config file: ${e.getMessage}")
+      case Failure(e) => throw new IllegalStateException(s"Error loading config file: ${e.getMessage}", e)
 
     private def readConfigData(): Try[ConfigData] =
       import scala.io.Source

@@ -25,7 +25,7 @@ class PlayerTest extends AnyFlatSpec with Matchers:
     val customPlayer: Player = Player(1, deckFixed)
     customPlayer.id should be(1)
     customPlayer.deck should be(deckFixed)
-    customPlayer.hand.cards should be(List(Card(RED), Card(YELLOW), Card(RED), Card(BLACK)))
+    customPlayer.hand.cards should be(fixedList.take(4))
     // TODO: player.objective should not be empty
     customPlayer.trains.trainCars should be(NUMBER_TRAIN_CARS)
 

@@ -51,7 +51,8 @@ object Hand:
     cards = cardsList
 
     override def playCards(cardsToPlay: List[Card]): Unit =
-      cards = cards.filter(!cardsToPlay.contains(_))
+      require(cardsToPlay.forall(cards.contains(_)), "The cards to play have to be part of the hand!")
+      cards = cards diff cardsToPlay
 
     override def addCards(cardsToAdd: List[Card]): Unit =
       cards = cards :++ cardsToAdd

@@ -1,11 +1,11 @@
-package view
+package view.cards
 
-import scala.swing.{FlowPanel, *}
 import model.cards.Card
 import model.utils.Color.*
 
-import scala.swing.event.MousePressed
 import java.awt.Color as ViewColor
+import scala.swing.event.MousePressed
+import scala.swing.*
 
 trait CardView:
   extension (card: Card)

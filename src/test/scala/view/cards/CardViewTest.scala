@@ -1,8 +1,10 @@
-package view
+package view.cards
 
-import scala.swing.{FlowPanel, *}
 import model.cards.Card
 import model.utils.Color.*
+import view.cards.CardView
+
+import scala.swing.*
 
 /** A simple test consisting in launching a frame with a card to show its representation. */
 object CardViewTest extends App:

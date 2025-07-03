@@ -24,6 +24,6 @@ visualizzazione statica; ed infine la creazione del giocatore.
 |                                                        | Integrazione model e view della mappa di gioco           | Bedeschi   |       10       |          |            |
 | Gestione del mazzo di carte e delle mani dei giocatori | Modellazione delle mani dei giocatori                    | Pracucci   |       20       |    X     |            |
 |                                                        | Visualizzazione statica delle mani dei giocatori         | Pracucci   |       5        |          |            |
-| Gestione del giocatore                                 | Creazione giocatore                                      | Pracucci   |       25       |          |            |
+| Gestione del giocatore                                 | Creazione giocatore                                      | Pracucci   |       25       |    X     |            |
 
 ## Sprint Review

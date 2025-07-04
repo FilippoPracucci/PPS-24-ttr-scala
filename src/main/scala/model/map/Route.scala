@@ -80,4 +80,5 @@ object Route:
     RouteImpl(connectedCities, length, mechanic)
 
   private case class RouteImpl(override val connectedCities: (City, City), override val length: Int,
-      override val mechanic: Mechanic) extends Route
+      override val mechanic: Mechanic) extends Route:
+    require(length > 0, "length must be positive")

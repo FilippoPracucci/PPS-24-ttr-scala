@@ -7,7 +7,7 @@ import java.awt.Color as ViewColor
 import scala.swing.event.MousePressed
 import scala.swing.*
 
-trait CardView:
+private trait CardView:
   extension (card: Card)
     def cardColor: ViewColor = card.color match
       case BLACK => ViewColor.BLACK
@@ -19,11 +19,11 @@ trait CardView:
       case GREEN => ViewColor.GREEN.darker()
       case PINK => ViewColor.PINK.darker()
     def cardTextColor: ViewColor = card.color match
-      case WHITE | PINK | YELLOW => ViewColor.BLACK
-      case _ => ViewColor.WHITE
+      case BLACK | RED | BLUE => ViewColor.WHITE
+      case _ => ViewColor.BLACK
     def cardComponent: Component
 
-object CardView:
+private object CardView:
   def apply(): CardView = CardViewImpl()
 
   private case class CardViewImpl() extends CardView:

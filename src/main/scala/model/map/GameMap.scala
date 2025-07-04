@@ -1,6 +1,6 @@
 package model.map
 
-type PlayerId = String // TODO to be integrated in the future
+import model.player.PlayerId
 
 /** Trait that represents the game map, composed of a set of routes.
   */

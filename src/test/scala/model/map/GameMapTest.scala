@@ -6,14 +6,14 @@ import org.scalatest.matchers.should.Matchers
 
 class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   import model.utils.Color
-  import Color._
+  import model.utils.PlayerColor
 
   private val connectedCities = (City("Roma"), City("Venezia"))
-  private val route1 = Route(connectedCities, 2, Route.SpecificColor(BLACK))
-  private val route2 = Route((City("Roma"), City("Brindisi")), 3, Route.SpecificColor(WHITE))
-  private val route3 = Route((City("Roma"), City("Palermo")), 4, Route.SpecificColor(RED))
+  private val route1 = Route(connectedCities, 2, Route.SpecificColor(Color.BLACK))
+  private val route2 = Route((City("Roma"), City("Brindisi")), 3, Route.SpecificColor(Color.WHITE))
+  private val route3 = Route((City("Roma"), City("Palermo")), 4, Route.SpecificColor(Color.RED))
   private val notConnectedCities = (City("Roma"), City("Bologna"))
-  private val player: PlayerId = "Green" // TODO to be integrated in the future
+  private val player = PlayerColor.GREEN
 
   private var gameMap: GameMap = GameMap(Set())
 

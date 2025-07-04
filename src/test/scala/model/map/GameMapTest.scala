@@ -43,5 +43,4 @@ class GameMapInitFromFileTest extends AnyFlatSpec with Matchers:
     noException should be thrownBy GameMap()
 
   it should "fail its initialization when created from a non-existent file" in:
-    GameMap()(using "nonExistentFile.json")
     an[IllegalStateException] should be thrownBy GameMap()(using "nonExistentFile.json")

@@ -19,7 +19,7 @@ object CitiesLoader:
     *   the height (in pixel) of the map
     * @param configFilePath
     *   the given path of the json config file (starting from 'src/main/resources/', without file extension) containing
-   *    information on the cities
+    *   information on the cities
     * @return
     *   the created `CitiesLoader`
     */

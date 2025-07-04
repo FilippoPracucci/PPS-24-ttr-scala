@@ -1,0 +1,1337 @@
+[
+  {
+    "connectedCities": [
+      {
+        "name": "Stockholm"
+      },
+      {
+        "name": "Kobenhavn"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Stockholm"
+      },
+      {
+        "name": "Petrograd"
+      }
+    ],
+    "length": 8,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "black"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Edinburgh"
+      },
+      {
+        "name": "London"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Petrograd"
+      },
+      {
+        "name": "Riga"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Petrograd"
+      },
+      {
+        "name": "Wilno"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Petrograd"
+      },
+      {
+        "name": "Moskva"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "white"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Riga"
+      },
+      {
+        "name": "Danzic"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "black"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Riga"
+      },
+      {
+        "name": "Wilno"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Kobenhavn"
+      },
+      {
+        "name": "Essen"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Danzic"
+      },
+      {
+        "name": "Berlin"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Danzic"
+      },
+      {
+        "name": "Warszawa"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Moskva"
+      },
+      {
+        "name": "Smolensk"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Moskva"
+      },
+      {
+        "name": "Kharkov"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Wilno"
+      },
+      {
+        "name": "Warszawa"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Wilno"
+      },
+      {
+        "name": "Kyiv"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Wilno"
+      },
+      {
+        "name": "Smolensk"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Smolensk"
+      },
+      {
+        "name": "Kyiv"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "London"
+      },
+      {
+        "name": "Amsterdam"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "London"
+      },
+      {
+        "name": "Dieppe"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Amsterdam"
+      },
+      {
+        "name": "Essen"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Amsterdam"
+      },
+      {
+        "name": "Bruxelles"
+      }
+    ],
+    "length": 1,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "black"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Amsterdam"
+      },
+      {
+        "name": "Frankfurt"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "white"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Essen"
+      },
+      {
+        "name": "Frankfurt"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Essen"
+      },
+      {
+        "name": "Berlin"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Warszava"
+      },
+      {
+        "name": "Berlin"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Warszava"
+      },
+      {
+        "name": "Wien"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Warszava"
+      },
+      {
+        "name": "Kyiv"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Berlin"
+      },
+      {
+        "name": "Frankfurt"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Berlin"
+      },
+      {
+        "name": "Wien"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Bruxelles"
+      },
+      {
+        "name": "Dieppe"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Bruxelles"
+      },
+      {
+        "name": "Paris"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Bruxelles"
+      },
+      {
+        "name": "Frankfurt"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Kyiv"
+      },
+      {
+        "name": "Budapest"
+      }
+    ],
+    "length": 6,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Kyiv"
+      },
+      {
+        "name": "Kharkov"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Frankfurt"
+      },
+      {
+        "name": "Paris"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Frankfurt"
+      },
+      {
+        "name": "Munchen"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Dieppe"
+      },
+      {
+        "name": "Brest"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Dieppe"
+      },
+      {
+        "name": "Paris"
+      }
+    ],
+    "length": 1,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Brest"
+      },
+      {
+        "name": "Paris"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "black"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Brest"
+      },
+      {
+        "name": "Pamplona"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Kharkov"
+      },
+      {
+        "name": "Rostov"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Munchen"
+      },
+      {
+        "name": "Wien"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Munchen"
+      },
+      {
+        "name": "Zurich"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Munchen"
+      },
+      {
+        "name": "Venezia"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Paris"
+      },
+      {
+        "name": "Pamplona"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Paris"
+      },
+      {
+        "name": "Marseille"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Paris"
+      },
+      {
+        "name": "Zurich"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Wien"
+      },
+      {
+        "name": "Zagrad"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Wien"
+      },
+      {
+        "name": "Budapest"
+      }
+    ],
+    "length": 1,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "white"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Budapest"
+      },
+      {
+        "name": "Zagrad"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Budapest"
+      },
+      {
+        "name": "Sarajevo"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Budapest"
+      },
+      {
+        "name": "Bucuresti"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Rostov"
+      },
+      {
+        "name": "Sevastopol"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Rostov"
+      },
+      {
+        "name": "Sochi"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Zurich"
+      },
+      {
+        "name": "Marseille"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Zurich"
+      },
+      {
+        "name": "Venezia"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Venezia"
+      },
+      {
+        "name": "Roma"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "black"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Venezia"
+      },
+      {
+        "name": "Zagrad"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Zagrad"
+      },
+      {
+        "name": "Sarajevo"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Bucuresti"
+      },
+      {
+        "name": "Sofia"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Bucuresti"
+      },
+      {
+        "name": "Constantinople"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Bucuresti"
+      },
+      {
+        "name": "Sevastopol"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "white"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Sevastopol"
+      },
+      {
+        "name": "Constantinople"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Sevastopol"
+      },
+      {
+        "name": "Erzurum"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Sevastopol"
+      },
+      {
+        "name": "Sochi"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Sochi"
+      },
+      {
+        "name": "Erzurum"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Marseille"
+      },
+      {
+        "name": "Pamplona"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "red"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Marseille"
+      },
+      {
+        "name": "Barcelona"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Marseille"
+      },
+      {
+        "name": "Roma"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Pamplona"
+      },
+      {
+        "name": "Madrid"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "white"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Pamplona"
+      },
+      {
+        "name": "Barcelona"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Sarajevo"
+      },
+      {
+        "name": "Sofia"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Sarajevo"
+      },
+      {
+        "name": "Athina"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Sofia"
+      },
+      {
+        "name": "Athina"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Sofia"
+      },
+      {
+        "name": "Constantinople"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Roma"
+      },
+      {
+        "name": "Brindisi"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "white"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Roma"
+      },
+      {
+        "name": "Palermo"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Brindisi"
+      },
+      {
+        "name": "Palermo"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Brindisi"
+      },
+      {
+        "name": "Athina"
+      }
+    ],
+    "length": 4,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Constantinople"
+      },
+      {
+        "name": "Smyrna"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "green"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Constantinople"
+      },
+      {
+        "name": "Ancora"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Madrid"
+      },
+      {
+        "name": "Lisboa"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "pink"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Madrid"
+      },
+      {
+        "name": "Cadiz"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Madrid"
+      },
+      {
+        "name": "Barcelona"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Lisboa"
+      },
+      {
+        "name": "Cadiz"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "blue"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Erzurum"
+      },
+      {
+        "name": "Ancora"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "black"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Athina"
+      },
+      {
+        "name": "Smyrna"
+      }
+    ],
+    "length": 2,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "yellow"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Ancora"
+      },
+      {
+        "name": "Smyrna"
+      }
+    ],
+    "length": 3,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "orange"
+    }
+  },
+  {
+    "connectedCities": [
+      {
+        "name": "Smyrna"
+      },
+      {
+        "name": "Palermo"
+      }
+    ],
+    "length": 6,
+    "mechanic": {
+      "mechanicType": "specificColor",
+      "value": "white"
+    }
+  }
+]

@@ -4,7 +4,7 @@ import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class GameMapTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
+class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   import model.utils.Color
   import Color._
 
@@ -36,3 +36,12 @@ class GameMapTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   it should "return None when trying to get the player claiming a non-existent or unclaimed route" in:
     gameMap.getPlayerClaimingRoute(notConnectedCities) should be(None)
     gameMap.getPlayerClaimingRoute(connectedCities) should be(None)
+
+class GameMapInitFromFileTest extends AnyFlatSpec with Matchers:
+  "A GameMap" should "not fail its initialization when created from file" in:
+    import GameMap.given
+    noException should be thrownBy GameMap()
+
+  it should "fail its initialization when created from a non-existent file" in:
+    GameMap()(using "nonExistentFile.json")
+    an[IllegalStateException] should be thrownBy GameMap()(using "nonExistentFile.json")

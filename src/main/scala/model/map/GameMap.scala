@@ -35,15 +35,28 @@ trait GameMap:
 object GameMap:
   /** Creates a `GameMap` composed of the specified set of routes.
     * @param routes
-    *   the set of routes the `GameMap` will contain
+    *   the set of routes it will contain
     * @return
     *   the created `GameMap`
     */
   def apply(routes: Set[Route]): GameMap = GameMapImpl(routes)
 
+  /** The default name of the config file (exported from `RoutesLoader`).
+    */
+  export RoutesLoader.given
+
+  /** Creates a `GameMap` composed of the routes specified in the config file.
+    * @param configFilePath
+    *   the path of the config file TODO using? name???
+    * @return
+    *   the created `GameMap`
+    */
+  def apply()(using configFilePath: String): GameMap = GameMapImpl(RoutesLoader()(using configFilePath).load())
+
   private class GameMapImpl(routes: Set[Route]) extends GameMap:
     private type ClaimedRoute = (Route, Option[PlayerId])
     private var claimedRoutes = routes.map(r => (r, None): ClaimedRoute).toMap
+    routes.foreach(println)
 
     private def getClaimedRoute(connectedCities: (City, City)): Option[ClaimedRoute] =
       claimedRoutes.find((r, _) => r.connectedCities == connectedCities || r.connectedCities == connectedCities.swap)

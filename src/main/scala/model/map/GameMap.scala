@@ -1,10 +1,16 @@
 package model.map
 
-type PlayerId = String // TODO to be integrated in the future
+import model.player.PlayerId
 
 /** Trait that represents the game map, composed of a set of routes.
   */
 trait GameMap:
+  /** Returns the set of routes of the `GameMap`
+    * @return
+    *   the set of routes of the `GameMap`
+    */
+  def routes: Set[Route]
+
   /** Gets the player that claims the route connecting the specified cities.
     * @param connectedCities
     *   the pair of cities connected by the route
@@ -33,15 +39,28 @@ trait GameMap:
   def claimRoute(connectedCities: (City, City), playerId: PlayerId): Unit
 
 object GameMap:
+  /** The default path of the config file (exported from `RoutesLoader`).
+    */
+  export RoutesLoader.given String
+
   /** Creates a `GameMap` composed of the specified set of routes.
     * @param routes
-    *   the set of routes the `GameMap` will contain
+    *   the set of routes it will contain
     * @return
     *   the created `GameMap`
     */
   def apply(routes: Set[Route]): GameMap = GameMapImpl(routes)
 
-  private class GameMapImpl(routes: Set[Route]) extends GameMap:
+  /** Creates a `GameMap` composed of the routes specified in the config file.
+    * @param configFilePath
+    *   the given path of the json config file (starting from 'src/main/resources/', without file extension) containing
+    *   the routes
+    * @return
+    *   the created `GameMap`
+    */
+  def apply()(using configFilePath: String): GameMap = GameMapImpl(RoutesLoader()(using configFilePath).load())
+
+  private class GameMapImpl(override val routes: Set[Route]) extends GameMap:
     private type ClaimedRoute = (Route, Option[PlayerId])
     private var claimedRoutes = routes.map(r => (r, None): ClaimedRoute).toMap
 

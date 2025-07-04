@@ -3,8 +3,8 @@ package model.player
 import model.cards.{Deck, Hand}
 import model.map.Route
 
+type PlayerId = model.utils.PlayerColor
 type Objective = String //TODO
-type PlayerId = Int //TODO
 
 /** A player, that has an id, an objective, a hand of train cards, a number of train cars and a reference to the deck.
   * The player can draw cards and claim a route.

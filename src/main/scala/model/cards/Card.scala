@@ -23,30 +23,21 @@ object Card:
   def apply(color: Color): Card = CardImpl(color)
   private case class CardImpl(override val color: Color) extends Card
 
-/** A generator of an empty list of train cards. */
-trait CardsGenerator:
+/** A generic list of train cards generator. */
+trait CardsGenerator[T]:
   /** Generate a list of train cards. */
   def generate(): List[Card]
 
-/** Factory for [[CardsGenerator]] instances. */
-object CardsGenerator:
-  /** Create a train card generator.
-    *
-    * @return
-    *   the train card generator.
-    */
-  def apply(): CardsGenerator = CardsGeneratorImpl()
+/** The default [[CardsGenerator]] for type [[Cards]]. It generates an empty list of train cards. */
+given CardsGenerator[Cards] = () => List.empty
 
-  /** The standard train card generator.
-    *
-    * @return
-    *   the given instance of the standard train card generator.
-    */
-  given CardsGenerator = CardsGenerator()
-
-  private case class CardsGeneratorImpl() extends CardsGenerator:
-    override def generate(): List[Card] = List.empty
-
-private class Cards(using generator: CardsGenerator)(private var _cards: List[Card] = generator.generate()):
+/** A list of train cards created by means of a generator.
+  *
+  * @param generator
+  *   the [[CardsGenerator]] of type [[Cards]]
+  * @param _cards
+  *   the list of cards for the initialization.
+  */
+class Cards(using generator: CardsGenerator[Cards])(private var _cards: List[Card] = generator.generate()):
   def cards: List[Card] = _cards
   def cards_=(cards: List[Card]): Unit = _cards = cards

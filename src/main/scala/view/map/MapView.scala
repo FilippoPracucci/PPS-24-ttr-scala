@@ -32,8 +32,10 @@ trait MapView:
     *   the pair of cities connected by the route, specifying their names as String
     * @param length
     *   the length of the route
+    * @param color
+    *   the color of the route expressed as the name of the color in lowercase
     */
-  def addRoute(connectedCities: (String, String), length: Int): Unit
+  def addRoute(connectedCities: (String, String), length: Int, color: String): Unit
 
 object MapView:
   /** Returns the singleton instance of `MapView`.
@@ -54,6 +56,7 @@ object MapView:
     private val graphComponent = new mxGraphComponent(graph)
     override val component: Component = Component.wrap(graphComponent)
 
+    private type Color = String
     private type City = String
     private type Vertex = mxCell // type of vertices/edges in JGraphX library
     private var vertices: Map[City, Vertex] = Map()
@@ -101,6 +104,7 @@ object MapView:
           val endArrow = mxConstants.NONE
           val edgeColor = blackColor
           val dashed = true
+          val edgeWidth = 2
           val edgeStyle = graph.getStylesheet.getDefaultEdgeStyle
           edgeStyle.put(mxConstants.STYLE_FONTSIZE, fontSize)
           edgeStyle.put(mxConstants.STYLE_FONTSTYLE, fontStyle)
@@ -108,6 +112,7 @@ object MapView:
           edgeStyle.put(mxConstants.STYLE_ENDARROW, endArrow)
           edgeStyle.put(mxConstants.STYLE_STROKECOLOR, edgeColor)
           edgeStyle.put(mxConstants.STYLE_DASHED, dashed)
+          edgeStyle.put(mxConstants.STYLE_STROKEWIDTH, edgeWidth)
           graph.getStylesheet.setDefaultEdgeStyle(edgeStyle)
 
         setVertexStyle()
@@ -126,5 +131,8 @@ object MapView:
         vertices = vertices.updated(name, vertex)
       }
 
-    override def addRoute(connectedCities: (City, City), length: Int): Unit =
-      changeGraph(graph.insertEdge(parent, null, length, vertices(connectedCities._1), vertices(connectedCities._2)))
+    override def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit =
+      changeGraph {
+        val edge = graph.insertEdge(parent, null, length, vertices(connectedCities._1), vertices(connectedCities._2))
+        graph.setCellStyle(s"strokeColor=$color", Array(edge))
+      }

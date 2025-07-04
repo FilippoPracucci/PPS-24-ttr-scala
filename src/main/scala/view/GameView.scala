@@ -19,8 +19,10 @@ trait GameView:
     *   the pair of cities connected by the route, specifying their names as String
     * @param length
     *   the length of the route
+    * @param color
+    *   the color of the route expressed as the name of the color in lowercase
     */
-  def addRoute(connectedCities: (String, String), length: Int): Unit
+  def addRoute(connectedCities: (String, String), length: Int, color: String): Unit
 
 object GameView:
   /** Returns the singleton instance of `GameView`.

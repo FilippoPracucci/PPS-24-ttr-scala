@@ -15,6 +15,9 @@ object GameController:
   private object GameControllerImpl extends GameController:
     import model.map.GameMap
     import GameMap.given
+    import model.map.Route
+    import model.utils.Color
+    import Color._
     import view.GameView
 
     private val gameMap = GameMap()
@@ -26,7 +29,20 @@ object GameController:
       gameMap.routes.foreach(route =>
         gameView.addRoute(
           (route.connectedCities._1.name, route.connectedCities._2.name),
-          route.length
+          route.length,
+          route.mechanic match
+            case Route.SpecificColor(color) => getMapViewColorFrom(color)
+            case _ => throw new IllegalStateException("Unhandled mechanic")
         )
       )
       gameView.open()
+
+    private def getMapViewColorFrom(color: Color): String = color match
+      case BLACK => "black"
+      case WHITE => "white"
+      case RED => "red"
+      case BLUE => "blue"
+      case ORANGE => "orange"
+      case YELLOW => "yellow"
+      case GREEN => "green"
+      case PINK => "pink"

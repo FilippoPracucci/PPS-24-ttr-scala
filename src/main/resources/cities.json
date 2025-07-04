@@ -23,7 +23,7 @@
       "y": 102
     },
     {
-      "name": "Kobehavn",
+      "name": "Kobenhavn",
       "x": 701,
       "y": 172
     },
@@ -71,6 +71,11 @@
       "name": "Berlin",
       "x": 739,
       "y": 343
+    },
+    {
+      "name": "Bruxelles",
+      "x": 447,
+      "y": 377
     },
     {
       "name": "Kyiv",

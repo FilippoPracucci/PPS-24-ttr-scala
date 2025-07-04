@@ -10,7 +10,7 @@ trait RoutesLoader:
   def load(): Set[Route]
 
 object RoutesLoader:
-  /** The default path of the json config file (starting from 'src/main/resources/').
+  /** The default path of the config file (starting from 'src/main/resources/').
     */
   given defaultConfigFilePath: String = "routes"
 

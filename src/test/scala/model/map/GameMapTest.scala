@@ -19,7 +19,10 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
 
   override def beforeEach(): Unit = gameMap = GameMap(Set(route1, route2, route3))
 
-  "A GameMap" should "return the correct requested route if present" in:
+  "A GameMap" should "return the correct set of routes" in:
+    gameMap.routes should be(Set(route1, route2, route3))
+
+  it should "return the correct requested route if present" in:
     gameMap.getRoute(connectedCities) should be(Some(route1))
     gameMap.getRoute(connectedCities.swap) should be(Some(route1))
     gameMap.getRoute(notConnectedCities) should be(None)
@@ -36,6 +39,7 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
   it should "return None when trying to get the player claiming a non-existent or unclaimed route" in:
     gameMap.getPlayerClaimingRoute(notConnectedCities) should be(None)
     gameMap.getPlayerClaimingRoute(connectedCities) should be(None)
+end GameMapBasicTest
 
 class GameMapInitFromFileTest extends AnyFlatSpec with Matchers:
   "A GameMap" should "not fail its initialization when created from file" in:

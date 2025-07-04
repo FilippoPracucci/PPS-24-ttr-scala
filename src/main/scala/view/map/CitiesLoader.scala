@@ -8,7 +8,7 @@ trait CitiesLoader:
   def load(): Unit
 
 object CitiesLoader:
-  /** The default path of the json config file (starting from 'src/main/resources/').
+  /** The default path of the config file (starting from 'src/main/resources/').
     */
   given defaultConfigFilePath: String = "cities"
 

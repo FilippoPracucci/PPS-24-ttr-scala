@@ -15,15 +15,13 @@ object HandViewTest extends App:
 
   val handView = HandView(hand)
   val frame = Frame()
-  val panel = FlowPanel(FlowPanel.Alignment.Center)()
   import javax.swing.WindowConstants.EXIT_ON_CLOSE
 
   frame.peer.setDefaultCloseOperation(EXIT_ON_CLOSE)
-  panel.contents.++=:(handView.handComponent)
   frame.visible = true
   frame.pack()
   frame.centerOnScreen()
-  frame.contents = panel
+  frame.contents = handView.handComponent
 
   Thread.sleep(1000)
   updateHandView()
@@ -31,7 +29,6 @@ object HandViewTest extends App:
   private def updateHandView(): Unit =
     hand.addCards(List(Card(GREEN), Card(BLUE)))
     handView.updateHandComponent(hand)
-    panel.contents.clear()
-    panel.contents.++=:(handView.handComponent)
+    frame.contents = handView.handComponent
     frame.repaint()
     frame.pack()

@@ -5,19 +5,12 @@ import scala.swing.*
 
 /** The representation of a player hand of train cards. It's possible to update it, remove or add some train cards. */
 trait HandView:
-  /** The hand view component, that consists in a list of components.
+  /** The hand view component.
     *
     * @return
-    *   the list of components composing the hand representation.
+    *   the hand view component.
     */
-  def handComponent: List[Component]
-
-  /** Set the hand component with the list of components given.
-    *
-    * @param cards
-    *   the list of components representing the cards of the player hand.
-    */
-  def handComponent_=(cards: List[Component]): Unit
+  def handComponent: Component
 
   /** Update the hand component with the player hand given.
     *
@@ -52,12 +45,13 @@ object HandView:
   def apply(hand: Hand): HandView = HandViewImpl(hand.cards.map(CardView().cardComponent(_)))
 
   private case class HandViewImpl(private var _cardComponents: List[Component]) extends HandView:
-    override def handComponent: List[Component] = _cardComponents
-
-    override def handComponent_=(cards: List[Component]): Unit = _cardComponents = cards
+    override def handComponent: Component =
+      val panel = FlowPanel(FlowPanel.Alignment.Center)()
+      panel.contents.++=:(_cardComponents)
+      panel
 
     override def updateHandComponent(hand: Hand): Unit =
-      handComponent = hand.cards.map(CardView().cardComponent(_))
+      _cardComponents = hand.cards.map(CardView().cardComponent(_))
 
     override def removeCardComponents(cards: List[Component]): Unit = ???
 

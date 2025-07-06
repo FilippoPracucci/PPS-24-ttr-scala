@@ -1,6 +1,7 @@
 package view
 
-import map.{MapView, CitiesLoader}
+import map.{CitiesLoader, MapView}
+import view.cards.HandView
 
 /** Trait that represents the view of the game.
   */
@@ -24,6 +25,13 @@ trait GameView:
     */
   def addRoute(connectedCities: (String, String), length: Int, color: String): Unit
 
+  /** Add the hand components to the view.
+    *
+    * @param handsView
+    *   the list of hands view to add to the panel.
+    */
+  def addHandsView(handsView: List[HandView]): Unit
+
 object GameView:
   /** Returns the singleton instance of `GameView`.
     * @return
@@ -36,15 +44,23 @@ object GameView:
 
     private val screenSize: Dimension = java.awt.Toolkit.getDefaultToolkit.getScreenSize
     private val mapView = MapView()
+    private val panel = new BoxPanel(Orientation.Vertical)
+    private val handPanel = new BoxPanel(Orientation.Horizontal)
     private val frame: MainFrame = new MainFrame {
       title = "Ticket to Ride"
-      contents = mapView.component
+      contents = panel
       preferredSize = screenSize
       peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)
       resizable = false
     }
 
+    override def addHandsView(handViews: List[HandView]): Unit =
+      handViews.foreach(handPanel.contents += _.handComponent)
+
     initMap()
+    panel.contents += mapView.component
+    panel.contents += handPanel
+    frame.repaint()
 
     private def initMap(): Unit =
       val topBarHeight = frame.peer.getInsets.top

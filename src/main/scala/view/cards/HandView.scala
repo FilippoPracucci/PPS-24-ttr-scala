@@ -12,13 +12,6 @@ trait HandView:
     */
   def handComponent: Component
 
-  /** Update the hand component with the player hand given.
-    *
-    * @param hand
-    *   the hand to update the component.
-    */
-  def updateHandComponent(hand: Hand): Unit
-
   /** Remove the train cards given from the player hand representation.
     *
     * @param cards
@@ -31,7 +24,7 @@ trait HandView:
     * @param cards
     *   the list of train cards to add to the player hand representation.
     */
-  def addCardComponents(cards: List[Card]): Unit
+  def addCardsComponent(cards: List[Card]): Unit
 
 /** The factory for [[HandView]] instances. */
 object HandView:
@@ -42,7 +35,7 @@ object HandView:
     * @return
     *   the hand representation.
     */
-  def apply(hand: Hand): HandView = HandViewImpl(hand.cards.map(CardView().cardComponent(_)))
+  def apply(hand: Hand): HandView = HandViewImpl(hand.cards.map(CardView().cardComponent))
 
   private case class HandViewImpl(private var _cardComponents: List[Component]) extends HandView:
     override def handComponent: Component =
@@ -50,9 +43,7 @@ object HandView:
       panel.contents.++=:(_cardComponents)
       panel
 
-    override def updateHandComponent(hand: Hand): Unit =
-      _cardComponents = hand.cards.map(CardView().cardComponent(_))
-
     override def removeCardComponents(cards: List[Component]): Unit = ???
 
-    override def addCardComponents(cards: List[Card]): Unit = ???
+    override def addCardsComponent(cards: List[Card]): Unit =
+      _cardComponents = _cardComponents :++ cards.map(CardView().cardComponent)

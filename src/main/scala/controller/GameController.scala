@@ -21,6 +21,13 @@ trait GameController:
     */
   def players: List[Player]
 
+  /** Player action that consists in draw the given amount of the card from the deck.
+    *
+    * @param n
+    *   the amount of train cards to draw.
+    */
+  def drawCards(n: Int): Unit
+
 object GameController:
   /** Returns the singleton instance of `GameController`.
     * @return
@@ -45,6 +52,12 @@ object GameController:
     private val gameMap = GameMap()
     private val gameView = GameView()
     private val handsView = initHandsView()
+
+    override def drawCards(n: Int): Unit =
+      val initialHandCards = players.head.hand.cards
+      players.head.drawCards(n)
+      handsView.head.addCardsComponent(players.head.hand.cards diff initialHandCards)
+      gameView.updateHandsView(handsView)
 
     // for the moment a single player
     private def initPlayers(): List[Player] =

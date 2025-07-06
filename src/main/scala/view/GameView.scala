@@ -25,12 +25,19 @@ trait GameView:
     */
   def addRoute(connectedCities: (String, String), length: Int, color: String): Unit
 
-  /** Add the hand components to the view.
+  /** Add the hands component to the view.
     *
     * @param handsView
     *   the list of hands view to add to the panel.
     */
   def addHandsView(handsView: List[HandView]): Unit
+
+  /** Update the hands view component.
+    *
+    * @param handsView
+    *   the list of hands view component.
+    */
+  def updateHandsView(handsView: List[HandView]): Unit
 
 object GameView:
   /** Returns the singleton instance of `GameView`.
@@ -41,6 +48,8 @@ object GameView:
 
   private object GameViewSwing extends GameView:
     import scala.swing._
+    import scala.swing.event.MousePressed
+    import controller.GameController
 
     private val screenSize: Dimension = java.awt.Toolkit.getDefaultToolkit.getScreenSize
     private val mapView = MapView()
@@ -53,9 +62,18 @@ object GameView:
       peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)
       resizable = false
     }
+    private val gameController: GameController = GameController()
+    private val drawButton = new Button("Draw")
+    configDrawButton()
 
-    override def addHandsView(handViews: List[HandView]): Unit =
-      handViews.foreach(handPanel.contents += _.handComponent)
+    override def addHandsView(handsView: List[HandView]): Unit =
+      handPanel.contents ++= handsView.map(_.handComponent)
+      handPanel.contents += drawButton
+
+    override def updateHandsView(handsView: List[HandView]): Unit =
+      handPanel.contents.clear()
+      addHandsView(handsView)
+      frame.validate()
 
     initMap()
     panel.contents += mapView.component
@@ -67,6 +85,13 @@ object GameView:
       val textHeight = 10
       import CitiesLoader.given
       CitiesLoader(screenSize.width, screenSize.height - topBarHeight - textHeight).load()
+
+    private def configDrawButton(): Unit =
+      drawButton.listenTo(drawButton.mouse.clicks)
+      drawButton.reactions += {
+        case _: MousePressed => gameController.drawCards(2)
+        case _ => ()
+      }
 
     export frame.{open, close}
     export mapView.addRoute

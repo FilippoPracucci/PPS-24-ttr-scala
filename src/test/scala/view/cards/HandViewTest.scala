@@ -27,8 +27,9 @@ object HandViewTest extends App:
   updateHandView()
 
   private def updateHandView(): Unit =
-    hand.addCards(List(Card(GREEN), Card(BLUE)))
-    handView.updateHandComponent(hand)
+    val cardsToAdd = List(Card(GREEN), Card(BLUE))
+    hand.addCards(cardsToAdd)
+    handView.addCardsComponent(cardsToAdd)
     frame.contents = handView.handComponent
     frame.repaint()
     frame.pack()

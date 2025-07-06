@@ -40,8 +40,8 @@ private object CardView:
         component.background = card.cardColor
         component.foreground = card.cardTextColor
       private def configCardButtonReactions(card: Card): Unit =
-        component.configCardButton(card)
         component.listenTo(component.mouse.clicks)
-        component.reactions.+= match
+        component.reactions += {
           case _: MousePressed => component.enabled = !component.enabled
           case _ => ()
+        }

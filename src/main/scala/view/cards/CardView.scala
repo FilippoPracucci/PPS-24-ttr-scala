@@ -8,6 +8,8 @@ import scala.swing.event.MousePressed
 import scala.swing.*
 
 private trait CardView:
+  def selected: Boolean
+
   extension (card: Card)
     def cardColor: ViewColor = card.color match
       case BLACK => ViewColor.BLACK
@@ -26,7 +28,9 @@ private trait CardView:
 private object CardView:
   def apply(): CardView = CardViewImpl()
 
-  private case class CardViewImpl() extends CardView:
+  private case class CardViewImpl(private var _selected: Boolean = false) extends CardView:
+    override def selected: Boolean = _selected
+
     extension (card: Card)
       override def cardComponent: Component =
         val cardButton: ToggleButton = ToggleButton(card.color.toString)
@@ -42,6 +46,6 @@ private object CardView:
       private def configCardButtonReactions(card: Card): Unit =
         component.listenTo(component.mouse.clicks)
         component.reactions += {
-          case _: MousePressed => component.enabled = !component.enabled
+          case _: MousePressed => _selected = !_selected
           case _ => ()
         }

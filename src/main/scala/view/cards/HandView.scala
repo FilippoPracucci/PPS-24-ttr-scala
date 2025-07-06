@@ -17,7 +17,7 @@ trait HandView:
     * @param cards
     *   the list of components consisting in the train cards to remove from the player hand representation.
     */
-  def removeCardComponents(cards: List[Component]): Unit
+  def removeCardsComponent(cards: List[Component]): Unit
 
   /** Add the train cards given to the player hand representation.
     *
@@ -43,7 +43,7 @@ object HandView:
       panel.contents.++=:(_cardComponents)
       panel
 
-    override def removeCardComponents(cards: List[Component]): Unit = ???
+    override def removeCardsComponent(cards: List[Component]): Unit = ???
 
     override def addCardsComponent(cards: List[Card]): Unit =
       _cardComponents = _cardComponents :++ cards.map(CardView().cardComponent)

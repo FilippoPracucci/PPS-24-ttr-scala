@@ -17,9 +17,6 @@ trait Hand extends Cards:
     */
   def addCards(cardsToAdd: List[Card]): Unit
 
-  /** Reorder the train cards of the player's hand, grouping them by color. */
-  def groupCardsByColor(): Unit
-
 /** The factory for player's [[Hand]] instances. */
 object Hand:
   private var cardsDeck: Deck = Deck()
@@ -56,6 +53,3 @@ object Hand:
 
     override def addCards(cardsToAdd: List[Card]): Unit =
       cards = cards :++ cardsToAdd
-
-    override def groupCardsByColor(): Unit =
-      cards = cards.groupBy(_.color).flatMap(_._2).toList

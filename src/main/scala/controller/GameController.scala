@@ -1,6 +1,6 @@
 package controller
 
-import model.cards.Deck
+import model.cards.{Card, Deck}
 import model.player.Player
 
 /** Trait that represents the controller of the game.
@@ -35,6 +35,9 @@ object GameController:
     */
   def apply(): GameController = GameControllerImpl
 
+  private val cardController = CardController()
+  export cardController.*
+
   private object GameControllerImpl extends GameController:
     import model.map.GameMap
     import GameMap.given
@@ -42,7 +45,7 @@ object GameController:
     import model.utils.{Color, PlayerColor}
     import Color._
     import view.GameView
-    import view.cards.HandView
+    import view.cards.{CardView, HandView}
 
     override val deck: Deck = Deck()
     deck.shuffle()
@@ -56,7 +59,8 @@ object GameController:
     override def drawCards(n: Int): Unit =
       val initialHandCards = players.head.hand.cards
       players.head.drawCards(n)
-      handsView.head.addCardsComponent(players.head.hand.cards diff initialHandCards)
+      val cardsToAdd = players.head.hand.cards diff initialHandCards
+      handsView.head.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
       gameView.updateHandsView(handsView)
 
     // for the moment a single player
@@ -64,7 +68,7 @@ object GameController:
       List(Player(PlayerColor.GREEN, deck))
 
     private def initHandsView(): List[HandView] =
-      players.map(p => HandView(p.hand))
+      players.map(p => HandView(p.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor))))
 
     initGameView()
 

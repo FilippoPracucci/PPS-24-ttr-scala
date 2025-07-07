@@ -32,9 +32,3 @@ class HandTest extends AnyFlatSpec with Matchers:
     hand.cards = fixedList
     hand.addCards(cardsToAdd)
     hand.cards should be(fixedList :++ cardsToAdd)
-
-  it should "group correctly the cards by color" in:
-    val fixedListWithRepetitions = fixedList :++ List(Card(RED), Card(BLACK), Card(RED))
-    hand.cards = fixedListWithRepetitions
-    hand.groupCardsByColor()
-    hand.cards should be(fixedListWithRepetitions.groupBy(_.color).flatMap(_._2).toList)

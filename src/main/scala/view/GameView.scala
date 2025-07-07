@@ -48,13 +48,17 @@ object GameView:
 
   private object GameViewSwing extends GameView:
     import scala.swing._
+    import ScrollPane.BarPolicy.*
     import scala.swing.event.MousePressed
     import controller.GameController
 
     private val screenSize: Dimension = java.awt.Toolkit.getDefaultToolkit.getScreenSize
     private val mapView = MapView()
     private val panel = new BoxPanel(Orientation.Vertical)
+    private val southPanel = new BoxPanel(Orientation.Horizontal)
     private val handPanel = new BoxPanel(Orientation.Horizontal)
+    private val scrollPane = new ScrollPane(handPanel)
+    private val handButtonPanel = new BoxPanel(Orientation.Vertical)
     private val frame: MainFrame = new MainFrame {
       title = "Ticket to Ride"
       contents = panel
@@ -64,20 +68,30 @@ object GameView:
     }
     private val gameController: GameController = GameController()
     private val drawButton = new Button("Draw")
+    private val groupByColorButton = new Button("Group by color")
+    configDrawButton()
+    configGroupByColorButton()
     configDrawButton()
 
     override def addHandsView(handsView: List[HandView]): Unit =
       handPanel.contents ++= handsView.map(_.handComponent)
-      handPanel.contents += drawButton
 
     override def updateHandsView(handsView: List[HandView]): Unit =
       handPanel.contents.clear()
       addHandsView(handsView)
       frame.validate()
 
+    handButtonPanel.contents += drawButton
+    handButtonPanel.contents += groupByColorButton
+
     initMap()
+
+    scrollPane.horizontalScrollBarPolicy = AsNeeded
+    scrollPane.verticalScrollBarPolicy = Never
+    southPanel.contents += scrollPane
+    southPanel.contents += handButtonPanel
     panel.contents += mapView.component
-    panel.contents += handPanel
+    panel.contents += southPanel
     frame.repaint()
 
     private def initMap(): Unit =
@@ -90,6 +104,13 @@ object GameView:
       drawButton.listenTo(drawButton.mouse.clicks)
       drawButton.reactions += {
         case _: MousePressed => gameController.drawCards(2)
+        case _ => ()
+      }
+
+    private def configGroupByColorButton(): Unit =
+      groupByColorButton.listenTo(groupByColorButton.mouse.clicks)
+      groupByColorButton.reactions += {
+        case _: MousePressed => gameController.groupCardsByColor()
         case _ => ()
       }
 

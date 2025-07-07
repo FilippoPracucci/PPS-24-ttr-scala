@@ -28,6 +28,9 @@ trait GameController:
     */
   def drawCards(n: Int): Unit
 
+  /** Reorder the representation of train cards of the player's hand, grouping them by color. */
+  def groupCardsByColor(): Unit
+
 object GameController:
   /** Returns the singleton instance of `GameController`.
     * @return
@@ -61,6 +64,10 @@ object GameController:
       players.head.drawCards(n)
       val cardsToAdd = players.head.hand.cards diff initialHandCards
       handsView.head.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+      gameView.updateHandsView(handsView)
+
+    override def groupCardsByColor(): Unit =
+      handsView.head.groupCardsComponentByColor()
       gameView.updateHandsView(handsView)
 
     // for the moment a single player

@@ -121,5 +121,6 @@ object Player:
     override val objective: Objective = "" // TODO
     override val hand: Hand = Hand(deck)
 
-    override def drawCards(n: Int): Unit = ???
+    override def drawCards(n: Int): Unit = hand.addCards(deck.draw(n))
+
     override def claimRoute(route: Route): Unit = ???

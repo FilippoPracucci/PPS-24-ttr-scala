@@ -1,9 +1,35 @@
 package controller
 
+import model.cards.{Card, Deck}
+import model.player.Player
+
 /** Trait that represents the controller of the game.
   */
-trait GameController
+trait GameController:
 // TODO
+  /** The singleton instance of [[Deck]].
+    *
+    * @return
+    *   the globally shared [[Deck]] instance.
+    */
+  def deck: Deck
+
+  /** The singleton instance of the [[Player]] list.
+    *
+    * @return
+    *   the globally shared [[Player]] list instance.
+    */
+  def players: List[Player]
+
+  /** Player action that consists in draw the given amount of the card from the deck.
+    *
+    * @param n
+    *   the amount of train cards to draw.
+    */
+  def drawCards(n: Int): Unit
+
+  /** Reorder the representation of train cards of the player's hand, grouping them by color. */
+  def groupCardsByColor(): Unit
 
 object GameController:
   /** Returns the singleton instance of `GameController`.
@@ -12,16 +38,44 @@ object GameController:
     */
   def apply(): GameController = GameControllerImpl
 
+  private val cardController = CardController()
+  export cardController.*
+
   private object GameControllerImpl extends GameController:
     import model.map.GameMap
     import GameMap.given
     import model.map.Route
-    import model.utils.Color
+    import model.utils.{Color, PlayerColor}
     import Color._
     import view.GameView
+    import view.cards.{CardView, HandView}
+
+    override val deck: Deck = Deck()
+    deck.shuffle()
+
+    override val players: List[Player] = initPlayers()
 
     private val gameMap = GameMap()
     private val gameView = GameView()
+    private val handsView = initHandsView()
+
+    override def drawCards(n: Int): Unit =
+      val initialHandCards = players.head.hand.cards
+      players.head.drawCards(n) // TODO: change for the list of players
+      val cardsToAdd = players.head.hand.cards diff initialHandCards
+      handsView.head.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+      gameView.updateHandsView(handsView)
+
+    override def groupCardsByColor(): Unit =
+      handsView.head.groupCardsComponentByColor()
+      gameView.updateHandsView(handsView)
+
+    // for the moment a single player
+    private def initPlayers(): List[Player] =
+      List(Player(PlayerColor.GREEN, deck))
+
+    private def initHandsView(): List[HandView] =
+      players.map(p => HandView(p.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor))))
 
     initGameView()
 
@@ -35,6 +89,7 @@ object GameController:
             case _ => throw new IllegalStateException("Unhandled mechanic")
         )
       )
+      gameView.addHandsView(handsView)
       gameView.open()
 
     private def getMapViewColorFrom(color: Color): String = color match

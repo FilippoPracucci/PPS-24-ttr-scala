@@ -71,7 +71,6 @@ object GameView:
     private val groupByColorButton = new Button("Group by color")
     configDrawButton()
     configGroupByColorButton()
-    configDrawButton()
 
     override def addHandsView(handsView: List[HandView]): Unit =
       handPanel.contents ++= handsView.map(_.handComponent)

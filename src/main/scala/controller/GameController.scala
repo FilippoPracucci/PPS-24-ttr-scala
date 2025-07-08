@@ -61,7 +61,7 @@ object GameController:
 
     override def drawCards(n: Int): Unit =
       val initialHandCards = players.head.hand.cards
-      players.head.drawCards(n)
+      players.head.drawCards(n) // TODO: change for the list of players
       val cardsToAdd = players.head.hand.cards diff initialHandCards
       handsView.head.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
       gameView.updateHandsView(handsView)

@@ -35,6 +35,14 @@ class PlayerTest extends AnyFlatSpec with Matchers:
     player.trains.trainCars should be(NUMBER_TRAIN_CARS - 5)
     a[IllegalArgumentException] should be thrownBy player.trains.placeTrainCars(NUMBER_TRAIN_CARS)
 
+  it should "be able to draw cards from the deck" in:
+    val initialHandCards = player.hand.cards
+    val initialDeckCards = player.deck.cards
+    val numberCardsToDraw = 2
+    player.drawCards(numberCardsToDraw)
+    player.deck.cards should be(initialDeckCards.takeRight(initialDeckCards.size - numberCardsToDraw))
+    player.hand.cards should be(initialHandCards :++ initialDeckCards.take(numberCardsToDraw))
+
   it should "be able to play cards" in:
     val color = model.utils.Color.RED
     val validN = 3

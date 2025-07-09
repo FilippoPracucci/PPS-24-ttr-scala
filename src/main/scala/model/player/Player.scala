@@ -144,11 +144,11 @@ object Player:
     override val objective: Objective = "" // TODO
     override val hand: Hand = Hand(deck)
 
-    override def drawCards(n: Int): Unit = ???
+    override def drawCards(n: Int): Unit = hand.addCards(deck.draw(n))
 
     override def playCards(color: Color, n: Int): Either[GameError, Unit] =
       require(n > 0, "n must be positive")
-      Try(hand.playCards(List())).toEither.left.map(_ => NotEnoughCards) // TODO hand.playCards(...)
+      Try(hand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards)
 
     override def placeTrains(n: Int): Either[GameError, Unit] = // TODO to review
       require(n > 0, "n must be positive")

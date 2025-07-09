@@ -7,31 +7,30 @@ object HandViewTest extends App:
   import model.utils.Color
   import Color.*
   import model.cards.{Card, CardsGenerator, Deck, Hand}
+  import controller.GameController.*
 
   val fixedList: List[Card] = List(Card(RED), Card(YELLOW), Card(RED), Card(BLACK), Card(BLUE))
   val fixedDeckGenerator: CardsGenerator[Deck] = () => fixedList
   val deckFixed: Deck = Deck()(using fixedDeckGenerator)
   val hand: Hand = Hand(deckFixed)
 
-  val handView = HandView(hand)
+  val handView = HandView(hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
   val frame = Frame()
-  val panel = FlowPanel(FlowPanel.Alignment.Center)()
   import javax.swing.WindowConstants.EXIT_ON_CLOSE
 
   frame.peer.setDefaultCloseOperation(EXIT_ON_CLOSE)
-  panel.contents.++=:(handView.handComponent)
   frame.visible = true
   frame.pack()
   frame.centerOnScreen()
-  frame.contents = panel
+  frame.contents = handView.handComponent
 
   Thread.sleep(1000)
   updateHandView()
 
   private def updateHandView(): Unit =
-    hand.addCards(List(Card(GREEN), Card(BLUE)))
-    handView.updateHandComponent(hand)
-    panel.contents.clear()
-    panel.contents.++=:(handView.handComponent)
+    val cardsToAdd = List(Card(GREEN), Card(BLUE))
+    hand.addCards(cardsToAdd)
+    handView.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+    frame.contents = handView.handComponent
     frame.repaint()
     frame.pack()

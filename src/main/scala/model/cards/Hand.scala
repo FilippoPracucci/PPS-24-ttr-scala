@@ -1,14 +1,18 @@
 package model.cards
 
+import model.utils.Color
+
 /** A player's hand of train cards. It's possible to play some cards, add some cards or reorder them grouping by color.
   */
 trait Hand extends Cards:
-  /** Play a list of train cards from the player's hand.
+  /** Play a number of train cards of the given color from the player's hand.
     *
-    * @param cardsToPlay
-    *   the list of train cards to play.
+    * @param color
+    *   the color of train cards to play.
+    * @param n
+    *   the number of train cards to play.
     */
-  def playCards(cardsToPlay: List[Card]): Unit
+  def playCards(color: Color, n: Int): Unit
 
   /** Add a list of train cards to the player's hand.
     *
@@ -16,9 +20,6 @@ trait Hand extends Cards:
     *   the list of train cards to add.
     */
   def addCards(cardsToAdd: List[Card]): Unit
-
-  /** Reorder the train cards of the player's hand, grouping them by color. */
-  def groupCardsByColor(): Unit
 
 /** The factory for player's [[Hand]] instances. */
 object Hand:
@@ -50,12 +51,9 @@ object Hand:
   private class HandImpl(private val cardsList: List[Card]) extends Hand:
     cards = cardsList
 
-    override def playCards(cardsToPlay: List[Card]): Unit =
-      require(cardsToPlay.forall(cards.contains(_)), "The cards to play have to be part of the hand!")
-      cards = cards diff cardsToPlay
+    override def playCards(color: Color, n: Int): Unit =
+      require(cards.count(_.color == color) >= n, "The cards to play have to be part of the hand!")
+      cards = cards diff cards.filter(_.color == color).take(n)
 
     override def addCards(cardsToAdd: List[Card]): Unit =
       cards = cards :++ cardsToAdd
-
-    override def groupCardsByColor(): Unit =
-      cards = cards.groupBy(_.color).flatMap(_._2).toList

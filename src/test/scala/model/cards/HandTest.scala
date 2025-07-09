@@ -22,19 +22,15 @@ class HandTest extends AnyFlatSpec with Matchers:
     hand.cards should have size HAND_INITIAL_SIZE
 
   it should "play correctly cards" in:
-    val cardsToPlay: List[Card] = List(Card(BLUE), Card(RED))
-    hand.playCards(cardsToPlay)
-    hand.cards should be(fixedList diff cardsToPlay)
-    a[IllegalArgumentException] should be thrownBy hand.playCards(List(Card(BLUE), Card(YELLOW), Card(YELLOW)))
+    val numberOfCardsToPlay = 2
+    val colorToPlay = RED
+    hand.playCards(colorToPlay, numberOfCardsToPlay)
+    hand.cards should be(fixedList diff fixedList.filter(_.color == colorToPlay).take(numberOfCardsToPlay))
+    a[IllegalArgumentException] should be thrownBy hand.playCards(YELLOW, numberOfCardsToPlay)
+    a[IllegalArgumentException] should be thrownBy hand.playCards(PINK, 1)
 
   it should "add correctly cards" in:
     val cardsToAdd: List[Card] = List(Card(ORANGE), Card(WHITE))
     hand.cards = fixedList
     hand.addCards(cardsToAdd)
     hand.cards should be(fixedList :++ cardsToAdd)
-
-  it should "group correctly the cards by color" in:
-    val fixedListWithRepetitions = fixedList :++ List(Card(RED), Card(BLACK), Card(RED))
-    hand.cards = fixedListWithRepetitions
-    hand.groupCardsByColor()
-    hand.cards should be(fixedListWithRepetitions.groupBy(_.color).flatMap(_._2).toList)

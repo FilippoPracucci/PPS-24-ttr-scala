@@ -1,7 +1,7 @@
 package model.player
 
 import model.cards.{Deck, Hand}
-import model.map.Route
+import model.utils._
 
 type PlayerId = model.utils.PlayerColor
 type Objective = String //TODO
@@ -56,15 +56,36 @@ trait Player:
 
   import model.map.Route
 
-  /** Claim the given route of the map.
+  /** Plays the specified number of cards of the specified color.
     *
-    * @param route
-    *   the route that the player wants to claim.
+    * @param color
+    *   the color of the cards to play
+    * @param n
+    *   the number of the cards to play
+    * @return
+    *   `Right(())` if the action succeeds, `Left(NotEnoughCards)` if the player doesn't have enough cards
     */
-  def claimRoute(route: Route): Unit
+  def playCards(color: Color, n: Int): Either[GameError, Unit]
+
+  /** Places the specified number of trains.
+    *
+    * @param n
+    *   the number of trains to place
+    * @return
+    *   `Right(())` if the action succeeds, `Left(NotEnoughTrains)` if the player doesn't have enough trains
+    */
+  def placeTrains(n: Int): Either[GameError, Unit]
 
 /** The factory for [[Player]] instances. */
 object Player:
+  /** Error that represents the case in which a player doesn't have enough cards.
+    */
+  case object NotEnoughCards extends GameError
+
+  /** Error that represents the case in which a player doesn't have enough trains.
+    */
+  case object NotEnoughTrains extends GameError
+
   /** The train cars, which are the number owned by the player with the possibility to set it or place some of them. */
   trait TrainCars:
     /** Number of player train cars left.
@@ -118,8 +139,17 @@ object Player:
 
   private case class PlayerImpl(override val id: PlayerId, override val deck: Deck,
       override val trains: TrainCars) extends Player:
+    import scala.util._
+
     override val objective: Objective = "" // TODO
     override val hand: Hand = Hand(deck)
 
     override def drawCards(n: Int): Unit = ???
-    override def claimRoute(route: Route): Unit = ???
+
+    override def playCards(color: Color, n: Int): Either[GameError, Unit] =
+      require(n > 0, "n must be positive")
+      Try(hand.playCards(List())).toEither.left.map(_ => NotEnoughCards) // TODO hand.playCards(...)
+
+    override def placeTrains(n: Int): Either[GameError, Unit] = // TODO to review
+      require(n > 0, "n must be positive")
+      Try(trains.placeTrainCars(n)).toEither.left.map(_ => NotEnoughTrains)

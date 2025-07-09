@@ -79,6 +79,8 @@ object MapView:
             val city1 = graph.getModel.getTerminal(edge, true).asInstanceOf[mxCell]
             val city2 = graph.getModel.getTerminal(edge, false).asInstanceOf[mxCell]
             Dialog.showMessage(component, s"Route between ${city1.getId} and ${city2.getId} clicked", title = "Info")
+            import controller.GameController
+            GameController().claimRoute((city1.getId, city2.getId))
       }
 
     private object StyleHelper:

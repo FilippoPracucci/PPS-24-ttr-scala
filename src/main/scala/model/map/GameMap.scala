@@ -1,10 +1,15 @@
 package model.map
 
+import model.utils.GameError
 import model.player.PlayerId
 
 /** Trait that represents the game map, composed of a set of routes.
   */
 trait GameMap:
+  /** Type alias that represents the name of a city as String.
+    */
+  type CityName = String
+
   /** Returns the set of routes of the `GameMap`
     * @return
     *   the set of routes of the `GameMap`
@@ -13,32 +18,37 @@ trait GameMap:
 
   /** Gets the player that claims the route connecting the specified cities.
     * @param connectedCities
-    *   the pair of cities connected by the route
+    *   the pair of cities connected by the route, specifying their names as String
     * @return
     *   an Option containing the `PlayerId` of the player claiming the route, None if no player claims it or if it
     *   doesn't exist
     */
-  def getPlayerClaimingRoute(connectedCities: (City, City)): Option[PlayerId]
+  def getPlayerClaimingRoute(connectedCities: (CityName, CityName)): Option[PlayerId]
 
   /** Gets the route connecting the specified cities.
     * @param connectedCities
-    *   the pair of cities connected by the route
+    *   the pair of cities connected by the route, specifying their names as String
     * @return
     *   an Option containing the requested `Route`, None if the route doesn't exist
     */
-  def getRoute(connectedCities: (City, City)): Option[Route]
+  def getRoute(connectedCities: (CityName, CityName)): Option[Route]
 
   /** Makes the player claim the route connecting the specified cities.
     * @param connectedCities
-    *   the pair of cities connected by the route
+    *   the pair of cities connected by the route, specifying their names as String
     * @param playerId
     *   the `PlayerId` of the player
-    * @throws IllegalArgumentException
-    *   if the route doesn't exist or has already been claimed
+    * @return
+    *   `Right(())` if the action succeeds, `Left(NonClaimableRoute)` if the route doesn't exist or has already been
+    *   claimed
     */
-  def claimRoute(connectedCities: (City, City), playerId: PlayerId): Unit
+  def claimRoute(connectedCities: (CityName, CityName), playerId: PlayerId): Either[GameError, Unit]
 
 object GameMap:
+  /** Error that represents the case in which a route can't be claimed.
+    */
+  case object NonClaimableRoute extends GameError
+
   /** The default path of the config file (exported from `RoutesLoader`).
     */
   export RoutesLoader.given String
@@ -64,20 +74,20 @@ object GameMap:
     private type ClaimedRoute = (Route, Option[PlayerId])
     private var claimedRoutes = routes.map(r => (r, None): ClaimedRoute).toMap
 
-    private def getClaimedRoute(connectedCities: (City, City)): Option[ClaimedRoute] =
-      claimedRoutes.find((r, _) => r.connectedCities == connectedCities || r.connectedCities == connectedCities.swap)
+    private def getClaimedRoute(connectedCities: (CityName, CityName)): Option[ClaimedRoute] =
+      claimedRoutes.find((r, _) =>
+        (r.connectedCities._1.name, r.connectedCities._2.name) == connectedCities
+          || (r.connectedCities._2.name, r.connectedCities._1.name) == connectedCities
+      )
 
-    override def getPlayerClaimingRoute(connectedCities: (City, City)): Option[PlayerId] =
+    override def getPlayerClaimingRoute(connectedCities: (CityName, CityName)): Option[PlayerId] =
       getClaimedRoute(connectedCities).filter((_, o) => o.nonEmpty).map((_, o) => o.get)
 
-    override def getRoute(connectedCities: (City, City)): Option[Route] =
+    override def getRoute(connectedCities: (CityName, CityName)): Option[Route] =
       getClaimedRoute(connectedCities).map((r, _) => r)
 
-    override def claimRoute(connectedCities: (City, City), playerId: PlayerId): Unit =
-      claimedRoutes = claimedRoutes.updated(
-        getClaimedRoute(connectedCities)
-          .filter((_, o) => o.isEmpty)
-          .getOrElse(throw new IllegalArgumentException(s"Route $connectedCities not present or already claimed"))
-          ._1,
-        Some(playerId)
-      )
+    override def claimRoute(connectedCities: (CityName, CityName), playerId: PlayerId): Either[GameError, Unit] =
+      getClaimedRoute(connectedCities)
+        .filter((_, p) => p.isEmpty)
+        .map((route, _) => claimedRoutes = claimedRoutes.updated(route, Some(playerId)))
+        .toRight(NonClaimableRoute)

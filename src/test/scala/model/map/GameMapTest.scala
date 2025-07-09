@@ -29,16 +29,16 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
 
   it should "claim the requested route" in:
     gameMap.claimRoute(connectedCities, player)
-    gameMap.getPlayerClaimingRoute(connectedCities) should be(Some(player))
+    gameMap.getPlayerClaimingRoute(connectedCities) should be(Right(Some(player)))
 
   it should "fail to claim a non-existent or already claimed route" in:
-    gameMap.claimRoute(notConnectedCities, player) should be(Left(GameMap.NonClaimableRoute))
+    gameMap.claimRoute(notConnectedCities, player) should be(Left(GameMap.NonExistentRoute))
     gameMap.claimRoute(connectedCities, player)
-    gameMap.claimRoute(connectedCities, player) should be(Left(GameMap.NonClaimableRoute))
+    gameMap.claimRoute(connectedCities, player) should be(Left(GameMap.AlreadyClaimedRoute))
 
-  it should "return None when trying to get the player claiming a non-existent or unclaimed route" in:
-    gameMap.getPlayerClaimingRoute(notConnectedCities) should be(None)
-    gameMap.getPlayerClaimingRoute(connectedCities) should be(None)
+  it should "correctly handle the cases in which the player claims a non-existent or unclaimed route" in:
+    gameMap.getPlayerClaimingRoute(notConnectedCities) should be(Left(GameMap.NonExistentRoute))
+    gameMap.getPlayerClaimingRoute(connectedCities) should be(Right(None))
 end GameMapBasicTest
 
 class GameMapInitFromFileTest extends AnyFlatSpec with Matchers:

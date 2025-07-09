@@ -72,7 +72,7 @@ object GameController:
         _ <- player.playCards(color, nCards)
         _ <- player.placeTrains(routeLength)
         _ <- gameMap.claimRoute(connectedCities, player.id)
-        // TODO update view
+      // TODO update view
       yield ()) match
         case Right(_) => ()
         case Left(Player.NotEnoughCards) => println("NotEnoughCards") // TODO dialog in view: not enough cards

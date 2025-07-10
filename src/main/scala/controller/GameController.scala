@@ -21,6 +21,13 @@ trait GameController:
     */
   def players: List[Player]
 
+  /** The singleton instance of the [[TurnManager]].
+    *
+    * @return
+    *   the globally shared [[TurnManager]] instance.
+    */
+  def turnManager: TurnManager
+
   /** Player action that consists in draw the given amount of the card from the deck.
     *
     * @param n
@@ -55,24 +62,30 @@ object GameController:
 
     override val players: List[Player] = initPlayers()
 
+    override val turnManager: TurnManager = TurnManager(players)
+
     private val gameMap = GameMap()
     private val gameView = GameView()
     private val handsView = initHandsView()
 
     override def drawCards(n: Int): Unit =
-      val initialHandCards = players.head.hand.cards
-      players.head.drawCards(n) // TODO: change for the list of players
-      val cardsToAdd = players.head.hand.cards diff initialHandCards
-      handsView.head.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
-      gameView.updateHandsView(handsView)
+      val initialHandCards = currentPlayer.hand.cards
+      currentPlayer.drawCards(n)
+      val cardsToAdd = currentPlayer.hand.cards diff initialHandCards
+      currentHandView.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+      turnManager.switchTurn()
+      gameView.updateHandView(currentHandView)
 
     override def groupCardsByColor(): Unit =
-      handsView.head.groupCardsComponentByColor()
-      gameView.updateHandsView(handsView)
+      currentHandView.groupCardsComponentByColor()
+      gameView.updateHandView(currentHandView)
 
-    // for the moment a single player
     private def initPlayers(): List[Player] =
-      List(Player(PlayerColor.GREEN, deck))
+      var playerList: List[Player] = List.empty
+      for
+        color <- PlayerColor.values
+      yield playerList :+= Player(color, deck)
+      playerList
 
     private def initHandsView(): List[HandView] =
       players.map(p => HandView(p.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor))))
@@ -89,8 +102,12 @@ object GameController:
             case _ => throw new IllegalStateException("Unhandled mechanic")
         )
       )
-      gameView.addHandsView(handsView)
+      gameView.addHandView(handsView(players.indexOf(currentPlayer)))
       gameView.open()
+
+    private def currentPlayer: Player = turnManager.currentPlayer
+
+    private def currentHandView: HandView = handsView(players.indexOf(currentPlayer))
 
     private def getMapViewColorFrom(color: Color): String = color match
       case BLACK => "black"

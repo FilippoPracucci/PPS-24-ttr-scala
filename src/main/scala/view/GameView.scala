@@ -25,19 +25,19 @@ trait GameView:
     */
   def addRoute(connectedCities: (String, String), length: Int, color: String): Unit
 
-  /** Add the hands component to the view.
+  /** Add the hand component to the view.
     *
-    * @param handsView
-    *   the list of hands view to add to the panel.
+    * @param handView
+    *   the hand view to add to the panel.
     */
-  def addHandsView(handsView: List[HandView]): Unit
+  def addHandView(handView: HandView): Unit
 
-  /** Update the hands view component.
+  /** Update the hand view component.
     *
-    * @param handsView
-    *   the list of hands view component.
+    * @param handView
+    *   the hand view component to update.
     */
-  def updateHandsView(handsView: List[HandView]): Unit
+  def updateHandView(handView: HandView): Unit
 
 object GameView:
   /** Returns the singleton instance of `GameView`.
@@ -49,7 +49,7 @@ object GameView:
   private object GameViewSwing extends GameView:
     import scala.swing._
     import ScrollPane.BarPolicy.*
-    import scala.swing.event.MousePressed
+    import scala.swing.event.ButtonClicked
     import controller.GameController
 
     private val screenSize: Dimension = java.awt.Toolkit.getDefaultToolkit.getScreenSize
@@ -72,12 +72,12 @@ object GameView:
     configDrawButton()
     configGroupByColorButton()
 
-    override def addHandsView(handsView: List[HandView]): Unit =
-      handPanel.contents ++= handsView.map(_.handComponent)
+    override def addHandView(handView: HandView): Unit =
+      handPanel.contents += handView.handComponent
 
-    override def updateHandsView(handsView: List[HandView]): Unit =
+    override def updateHandView(handView: HandView): Unit =
       handPanel.contents.clear()
-      addHandsView(handsView)
+      addHandView(handView)
       frame.validate()
 
     handButtonPanel.contents += drawButton
@@ -102,14 +102,14 @@ object GameView:
     private def configDrawButton(): Unit =
       drawButton.listenTo(drawButton.mouse.clicks)
       drawButton.reactions += {
-        case _: MousePressed => gameController.drawCards(2)
+        case _: ButtonClicked => gameController.drawCards(2)
         case _ => ()
       }
 
     private def configGroupByColorButton(): Unit =
       groupByColorButton.listenTo(groupByColorButton.mouse.clicks)
       groupByColorButton.reactions += {
-        case _: MousePressed => gameController.groupCardsByColor()
+        case _: ButtonClicked => gameController.groupCardsByColor()
         case _ => ()
       }
 

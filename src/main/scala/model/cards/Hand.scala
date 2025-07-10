@@ -5,6 +5,18 @@ import model.utils.Color
 /** A player's hand of train cards. It's possible to play some cards, add some cards or reorder them grouping by color.
   */
 trait Hand extends Cards:
+  /** Checks whether the specified number of cards of the specified color can be played (i.e. are present in the
+    * player's hand).
+    *
+    * @param color
+    *   the color of the cards
+    * @param n
+    *   the number of the cards
+    * @return
+    *   true if the cards can be played, false otherwise
+    */
+  def canPlayCards(color: Color, n: Int): Boolean
+
   /** Play a number of train cards of the given color from the player's hand.
     *
     * @param color
@@ -50,6 +62,10 @@ object Hand:
 
   private class HandImpl(private val cardsList: List[Card]) extends Hand:
     cards = cardsList
+
+    override def canPlayCards(color: Color, n: Int): Boolean =
+      require(n > 0, "n must be positive")
+      cards.count(_.color == color) >= n
 
     override def playCards(color: Color, n: Int): Unit =
       require(cards.count(_.color == color) >= n, "The cards to play have to be part of the hand!")

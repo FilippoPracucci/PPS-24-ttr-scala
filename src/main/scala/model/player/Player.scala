@@ -54,7 +54,17 @@ trait Player:
     */
   def drawCards(n: Int): Unit
 
-  import model.map.Route
+  /** Checks whether the specified number of cards of the specified color can be played (i.e. are present in the
+    * player's hand).
+    *
+    * @param color
+    *   the color of the cards
+    * @param n
+    *   the number of the cards
+    * @return
+    *   true if the cards can be played, false otherwise
+    */
+  def canPlayCards(color: Color, n: Int): Boolean
 
   /** Plays the specified number of cards of the specified color.
     *
@@ -145,6 +155,8 @@ object Player:
     override val hand: Hand = Hand(deck)
 
     override def drawCards(n: Int): Unit = hand.addCards(deck.draw(n))
+
+    export hand.canPlayCards
 
     override def playCards(color: Color, n: Int): Either[GameError, Unit] =
       require(n > 0, "n must be positive")

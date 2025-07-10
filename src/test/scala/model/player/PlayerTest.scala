@@ -1,14 +1,17 @@
 package model.player
 
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class PlayerTest extends AnyFlatSpec with Matchers:
+class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
-  import model.utils.PlayerColor
+  import model.utils.{PlayerColor, Color}
   val id: PlayerColor = PlayerColor.BLUE
-  val player: Player = Player(id)
+  var player: Player = Player(id)
   val NUMBER_TRAIN_CARS = 45
+
+  override def beforeEach(): Unit = player = Player(id)
 
   "A player" should "be created correctly in the standard mode" in:
     player.id should be(id)
@@ -43,15 +46,27 @@ class PlayerTest extends AnyFlatSpec with Matchers:
     player.deck.cards should be(initialDeckCards.takeRight(initialDeckCards.size - numberCardsToDraw))
     player.hand.cards should be(initialHandCards :++ initialDeckCards.take(numberCardsToDraw))
 
+  it should "be able to check whether certain cards can be played" in:
+    import model.cards.Card
+    val color = Color.RED
+    val n = 10
+    player.canPlayCards(color, n) should be(false)
+    // player.drawCards(90) // TOOO
+    player.hand.addCards(List.fill(n)(Card(Color.RED))) // TODO player.hand.addCards public?
+    player.canPlayCards(color, n) should be(true)
+
   it should "be able to play cards" in:
-    val color = model.utils.Color.RED
-    val validN = 3
-    val invalidN = 100
-    player.playCards(color, validN)
-    // player.playCards(color, invalidN) should be(Left(Player.NotEnoughCards)) // TODO
+    import model.cards.Card
+    val color = Color.RED
+    val n = 10
+    player.playCards(color, n) should be(Left(Player.NotEnoughCards))
+    player.hand.addCards(List.fill(n)(Card(Color.RED))) // TODO player.hand.addCards public?
+    player.playCards(color, n) should be(Right(()))
+
+  // TODO check on trains?
 
   it should "be able to place trains" in: // TODO to review
     val validN = 3
     val invalidN = NUMBER_TRAIN_CARS + 1
-    player.placeTrains(validN)
+    player.placeTrains(validN) should be(Right(()))
     player.placeTrains(invalidN) should be(Left(Player.NotEnoughTrains))

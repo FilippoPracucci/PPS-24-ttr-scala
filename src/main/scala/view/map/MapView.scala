@@ -37,6 +37,14 @@ trait MapView:
     */
   def addRoute(connectedCities: (String, String), length: Int, color: String): Unit
 
+  /** Updates the route connecting the specified cities.
+    * @param connectedCities
+    *   the pair of cities connected by the route, specifying their names as String
+    * @param color
+    *   the new color of the route
+    */
+  def updateRoute(connectedCities: (String, String), color: String): Unit
+
 object MapView:
   /** Returns the singleton instance of `MapView`.
     * @return
@@ -75,10 +83,9 @@ object MapView:
           if (cell != null && graph.getModel.isEdge(cell))
             val edge = cell
             println(s"Edge clicked: $edge")
-            changeGraph(graph.setCellStyle("strokeColor=red;dashed=0", Array(edge)))
             val city1 = graph.getModel.getTerminal(edge, true).asInstanceOf[mxCell]
             val city2 = graph.getModel.getTerminal(edge, false).asInstanceOf[mxCell]
-            Dialog.showMessage(component, s"Route between ${city1.getId} and ${city2.getId} clicked", title = "Info")
+            // Dialog.showMessage(component, s"Route between ${city1.getId} and ${city2.getId} clicked", title = "Info")
             import controller.GameController
             GameController().claimRoute((city1.getId, city2.getId))
       }
@@ -137,4 +144,10 @@ object MapView:
       changeGraph {
         val edge = graph.insertEdge(parent, null, length, vertices(connectedCities._1), vertices(connectedCities._2))
         graph.setCellStyle(s"strokeColor=$color", Array(edge))
+      }
+
+    override def updateRoute(connectedCities: (City, City), color: String): Unit = // TODO City visibile da fuori?
+      changeGraph {
+        val edge = graph.getEdgesBetween(vertices(connectedCities._1), vertices(connectedCities._2))(0)
+        graph.setCellStyle(s"strokeColor=$color;dashed=false", Array(edge))
       }

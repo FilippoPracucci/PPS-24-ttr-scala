@@ -55,7 +55,6 @@ object GameController:
     import model.map.Route
     import Route._
     import model.utils._
-    import Color._
     import view.GameView
     import view.cards.{CardView, HandView}
 
@@ -72,8 +71,7 @@ object GameController:
     override def drawCards(n: Int): Unit =
       val initialHandCards = currentPlayer.hand.cards
       currentPlayer.drawCards(n) // TODO: change for the list of players
-      val cardsToAdd = currentPlayer.hand.cards diff initialHandCards
-      handsView.head.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+      handsView.head.updateHand(currentPlayer.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
       gameView.updateHandsView(handsView)
 
     override def groupCardsByColor(): Unit =
@@ -89,28 +87,22 @@ object GameController:
 
     initGameView()
 
+    extension (color: Color) private def toMapViewColor: String = color.toString.toLowerCase()
+
+    extension (playerColor: PlayerColor) private def toMapViewColor: String = playerColor.toString.toLowerCase()
+
     private def initGameView(): Unit =
       gameMap.routes.foreach(route =>
         gameView.addRoute(
           (route.connectedCities._1.name, route.connectedCities._2.name),
           route.length,
           route.mechanic match
-            case Route.SpecificColor(color) => getMapViewColorFrom(color)
+            case Route.SpecificColor(color) => color.toMapViewColor
             case _ => throw new IllegalStateException("Unhandled mechanic")
         )
       )
       gameView.addHandsView(handsView)
       gameView.open()
-
-    private def getMapViewColorFrom(color: Color): String = color match
-      case BLACK => "black"
-      case WHITE => "white"
-      case RED => "red"
-      case BLUE => "blue"
-      case ORANGE => "orange"
-      case YELLOW => "yellow"
-      case GREEN => "green"
-      case PINK => "pink"
 
     override def claimRoute(connectedCities: (String, String)): Unit =
       val optionRoute = gameMap.getRoute(connectedCities)
@@ -118,25 +110,29 @@ object GameController:
         throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
       )
       route.mechanic match
-        case SpecificColor(color) => claimRoute(connectedCities, route.length, route.length, color)
+        case SpecificColor(color) => claimRoute(connectedCities, route.length)(route.length, color)
         case _ => throw new IllegalStateException("Unhandled mechanic")
 
-    private def claimRoute(connectedCities: (String, String), routeLength: Int, nCards: Int, color: Color): Unit =
+    private def claimRoute(connectedCities: (String, String), routeLength: Int)(nCards: Int, color: Color): Unit =
       (for
-        // TODO check cards
-        _ <- check(currentPlayer.trains.trainCars >= routeLength, Player.NotEnoughTrains)
         claimingPlayer <- gameMap.getPlayerClaimingRoute(connectedCities)
         _ <- check(claimingPlayer.isEmpty, GameMap.AlreadyClaimedRoute)
-        _ <- currentPlayer.playCards(color, nCards)
-        _ <- currentPlayer.placeTrains(routeLength)
+        _ <- check(currentPlayer.trains.trainCars >= routeLength, Player.NotEnoughTrains)
+        _ <- check(currentPlayer.canPlayCards(color, nCards), Player.NotEnoughCards)
         _ <- gameMap.claimRoute(connectedCities, currentPlayer.id)
-      // TODO update view
+        _ <- currentPlayer.placeTrains(routeLength)
+        _ <- currentPlayer.playCards(color, nCards)
       yield ()) match
-        case Right(_) => ()
-        case Left(Player.NotEnoughCards) => println("NotEnoughCards") // TODO dialog in view: not enough cards
-        case Left(Player.NotEnoughTrains) => println("NotEnoughTrains") // TODO dialog in view: not enough trains
+        case Right(_) => updateView(connectedCities)
         case Left(GameMap.AlreadyClaimedRoute) =>
-          println("AlreadyClaimedRoute") // TODO dialog in view: already claimed route
+          gameView.reportError("Can't claim a route that has already been claimed!")
+        case Left(Player.NotEnoughTrains) => gameView.reportError("Not enough trains to claim this route!")
+        case Left(Player.NotEnoughCards) => gameView.reportError("Not enough cards to claim this route!")
         case Left(_) => throw new IllegalStateException("Unexpected error")
 
     private def check(condition: Boolean, error: GameError): Either[GameError, Unit] = Either.cond(condition, (), error)
+
+    private def updateView(connectedCities: (String, String)): Unit =
+      handsView.head.updateHand(currentPlayer.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+      gameView.updateHandsView(handsView)
+      gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)

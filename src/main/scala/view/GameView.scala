@@ -39,6 +39,20 @@ trait GameView:
     */
   def updateHandsView(handsView: List[HandView]): Unit
 
+  /** Updates the route connecting the specified cities.
+    * @param connectedCities
+    *   the pair of cities connected by the route, specifying their names as String
+    * @param color
+    *   the new color of the route
+    */
+  def updateRoute(connectedCities: (String, String), color: String): Unit
+
+  /** Reports the error to the user.
+    * @param message
+    *   the message of the error
+    */
+  def reportError(message: String): Unit
+
 object GameView:
   /** Returns the singleton instance of `GameView`.
     * @return
@@ -113,5 +127,7 @@ object GameView:
         case _ => ()
       }
 
+    override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")
+
     export frame.{open, close}
-    export mapView.addRoute
+    export mapView.{addRoute, updateRoute}

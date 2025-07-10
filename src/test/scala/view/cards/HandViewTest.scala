@@ -30,7 +30,7 @@ object HandViewTest extends App:
   private def updateHandView(): Unit =
     val cardsToAdd = List(Card(GREEN), Card(BLUE))
     hand.addCards(cardsToAdd)
-    handView.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+    handView.updateHand(hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
     frame.contents = handView.handComponent
     frame.repaint()
     frame.pack()

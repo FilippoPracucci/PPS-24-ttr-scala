@@ -24,6 +24,6 @@ implementa la gestione dei turni dei giocatori.
 |                                                               | Visualizzazione effetti azione di occupazione tratta         | Bedeschi   |       30       |          |            |
 | Come giocatore, poter pescare due carte                       | Implementazione del metodo drawCards del Player              | Pracucci   |       5        |    X     |     X      |
 |                                                               | Visualizzazione effetti azione di pescaggio                  | Pracucci   |       10       |    X     |     X      |
-| Gestione dei turni dei giocatori                              | Implementazione base del game loop per la gestione dei turni | Pracucci   |       35       |          |            |
+| Gestione dei turni dei giocatori                              | Implementazione base del game loop per la gestione dei turni | Pracucci   |       35       |    X     |            |
 
 ## Sprint Review

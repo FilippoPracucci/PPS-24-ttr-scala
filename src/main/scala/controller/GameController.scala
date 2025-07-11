@@ -67,6 +67,7 @@ object GameController:
 
     private val gameMap = GameMap()
     override val deck: Deck = Deck()
+    deck.shuffle()
 
     override val players: List[Player] = initPlayers()
     private val currentPlayer: Player = players.head
@@ -74,7 +75,6 @@ object GameController:
     private val handsView = initHandsView()
     private val gameView = GameView()
 
-    deck.shuffle()
     initGameView()
 
     // for the moment a single player

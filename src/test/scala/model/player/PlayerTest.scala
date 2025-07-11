@@ -51,8 +51,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val color = Color.RED
     val n = 10
     player.canPlayCards(color, n) should be(false)
-    // player.drawCards(90) // TOOO
-    player.hand.addCards(List.fill(n)(Card(Color.RED))) // TODO player.hand.addCards public?
+    player.hand.addCards(List.fill(n)(Card(Color.RED)))
     player.canPlayCards(color, n) should be(true)
 
   it should "be able to play cards" in:
@@ -60,7 +59,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val color = Color.RED
     val n = 10
     player.playCards(color, n) should be(Left(Player.NotEnoughCards))
-    player.hand.addCards(List.fill(n)(Card(Color.RED))) // TODO player.hand.addCards public?
+    player.hand.addCards(List.fill(n)(Card(Color.RED)))
     player.playCards(color, n) should be(Right(()))
 
   // TODO check on trains?

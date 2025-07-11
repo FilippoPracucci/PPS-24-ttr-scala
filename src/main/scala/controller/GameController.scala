@@ -8,20 +8,6 @@ import model.player.Player
 trait GameController:
   import GameController.City
 
-  /** The singleton instance of [[Deck]].
-    *
-    * @return
-    *   the globally shared [[Deck]] instance.
-    */
-  def deck: Deck
-
-  /** The singleton instance of the [[Player]] list.
-    *
-    * @return
-    *   the globally shared [[Player]] list instance.
-    */
-  def players: List[Player]
-
   /** Player action that consists in draw the given amount of the card from the deck.
     *
     * @param n
@@ -72,10 +58,10 @@ object GameController:
     import ImportHelper.given
 
     private val gameMap = GameMap()
-    override val deck: Deck = Deck()
+    private val deck: Deck = Deck()
     deck.shuffle()
 
-    override val players: List[Player] = initPlayers()
+    private val players: List[Player] = initPlayers()
     private val currentPlayer: Player = players.head
 
     private val handsView = initHandsView()

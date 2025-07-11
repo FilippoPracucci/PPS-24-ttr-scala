@@ -105,13 +105,6 @@ object Player:
       */
     def trainCars: Int
 
-    /** Set the number of player train cars to the amount given.
-      *
-      * @param n
-      *   the amount to train cars to set.
-      */
-    def trainCars_=(n: Int): Unit
-
     /** Place the given amount of player train cars, if they are sufficient.
       *
       * @param n
@@ -123,13 +116,11 @@ object Player:
     def apply(numberTrainCars: Int): TrainCars = TrainCarsImpl(numberTrainCars)
 
     private case class TrainCarsImpl(private var _trainCars: Int) extends TrainCars:
-      def trainCars: Int = _trainCars
+      override def trainCars: Int = _trainCars
 
-      def trainCars_=(n: Int): Unit = _trainCars = n
-
-      def placeTrainCars(n: Int): Unit =
+      override def placeTrainCars(n: Int): Unit =
         require(trainCars >= n, "Not enough train cars to place the amount given.")
-        trainCars -= n
+        _trainCars -= n
 
   private val NUMBER_TRAIN_CARS = 45
 

@@ -6,7 +6,8 @@ import model.player.Player
 /** Trait that represents the controller of the game.
   */
 trait GameController:
-// TODO
+  import GameController.City
+
   /** The singleton instance of [[Deck]].
     *
     * @return
@@ -33,11 +34,15 @@ trait GameController:
 
   /** Claims the route connecting the specified cities.
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names as String
+    *   the pair of cities connected by the route, specifying their names
     */
-  def claimRoute(connectedCities: (String, String)): Unit
+  def claimRoute(connectedCities: (City, City)): Unit
 
 object GameController:
+  /** Type alias that represents the city as String by its name.
+    */
+  type City = String
+
   /** Returns the singleton instance of `GameController`.
     * @return
     *   the globally shared `GameController` instance
@@ -58,6 +63,7 @@ object GameController:
     export Route.*
     export model.utils.{Color, PlayerColor, GameError}
     export view.GameView
+    export GameView.City
     export view.cards.{CardView, HandView}
     export MapViewColorHelper.*
 
@@ -107,7 +113,7 @@ object GameController:
       handsView.head.groupCardsComponentByColor()
       gameView.updateHandsView(handsView)
 
-    override def claimRoute(connectedCities: (String, String)): Unit =
+    override def claimRoute(connectedCities: (City, City)): Unit =
       val optionRoute = gameMap.getRoute(connectedCities)
       val route = optionRoute.getOrElse(
         throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
@@ -117,7 +123,7 @@ object GameController:
         case _ => throw new IllegalStateException("Unhandled mechanic")
 
     private object ClaimRouteHelper:
-      def claimRoute(connectedCities: (String, String), routeLength: Int)(nCards: Int, color: Color): Unit =
+      def claimRoute(connectedCities: (City, City), routeLength: Int)(nCards: Int, color: Color): Unit =
         (for
           claimingPlayer <- gameMap.getPlayerClaimingRoute(connectedCities)
           _ <- check(claimingPlayer.isEmpty, GameMap.AlreadyClaimedRoute)
@@ -136,7 +142,7 @@ object GameController:
 
       private def check(condition: Boolean, err: GameError): Either[GameError, Unit] = Either.cond(condition, (), err)
 
-      private def updateView(connectedCities: (String, String)): Unit =
+      private def updateView(connectedCities: (City, City)): Unit =
         handsView.head.updateHand(
           currentPlayer.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor))
         )

@@ -1,12 +1,13 @@
 package view.map
 
-import javax.swing.JComponent
 import scala.swing.*
+import javax.swing.JComponent
 
 /** Trait that represents the view of the map, using scala.swing.
   */
 trait MapView:
-  // TODO
+  import MapView.{City, Color}
+
   /** Returns the `scala.swing.Component` of the map view.
     * @return
     *   the `scala.swing.Component` of the map view.
@@ -14,7 +15,7 @@ trait MapView:
   def component: Component
 
   /** Adds a new city in the map view.
-    * @param name
+    * @param city
     *   the name of the city
     * @param x
     *   the x position of the city
@@ -25,27 +26,37 @@ trait MapView:
     * @param height
     *   the height of the point indicating the city
     */
-  def addCity(name: String, x: Double, y: Double, width: Double, height: Double): Unit
+  def addCity(city: City, x: Double, y: Double, width: Double, height: Double): Unit
 
   /** Adds a new route in the map view.
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names as String
+    *   the pair of cities connected by the route, specifying their names
     * @param length
     *   the length of the route
     * @param color
     *   the color of the route expressed as the name of the color in lowercase
     */
-  def addRoute(connectedCities: (String, String), length: Int, color: String): Unit
+  def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit
 
   /** Updates the route connecting the specified cities.
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names as String
+    *   the pair of cities connected by the route, specifying their names
     * @param color
-    *   the new color of the route
+    *   the new color of the route, expressed as the name of the color in lowercase
     */
-  def updateRoute(connectedCities: (String, String), color: String): Unit
+  def updateRoute(connectedCities: (City, City), color: Color): Unit
 
 object MapView:
+  import controller.GameController
+
+  /** Type alias that represents the city as String by its name.
+    */
+  export GameController.City
+
+  /** Type alias that represents the color as String by its name in lowercase. // TODO
+    */
+  type Color = String
+
   /** Returns the singleton instance of `MapView`.
     * @return
     *   the globally shared `MapView` instance
@@ -64,8 +75,6 @@ object MapView:
     private val graphComponent = new mxGraphComponent(graph)
     override val component: Component = Component.wrap(graphComponent)
 
-    private type Color = String
-    private type City = String
     private type Vertex = mxCell // type of vertices/edges in JGraphX library
     private var vertices: Map[City, Vertex] = Map()
 
@@ -74,20 +83,19 @@ object MapView:
     private def initView(): Unit =
       graphComponent.setEnabled(false)
       StyleHelper.setDefaultStyle()
-      val graphControl: Component =
-        new Component { override lazy val peer: JComponent = graphComponent.getGraphControl }
+      val graphControl = new Component { override lazy val peer: JComponent = graphComponent.getGraphControl }
       graphControl.listenTo(graphControl.mouse.clicks)
       graphControl.reactions += {
         case e: event.MouseReleased =>
-          val cell = graphComponent.getCellAt(e.point.x, e.point.y).asInstanceOf[mxCell]
-          if (cell != null && graph.getModel.isEdge(cell))
-            val edge = cell
-            println(s"Edge clicked: $edge")
-            val city1 = graph.getModel.getTerminal(edge, true).asInstanceOf[mxCell]
-            val city2 = graph.getModel.getTerminal(edge, false).asInstanceOf[mxCell]
-            // Dialog.showMessage(component, s"Route between ${city1.getId} and ${city2.getId} clicked", title = "Info")
-            import controller.GameController
-            GameController().claimRoute((city1.getId, city2.getId))
+          Option(graphComponent.getCellAt(e.point.x, e.point.y))
+            .map(_.asInstanceOf[mxCell])
+            .filter(graph.getModel.isEdge)
+            .map(edge =>
+              val city1 = graph.getModel.getTerminal(edge, true).asInstanceOf[mxCell]
+              val city2 = graph.getModel.getTerminal(edge, false).asInstanceOf[mxCell]
+              (city1.getId, city2.getId)
+            )
+            .foreach(GameController().claimRoute)
       }
 
     private object StyleHelper:
@@ -134,10 +142,10 @@ object MapView:
       finally
         graph.getModel.endUpdate()
 
-    override def addCity(name: String, x: Double, y: Double, width: Double, height: Double): Unit =
+    override def addCity(city: City, x: Double, y: Double, width: Double, height: Double): Unit =
       changeGraph {
-        val vertex = graph.insertVertex(parent, name, name, x, y, width, height).asInstanceOf[mxCell]
-        vertices = vertices.updated(name, vertex)
+        val vertex = graph.insertVertex(parent, city, city, x, y, width, height).asInstanceOf[mxCell]
+        vertices = vertices.updated(city, vertex)
       }
 
     override def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit =
@@ -146,7 +154,7 @@ object MapView:
         graph.setCellStyle(s"strokeColor=$color", Array(edge))
       }
 
-    override def updateRoute(connectedCities: (City, City), color: String): Unit = // TODO City visibile da fuori?
+    override def updateRoute(connectedCities: (City, City), color: Color): Unit =
       changeGraph {
         val edge = graph.getEdgesBetween(vertices(connectedCities._1), vertices(connectedCities._2))(0)
         graph.setCellStyle(s"strokeColor=$color;dashed=false", Array(edge))

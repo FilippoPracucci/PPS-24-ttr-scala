@@ -6,7 +6,8 @@ import view.cards.HandView
 /** Trait that represents the view of the game.
   */
 trait GameView:
-  // TODO
+  import GameView.{City, Color}
+
   /** Opens the view.
     */
   def open(): Unit
@@ -17,13 +18,13 @@ trait GameView:
 
   /** Adds a new route in the game map view.
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names as String
+    *   the pair of cities connected by the route, specifying their names
     * @param length
     *   the length of the route
     * @param color
     *   the color of the route expressed as the name of the color in lowercase
     */
-  def addRoute(connectedCities: (String, String), length: Int, color: String): Unit
+  def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit
 
   /** Add the hands component to the view.
     *
@@ -41,11 +42,11 @@ trait GameView:
 
   /** Updates the route connecting the specified cities.
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names as String
+    *   the pair of cities connected by the route, specifying their names
     * @param color
-    *   the new color of the route
+    *   the new color of the route, expressed as the name of the color in lowercase
     */
-  def updateRoute(connectedCities: (String, String), color: String): Unit
+  def updateRoute(connectedCities: (City, City), color: Color): Unit
 
   /** Reports the error to the user.
     * @param message
@@ -54,6 +55,16 @@ trait GameView:
   def reportError(message: String): Unit
 
 object GameView:
+  import controller.GameController
+
+  /** Type alias that represents the city as String by its name.
+    */
+  export GameController.City
+
+  /** Type alias that represents the color as String by its name in lowercase. // TODO
+    */
+  export MapView.Color
+
   /** Returns the singleton instance of `GameView`.
     * @return
     *   the globally shared `GameView` instance
@@ -64,7 +75,6 @@ object GameView:
     import scala.swing.*
     import event.MousePressed
     import ScrollPane.BarPolicy.*
-    import controller.GameController
 
     private val screenSize: Dimension = java.awt.Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BoxPanel(Orientation.Vertical)

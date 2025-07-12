@@ -57,6 +57,7 @@ object Deck:
       cards = Random.shuffle(cards)
 
     override def draw(n: Int): List[Card] =
+      require(cards.size >= n, "Not enough cards in the deck to draw the amount given!")
       val result = cards.splitAt(n)
       cards = result._2
       result._1

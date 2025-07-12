@@ -7,9 +7,9 @@ import scala.swing.*
 
 /** A simple test consisting in launching a frame with a card to show its representation. */
 object CardViewTest extends App:
-  import controller.GameController.*
+  import controller.CardControllerColor.*
   val card = Card(YELLOW)
-  val cardView = CardView(card.colorName)(card.cardColor, card.cardTextColor)
+  val cardView = CardView(card.cardName)(card.cardColor, card.cardTextColor)
   val frame = Frame()
   val panel = FlowPanel(FlowPanel.Alignment.Center)(cardView.cardComponent)
   frame.visible = true

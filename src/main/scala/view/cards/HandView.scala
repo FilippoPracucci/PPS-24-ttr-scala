@@ -18,9 +18,6 @@ trait HandView:
     */
   def updateHand(cards: List[CardView]): Unit
 
-  /** Reorder the train cards component of the player's hand, grouping them by color. */
-  def groupCardsComponentByColor(): Unit
-
 /** The factory for [[HandView]] instances. */
 object HandView:
   /** Create a hand representation from the player hand given.
@@ -40,6 +37,3 @@ object HandView:
 
     override def updateHand(cards: List[CardView]): Unit =
       _cardsComponent = cards
-
-    override def groupCardsComponentByColor(): Unit =
-      _cardsComponent = _cardsComponent.groupBy(_.color).flatMap(_._2).toList

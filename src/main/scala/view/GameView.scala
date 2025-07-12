@@ -26,19 +26,19 @@ trait GameView:
     */
   def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit
 
-  /** Add the hands component to the view.
+  /** Add the hand component to the view.
     *
-    * @param handsView
-    *   the list of hands view to add to the panel.
+    * @param handView
+    *   the hand view to add to the panel.
     */
-  def addHandsView(handsView: List[HandView]): Unit
+  def addHandView(handView: HandView): Unit
 
-  /** Update the hands view component.
+  /** Update the hand view component.
     *
-    * @param handsView
-    *   the list of hands view component.
+    * @param handView
+    *   the hand view component to update.
     */
-  def updateHandsView(handsView: List[HandView]): Unit
+  def updateHandView(handView: HandView): Unit
 
   /** Updates the route connecting the specified cities.
     * @param connectedCities
@@ -72,9 +72,10 @@ object GameView:
   def apply(): GameView = GameViewSwing
 
   private object GameViewSwing extends GameView:
-    import scala.swing.*
-    import event.MousePressed
+    import scala.swing._
     import ScrollPane.BarPolicy.*
+    import scala.swing.event.ButtonClicked
+    import controller.GameController
 
     private val screenSize: Dimension = java.awt.Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BoxPanel(Orientation.Vertical)
@@ -91,7 +92,6 @@ object GameView:
     private val scrollPane = new ScrollPane(handPanel)
     private val handButtonPanel = new BoxPanel(Orientation.Vertical)
     private val drawButton = new Button("Draw")
-    private val groupByColorButton = new Button("Group by color")
 
     private val mapView = MapView()
 
@@ -103,8 +103,6 @@ object GameView:
       def initPanels(): Unit =
         handButtonPanel.contents += drawButton
         configDrawButton()
-        handButtonPanel.contents += groupByColorButton
-        configGroupByColorButton()
         scrollPane.horizontalScrollBarPolicy = AsNeeded
         scrollPane.verticalScrollBarPolicy = Never
         southPanel.contents += scrollPane
@@ -117,14 +115,7 @@ object GameView:
       private def configDrawButton(): Unit =
         drawButton.listenTo(drawButton.mouse.clicks)
         drawButton.reactions += {
-          case _: MousePressed => gameController.drawCards(2)
-          case _ => ()
-        }
-
-      private def configGroupByColorButton(): Unit =
-        groupByColorButton.listenTo(groupByColorButton.mouse.clicks)
-        groupByColorButton.reactions += {
-          case _: MousePressed => gameController.groupCardsByColor()
+          case _: ButtonClicked => gameController.drawCards(2)
           case _ => ()
         }
 
@@ -132,12 +123,12 @@ object GameView:
         import CitiesLoader.given
         CitiesLoader(screenSize.width, screenSize.height - southPanel.peer.getPreferredSize.getHeight.toInt).load()
 
-    override def addHandsView(handsView: List[HandView]): Unit =
-      handPanel.contents ++= handsView.map(_.handComponent)
+    override def addHandView(handView: HandView): Unit =
+      handPanel.contents += handView.handComponent
 
-    override def updateHandsView(handsView: List[HandView]): Unit =
+    override def updateHandView(handView: HandView): Unit =
       handPanel.contents.clear()
-      addHandsView(handsView)
+      addHandView(handView)
       frame.validate()
 
     override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")

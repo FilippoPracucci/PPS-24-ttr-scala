@@ -6,7 +6,8 @@ enablePlugins(ScalafmtPlugin)
 scalafmtOnCompile := true
 
 enablePlugins(ScoverageSbtPlugin)
-coverageEnabled := true
+assembly / coverageEnabled := false
+test / coverageEnabled := true
 
 lazy val root = project
   .in(file("."))

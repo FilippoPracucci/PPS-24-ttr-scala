@@ -1,16 +1,20 @@
 package model.cards
 
+import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class HandTest extends AnyFlatSpec with Matchers:
+class HandTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   import model.utils.Color
   import Color.*
 
   val fixedList: List[Card] = List(Card(BLUE), Card(RED), Card(RED), Card(YELLOW))
-  val deckFixed: Deck = Deck()(using () => fixedList)
+  var hand: Hand = Hand(Deck())
 
-  val hand: Hand = Hand(deckFixed)
+  override def beforeEach(): Unit =
+    val deckFixed: Deck = Deck()(using () => fixedList)
+    hand = Hand(deckFixed)
+
   val HAND_INITIAL_SIZE = 4
 
   "A hand" should "not be created if the deck does not meet the requirements" in:
@@ -32,8 +36,6 @@ class HandTest extends AnyFlatSpec with Matchers:
 
   it should "add correctly cards" in:
     val cardsToAdd: List[Card] = List(Card(ORANGE), Card(WHITE))
-    val tempList = List(Card(BLUE), Card(YELLOW))
-    val result =
-      (tempList :++ cardsToAdd).groupBy(_.color).flatMap(_._2).toList.sortWith(_.color.toString < _.color.toString)
     hand.addCards(cardsToAdd)
-    hand.cards should contain theSameElementsInOrderAs result
+    hand.cards should contain theSameElementsInOrderAs
+      (fixedList :++ cardsToAdd).groupBy(_.color).flatMap(_._2).toList.sortWith(_.color.toString < _.color.toString)

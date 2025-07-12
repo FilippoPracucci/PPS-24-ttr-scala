@@ -62,6 +62,7 @@ object Hand:
 
   private class HandImpl(private val cardsList: List[Card]) extends Hand:
     cards = cardsList
+    groupCardsByColor()
 
     override def canPlayCards(color: Color, n: Int): Boolean =
       require(n > 0, "n must be positive")
@@ -73,3 +74,7 @@ object Hand:
 
     override def addCards(cardsToAdd: List[Card]): Unit =
       cards = cards :++ cardsToAdd
+      groupCardsByColor()
+
+    private def groupCardsByColor(): Unit =
+      cards = cards.groupBy(_.color).flatMap(_._2).toList.sortWith(_.color.toString < _.color.toString)

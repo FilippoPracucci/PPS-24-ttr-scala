@@ -17,8 +17,7 @@ class TurnManagerTest extends AnyFlatSpec with Matchers:
 
   private val turnManager = TurnManager(playerList)
 
-  "A turn manager" should "be created correctly" in:
-    turnManager.players should contain theSameElementsInOrderAs playerList
+  "A turn manager" should "have the right current player" in:
     turnManager.currentPlayer should be(playerList.head)
 
   it should "be possible to switch player turn" in:

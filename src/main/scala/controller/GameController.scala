@@ -1,19 +1,9 @@
 package controller
 
-import model.cards.Deck
-import model.player.Player
-
 /** Trait that represents the controller of the game.
   */
 trait GameController:
   import GameController.City
-
-  /** The singleton instance of the [[TurnManager]].
-    *
-    * @return
-    *   the globally shared [[TurnManager]] instance.
-    */
-  def turnManager: TurnManager
 
   /** Player action that consists in draw the given amount of the card from the deck.
     *
@@ -21,9 +11,6 @@ trait GameController:
     *   the amount of train cards to draw.
     */
   def drawCards(n: Int): Unit
-
-  /** Reorder the representation of train cards of the player's hand, grouping them by color. */
-  def groupCardsByColor(): Unit
 
   /** Claims the route connecting the specified cities.
     * @param connectedCities
@@ -42,15 +29,13 @@ object GameController:
     */
   def apply(): GameController = GameControllerImpl
 
-  private val cardController = CardController()
-  export cardController.*
-
   private object MapViewColorHelper:
     import model.utils.{Color, PlayerColor}
     extension (color: Color) def toMapViewColor: String = color.toString.toLowerCase()
     extension (playerColor: PlayerColor) def toMapViewColor: String = playerColor.toString.toLowerCase()
 
   private object ImportHelper:
+    export CardControllerColor.*
     export model.map.{GameMap, Route}
     export GameMap.given
     export Route.*
@@ -59,18 +44,19 @@ object GameController:
     export GameView.City
     export view.cards.{CardView, HandView}
     export MapViewColorHelper.*
+    export model.cards.Deck
+    export model.player.Player
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
     import ImportHelper.given
-
-    override val turnManager: TurnManager = TurnManager(players)
 
     private val gameMap = GameMap()
     private val deck: Deck = Deck()
     deck.shuffle()
 
     private val players: List[Player] = initPlayers()
+    private val turnManager: TurnManager = TurnManager(players)
 
     private val handsView = initHandsView()
     private val gameView = GameView()
@@ -85,7 +71,7 @@ object GameController:
       playerList
 
     private def initHandsView(): List[HandView] =
-      players.map(p => HandView(p.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor))))
+      players.map(p => HandView(p.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))))
 
     private def initGameView(): Unit =
       gameMap.routes.foreach(route =>
@@ -103,12 +89,8 @@ object GameController:
     override def drawCards(n: Int): Unit =
       val initialHandCards = currentPlayer.hand.cards
       currentPlayer.drawCards(n)
-      currentHandView.updateHand(currentPlayer.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+      currentHandView.updateHand(currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor)))
       turnManager.switchTurn()
-      gameView.updateHandView(currentHandView)
-
-    override def groupCardsByColor(): Unit =
-      currentHandView.groupCardsComponentByColor()
       gameView.updateHandView(currentHandView)
 
     override def claimRoute(connectedCities: (City, City)): Unit =
@@ -141,11 +123,12 @@ object GameController:
       private def check(condition: Boolean, err: GameError): Either[GameError, Unit] = Either.cond(condition, (), err)
 
       private def updateView(connectedCities: (City, City)): Unit =
-        currentHandView.updateHand(
-          currentPlayer.hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor))
-        )
-        gameView.updateHandView(currentHandView)
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
+        currentHandView.updateHand(
+          currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))
+        )
+        turnManager.switchTurn()
+        gameView.updateHandView(currentHandView)
 
     private def currentPlayer: Player = turnManager.currentPlayer
 

@@ -92,7 +92,6 @@ object GameView:
     private val scrollPane = new ScrollPane(handPanel)
     private val handButtonPanel = new BoxPanel(Orientation.Vertical)
     private val drawButton = new Button("Draw")
-    private val groupByColorButton = new Button("Group by color")
 
     private val mapView = MapView()
 
@@ -104,8 +103,6 @@ object GameView:
       def initPanels(): Unit =
         handButtonPanel.contents += drawButton
         configDrawButton()
-        handButtonPanel.contents += groupByColorButton
-        configGroupByColorButton()
         scrollPane.horizontalScrollBarPolicy = AsNeeded
         scrollPane.verticalScrollBarPolicy = Never
         southPanel.contents += scrollPane
@@ -119,13 +116,6 @@ object GameView:
         drawButton.listenTo(drawButton.mouse.clicks)
         drawButton.reactions += {
           case _: ButtonClicked => gameController.drawCards(2)
-          case _ => ()
-        }
-
-      private def configGroupByColorButton(): Unit =
-        groupByColorButton.listenTo(groupByColorButton.mouse.clicks)
-        groupByColorButton.reactions += {
-          case _: ButtonClicked => gameController.groupCardsByColor()
           case _ => ()
         }
 

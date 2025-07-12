@@ -8,14 +8,14 @@ object HandViewTest extends App:
   import model.utils.Color
   import Color.*
   import model.cards.{Card, CardsGenerator, Deck, Hand}
-  import controller.GameController.*
 
   private val fixedList: List[Card] = List(Card(RED), Card(YELLOW), Card(RED), Card(BLACK), Card(BLUE))
   private val fixedDeckGenerator: CardsGenerator[Deck] = () => fixedList
   private val deckFixed: Deck = Deck()(using fixedDeckGenerator)
   private val hand: Hand = Hand(deckFixed)
 
-  private val handView = HandView(hand.cards.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+  import controller.CardControllerColor.*
+  private val handView = HandView(hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor)))
   private val frame = new MainFrame()
   private val panel = new BoxPanel(Orientation.Horizontal)
   private val button = new Button("Draw")
@@ -43,7 +43,7 @@ object HandViewTest extends App:
     val cardsToAdd = List(Card(GREEN), Card(BLUE))
     hand.addCards(cardsToAdd)
     panel.contents.clear()
-    handView.addCardsComponent(cardsToAdd.map(c => CardView(c.colorName)(c.cardColor, c.cardTextColor)))
+    handView.updateHand(hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor)))
     panel.contents += handView.handComponent
     panel.contents += button
     frame.repaint()

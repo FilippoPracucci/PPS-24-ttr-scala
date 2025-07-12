@@ -30,7 +30,7 @@ jobs:
         with:
           apps: sbt
       - name: Generate JAR
-        run: sbt coverageOff clean compile assembly
+        run: sbt assembly
       - name: Release
         uses: softprops/action-gh-release@v2
         with:

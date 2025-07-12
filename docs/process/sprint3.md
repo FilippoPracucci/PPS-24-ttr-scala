@@ -24,6 +24,11 @@ implementa la gestione dei turni dei giocatori.
 |                                                               | Visualizzazione effetti azione di occupazione tratta                 | Bedeschi   |       15       |    X     |     X      |
 | Come giocatore, poter pescare due carte                       | Implementazione del metodo drawCards del Player                      | Pracucci   |       5        |    X     |     X      |
 |                                                               | Visualizzazione effetti azione di pescaggio                          | Pracucci   |       10       |    X     |     X      |
-| Gestione dei turni dei giocatori                              | Implementazione base del game loop per la gestione dei turni         | Pracucci   |       35       |    X     |            |
+| Gestione dei turni dei giocatori                              | Implementazione base del game loop per la gestione dei turni         | Pracucci   |       35       |    X     |     X      |
 
 ## Sprint Review
+
+Tutti i task dello sprint sono stati completati. Nei prossimi sprint verrà considerata la possibilità di migliorare
+alcune implementazioni. All'interno dello sprint è stata effettuata la prima release (`v0.1.0`), nella quale sono
+state implementate le prime due feature. Il primo obiettivo del prossimo sprint sarà realizzare la seconda release,
+includendo la feature di gestione dei turni dei giocatori.

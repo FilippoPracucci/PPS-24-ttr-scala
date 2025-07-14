@@ -6,6 +6,7 @@ import org.scalatest.matchers.should.Matchers
 
 class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
+  import model.cards.Card
   import model.utils.{PlayerColor, Color}
   val id: PlayerColor = PlayerColor.BLUE
   var player: Player = Player(id)
@@ -21,10 +22,9 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     player.trains.trainCars should be(NUMBER_TRAIN_CARS)
 
   it should "be created correctly using a custom deck" in:
-    import model.utils.Color
     import Color.*
-    import model.cards.{Card, Deck, CardsGenerator}
-    val fixedList: List[Card] = List(Card(RED), Card(YELLOW), Card(RED), Card(BLACK), Card(BLUE))
+    import model.cards.{Deck, CardsGenerator}
+    val fixedList: List[Card] = List(Card(BLACK), Card(BLUE), Card(RED), Card(RED), Card(YELLOW))
     val deckFixed: Deck = Deck()(using () => fixedList)
     val customPlayer: Player = Player(id, deckFixed)
     customPlayer.id should be(id)
@@ -47,7 +47,6 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     player.hand.cards should be(initialHandCards :++ initialDeckCards.take(numberCardsToDraw))
 
   it should "be able to check whether certain cards can be played" in:
-    import model.cards.Card
     val color = Color.RED
     val n = 10
     player.canPlayCards(color, n) should be(false)
@@ -55,7 +54,6 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     player.canPlayCards(color, n) should be(true)
 
   it should "be able to play cards" in:
-    import model.cards.Card
     val color = Color.RED
     val n = 10
     player.playCards(color, n) should be(Left(Player.NotEnoughCards))

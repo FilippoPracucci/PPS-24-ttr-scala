@@ -40,4 +40,4 @@ given CardsGenerator[Cards] = () => List.empty
   */
 class Cards(using generator: CardsGenerator[Cards])(private var _cards: List[Card] = generator.generate()):
   def cards: List[Card] = _cards
-  def cards_=(cards: List[Card]): Unit = _cards = cards
+  protected def cards_=(cards: List[Card]): Unit = _cards = cards

@@ -20,8 +20,8 @@ relativi la condizione di fine partita e il completamento degli obiettivi.
 
 | Feature                              | Sprint Task                                                             | Volontario | Stima iniziale | Iniziato | Completato |
 |--------------------------------------|-------------------------------------------------------------------------|------------|:--------------:|:--------:|:----------:|
-| /                                    | Fix errore nella GUI quando si esegue il jar su Linux                   | Entrambi   |       25       |          |            |
-| /                                    | Rilascio release `v0.2.0`                                               | Entrambi   |       5        |          |            |
+| /                                    | Fix errore nella GUI quando si esegue il jar su Linux                   | Entrambi   |       25       |    X     |     X      |
+| /                                    | Rilascio release `v0.2.0`                                               | Entrambi   |       5        |    X     |     X      |
 | Gestione delle carte obiettivo       | Modellazione delle carte obiettivo                                      | Pracucci   |       15       |          |            |
 |                                      | Creazione e gestione file di configurazione per le carte obiettivo      | Bedeschi   |       10       |          |            |
 |                                      | Visualizzazione obiettivo del giocatore di turno                        | Pracucci   |       5        |          |            |

@@ -75,16 +75,16 @@ object GameView:
     import scala.swing.*
     import event.MousePressed
     import ScrollPane.BarPolicy.*
+    import java.awt.Toolkit
 
-    private val screenSize: Dimension = java.awt.Toolkit.getDefaultToolkit.getScreenSize
+    private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BoxPanel(Orientation.Vertical)
     private val frame: MainFrame = new MainFrame {
       title = "Ticket to Ride"
       contents = panel
-      preferredSize = screenSize
-      peer.setExtendedState(java.awt.Frame.MAXIMIZED_BOTH)
       resizable = false
     }
+    private val insets = Toolkit.getDefaultToolkit.getScreenInsets(frame.peer.getGraphicsConfiguration)
 
     private val southPanel = new BoxPanel(Orientation.Horizontal)
     private val handPanel = new BoxPanel(Orientation.Horizontal)
@@ -97,9 +97,14 @@ object GameView:
 
     private val gameController: GameController = GameController()
 
+    InitHelper.setFrameSize()
     InitHelper.initPanels()
 
     private object InitHelper:
+      def setFrameSize(): Unit =
+        frame.size = new Dimension(screenSize.width - insets.left - insets.right,
+          screenSize.height - insets.bottom - insets.top)
+
       def initPanels(): Unit =
         handButtonPanel.contents += drawButton
         configDrawButton()
@@ -130,7 +135,8 @@ object GameView:
 
       private def initMap(): Unit =
         import CitiesLoader.given
-        CitiesLoader(screenSize.width, screenSize.height - southPanel.peer.getPreferredSize.getHeight.toInt).load()
+        CitiesLoader(frame.size.width,
+          frame.size.height - frame.peer.getInsets.top - southPanel.peer.getPreferredSize.getHeight.toInt).load()
 
     override def addHandsView(handsView: List[HandView]): Unit =
       handPanel.contents ++= handsView.map(_.handComponent)

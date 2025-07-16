@@ -45,7 +45,7 @@ object GameController:
     export view.cards.{CardView, HandView}
     export MapViewColorHelper.*
     export model.cards.Deck
-    export model.player.Player
+    export model.player.{Player, ObjectiveWithCompletion}
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
@@ -64,10 +64,11 @@ object GameController:
     initGameView()
 
     private def initPlayers(): List[Player] =
+      val standardObjective = ObjectiveWithCompletion(("Paris", "Berlin"), 8) // TODO: modify with real objective
       var playerList: List[Player] = List.empty
       for
         color <- PlayerColor.values
-      yield playerList :+= Player(color, deck)
+      yield playerList :+= Player(color, deck, objective = standardObjective)
       playerList
 
     private def initHandsView(): List[HandView] =

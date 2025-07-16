@@ -9,16 +9,17 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   import model.cards.Card
   import model.utils.{PlayerColor, Color}
   val id: PlayerColor = PlayerColor.BLUE
-  var player: Player = Player(id)
+  val objective: Objective = ObjectiveWithCompletion(("Paris", "Berlin"), 8)
+  var player: Player = Player(id, objective = objective)
   val NUMBER_TRAIN_CARS = 45
 
-  override def beforeEach(): Unit = player = Player(id)
+  override def beforeEach(): Unit = player = Player(id, objective = objective)
 
   "A player" should "be created correctly in the standard mode" in:
     player.id should be(id)
     player.deck.cards should not be empty
     player.hand.cards should not be empty
-    // TODO: player.objective should not be empty
+    player.objective should be(objective)
     player.trains.trainCars should be(NUMBER_TRAIN_CARS)
 
   it should "be created correctly using a custom deck" in:
@@ -26,11 +27,11 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     import model.cards.{Deck, CardsGenerator}
     val fixedList: List[Card] = List(Card(BLACK), Card(BLUE), Card(RED), Card(RED), Card(YELLOW))
     val deckFixed: Deck = Deck()(using () => fixedList)
-    val customPlayer: Player = Player(id, deckFixed)
+    val customPlayer: Player = Player(id, deckFixed, objective = objective)
     customPlayer.id should be(id)
     customPlayer.deck should be(deckFixed)
     customPlayer.hand.cards should be(fixedList.take(4))
-    // TODO: player.objective should not be empty
+    customPlayer.objective should be(objective)
     customPlayer.trains.trainCars should be(NUMBER_TRAIN_CARS)
 
   it should "be able to place train cars" in:

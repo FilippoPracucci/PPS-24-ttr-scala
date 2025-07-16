@@ -23,7 +23,7 @@ relativi la condizione di fine partita e il completamento degli obiettivi.
 | /                                    | Fix errore nella GUI quando si esegue il jar su Linux                   | Entrambi   |       25       |    X     |     X      |
 | /                                    | Rilascio release `v0.2.0`                                               | Entrambi   |       5        |    X     |     X      |
 | Gestione delle carte obiettivo       | Modellazione delle carte obiettivo                                      | Pracucci   |       15       |          |            |
-|                                      | Creazione e gestione file di configurazione per le carte obiettivo      | Bedeschi   |       10       |          |            |
+|                                      | Creazione e gestione file di configurazione per le carte obiettivo      | Bedeschi   |       10       |    X     |            |
 |                                      | Visualizzazione obiettivo del giocatore di turno                        | Pracucci   |       5        |          |            |
 | Controllo condizione di fine partita | Implementazione del controllo di fine partita ad ogni turno             | Pracucci   |       5        |          |            |
 |                                      | Visualizzazione inizio ultimo round e schermata di fine partita         | Pracucci   |       10       |          |            |

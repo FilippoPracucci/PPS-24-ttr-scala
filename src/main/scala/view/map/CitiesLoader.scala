@@ -1,58 +1,58 @@
 package view.map
 
-/** Trait that represents the loader of the cities in the map view.
+import utils.{LoaderFromFile, JsonReader}
+
+/** Class that represents a loader of cities from a JSON file, loading them into the map view.
+  * @param mapWidth
+  *   the width (in pixel) of the map
+  * @param mapHeight
+  *   the height (in pixel) of the map
+  * @param configFilePath
+  *   the given path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
+  *   information on the cities
   */
-trait CitiesLoader:
-  /** Loads the cities in the map view.
+class CitiesLoader(mapWidth: Int, mapHeight: Int)(using override val configFilePath: String)
+    extends LoaderFromFile[Unit] with JsonReader:
+  require(mapWidth > 0, "mapWidth must be positive")
+  require(mapHeight > 0, "mapHeight must be positive")
+
+  import upickle.default.*
+
+  private val cityWidth = 0
+  private val cityHeight = 0
+
+  /** Class that represents the config data contained in the JSON file.
+    * @param scaleWidth
+    *   the max value of the width (x coordinates), used for scaling
+    * @param scaleHeight
+    *   the max value of the height (y coordinates), used for scaling
+    * @param cities
+    *   the set of cities
     */
-  def load(): Unit
+  protected case class ConfigData(scaleWidth: Double, scaleHeight: Double, cities: Set[City])
+
+  /** Class that represents a city in the JSON file.
+    * @param name
+    *   the name of the city
+    * @param x
+    *   the x coordinate of the city
+    * @param y
+    *   the y coordinate of the city
+    */
+  protected case class City(name: String, x: Int, y: Int)
+
+  override protected type Data = ConfigData
+
+  protected given ReadWriter[City] = macroRW
+  override protected given readWriter: ReadWriter[Data] = macroRW
+
+  override protected def onSuccess(data: Data): Unit = data.cities.foreach(city => addCity(city)(data))
+
+  private def addCity(city: City)(data: Data): Unit =
+    MapView().addCity(city.name, city.x / data.scaleWidth * mapWidth, city.y / data.scaleHeight * mapHeight,
+      cityWidth, cityHeight)
 
 object CitiesLoader:
-  /** The default path of the config file (starting from 'src/main/resources/').
+  /** The default path of the JSON config file (starting from 'src/main/resources/', without file extension).
     */
   given defaultConfigFilePath: String = "cities"
-
-  /** Creates a `CitiesLoader`.
-    * @param mapWidth
-    *   the width (in pixel) of the map
-    * @param mapHeight
-    *   the height (in pixel) of the map
-    * @param configFilePath
-    *   the given path of the json config file (starting from 'src/main/resources/', without file extension) containing
-    *   information on the cities
-    * @return
-    *   the created `CitiesLoader`
-    */
-  def apply(mapWidth: Int, mapHeight: Int)(using configFilePath: String): CitiesLoader =
-    CitiesLoaderImpl(mapWidth, mapHeight)(using configFilePath)
-
-  private class CitiesLoaderImpl(mapWidth: Int, mapHeight: Int)(using configFilePath: String) extends CitiesLoader:
-    require(mapWidth > 0, "mapWidth must be positive")
-    require(mapHeight > 0, "mapHeight must be positive")
-
-    import scala.util._
-
-    private val fileExtension = ".json"
-    private val errorMessage = "Error loading config file: "
-    private val cityWidth = 0
-    private val cityHeight = 0
-
-    private case class City(name: String, x: Int, y: Int)
-    private case class ConfigData(scaleWidth: Double, scaleHeight: Double, cities: Set[City])
-
-    override def load(): Unit = readConfigData() match
-      case Success(configData) => configData.cities.foreach(city => addCity(configData, city))
-      case Failure(e) => throw new IllegalStateException(errorMessage + e.getMessage, e)
-
-    private def readConfigData(): Try[ConfigData] =
-      import scala.io.Source
-      import upickle.default._
-
-      given ReadWriter[City] = macroRW
-      given ReadWriter[ConfigData] = macroRW
-
-      Using(Source.fromResource(configFilePath + fileExtension)) { source => read[ConfigData](source.mkString) }
-
-    private def addCity(configData: ConfigData, city: City): Unit =
-      MapView().addCity(city.name, city.x / configData.scaleWidth * mapWidth,
-        city.y / configData.scaleHeight * mapHeight, cityWidth, cityHeight)

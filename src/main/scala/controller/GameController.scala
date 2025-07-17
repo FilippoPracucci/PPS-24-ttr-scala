@@ -46,6 +46,8 @@ object GameController:
     export MapViewColorHelper.*
     export model.cards.Deck
     export model.player.Player
+    private val routePointsManager = model.map.RoutePointsManager()
+    export routePointsManager.points
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
@@ -99,11 +101,13 @@ object GameController:
         throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
       )
       route.mechanic match
-        case SpecificColor(color) => ClaimRouteHelper.claimRoute(connectedCities, route.length)(route.length, color)
+        case SpecificColor(color) =>
+          ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
         case _ => throw new IllegalStateException("Unhandled mechanic")
 
     private object ClaimRouteHelper:
-      def claimRoute(connectedCities: (City, City), routeLength: Int)(nCards: Int, color: Color): Unit =
+      def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Int)(nCards: Int, color: Color)
+          : Unit =
         (for
           claimingPlayer <- gameMap.getPlayerClaimingRoute(connectedCities)
           _ <- check(claimingPlayer.isEmpty, GameMap.AlreadyClaimedRoute)
@@ -113,7 +117,7 @@ object GameController:
           _ <- currentPlayer.placeTrains(routeLength)
           _ <- currentPlayer.playCards(color, nCards)
         yield ()) match
-          case Right(_) => updateView(connectedCities)
+          case Right(_) => onSuccess(connectedCities, routePoints)
           case Left(GameMap.AlreadyClaimedRoute) =>
             gameView.reportError("Can't claim a route that has already been claimed!")
           case Left(Player.NotEnoughTrains) => gameView.reportError("Not enough trains to claim this route!")
@@ -122,8 +126,10 @@ object GameController:
 
       private def check(condition: Boolean, err: GameError): Either[GameError, Unit] = Either.cond(condition, (), err)
 
-      private def updateView(connectedCities: (City, City)): Unit =
+      private def onSuccess(connectedCities: (City, City), routePoints: Int): Unit =
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
+        currentPlayer.addPoints(routePoints)
+        println(currentPlayer.id.toString + "'s score: " + currentPlayer.score)
         currentHandView.updateHand(
           currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))
         )

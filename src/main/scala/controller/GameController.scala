@@ -21,9 +21,7 @@ trait GameController:
 object GameController:
   /** Type alias that represents the city as String by its name.
     */
-  type City = String
-
-  type Points = Int
+  export model.player.{PlayerId, City, Points}
 
   /** Returns the singleton instance of `GameController`.
     * @return
@@ -87,6 +85,7 @@ object GameController:
             case _ => throw new IllegalStateException("Unhandled mechanic")
         )
       )
+      gameView.updatePlayer(currentPlayer.id, currentPlayer.trains.trainCars)
       gameView.addHandView(handsView(players.indexOf(currentPlayer)))
       gameView.updateObjective(currentPlayerObjective)
       gameView.open()
@@ -95,9 +94,7 @@ object GameController:
       val initialHandCards = currentPlayer.hand.cards
       currentPlayer.drawCards(n)
       currentHandView.updateHand(currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor)))
-      turnManager.switchTurn()
-      gameView.updateHandView(currentHandView)
-      gameView.updateObjective(currentPlayerObjective)
+      switchTurn()
 
     override def claimRoute(connectedCities: (City, City)): Unit =
       val optionRoute = gameMap.getRoute(connectedCities)
@@ -133,12 +130,16 @@ object GameController:
         currentHandView.updateHand(
           currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))
         )
-        turnManager.switchTurn()
-        gameView.updateHandView(currentHandView)
-        gameView.updateObjective(currentPlayerObjective)
+        switchTurn()
 
     private def currentPlayer: Player = turnManager.currentPlayer
 
     private def currentPlayerObjective: ((City, City), Points) = currentPlayer.objective.unapply().get
 
     private def currentHandView: HandView = handsView(players.indexOf(currentPlayer))
+
+    private def switchTurn(): Unit =
+      turnManager.switchTurn()
+      gameView.updatePlayer(currentPlayer.id, currentPlayer.trains.trainCars)
+      gameView.updateHandView(currentHandView)
+      gameView.updateObjective(currentPlayerObjective)

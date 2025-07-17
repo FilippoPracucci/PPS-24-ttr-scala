@@ -2,12 +2,11 @@ package view
 
 import map.{CitiesLoader, MapView}
 import cards.HandView
-import player.ObjectiveView
 
 /** Trait that represents the view of the game.
   */
 trait GameView:
-  import GameView.{City, Points, Color}
+  import GameView.{City, Points, PlayerId, Color}
 
   /** Opens the view.
     */
@@ -49,8 +48,21 @@ trait GameView:
     */
   def updateRoute(connectedCities: (City, City), color: Color): Unit
 
-  /** Update the objective view. */
+  /** Update the objective view.
+    *
+    * @param objective
+    *   the pair of cities to connect and its value in terms of points.
+    */
   def updateObjective(objective: ((City, City), Points)): Unit
+
+  /** Update the player view.
+    *
+    * @param playerId
+    *   the identifier of the player.
+    * @param trains
+    *   the number of train cars left to the player.
+    */
+  def updatePlayer(playerId: PlayerId, trains: Int): Unit
 
   /** Reports the error to the user.
     * @param message
@@ -61,12 +73,9 @@ trait GameView:
 object GameView:
   import controller.GameController
 
-  /** Type alias that represents the city as String by its name.
+  /** Type alias that represents the city as String by its name, the points as Int and the player id as a Color.
     */
-  export GameController.City
-
-  /** Type alias that represents the points as Int. */
-  export GameController.Points
+  export GameController.{City, Points, PlayerId}
 
   /** Type alias that represents the color as String by its name in lowercase. // TODO
     */
@@ -84,6 +93,7 @@ object GameView:
     import java.awt.Toolkit
     import scala.swing.event.ButtonClicked
     import controller.GameController
+    import player.{PlayerView, ObjectiveView}
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BorderPanel()
@@ -101,6 +111,7 @@ object GameView:
     private val drawButton = new Button("Draw")
 
     private val mapView = MapView()
+    private val playerView = PlayerView()
     private val objectiveView = ObjectiveView()
 
     private val gameController: GameController = GameController()
@@ -130,6 +141,7 @@ object GameView:
 
       private def configEastPanel(): Unit =
         val EAST_PANEL_WIDTH_RATIO = 0.15
+        eastPanel.contents += playerView.component
         eastPanel.contents += objectiveView.component
         eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
 
@@ -160,3 +172,4 @@ object GameView:
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
     export objectiveView.updateObjective
+    export playerView.updatePlayer

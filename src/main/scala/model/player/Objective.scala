@@ -1,7 +1,10 @@
 package model.player
 
-import controller.GameController.City
-import controller.GameController.Points
+/** Type alias that represents the city as String by its name. */
+type City = String
+
+/** Type alias that represents the points as Int. */
+type Points = Int
 
 /** An objective that has a pair of cities to connect and a number of points it assigns if completed or taken away
   * otherwise.

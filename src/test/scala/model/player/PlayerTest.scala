@@ -78,3 +78,14 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val invalidN = NUMBER_TRAIN_CARS + 1
     player.placeTrains(validN) should be(Right(()))
     player.placeTrains(invalidN) should be(Left(Player.NotEnoughTrains))
+
+  it should "correctly update the score" in:
+    val initialScore = 0
+    val pointsToAdd = 5
+    player.score should be(initialScore)
+    player.addPoints(pointsToAdd)
+    player.score should be(initialScore + pointsToAdd)
+
+  it should "fail to add negative points to the score" in:
+    val pointsToAdd = -5
+    an[IllegalArgumentException] should be thrownBy player.addPoints(pointsToAdd)

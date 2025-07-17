@@ -151,7 +151,7 @@ object Player:
 
     override def playCards(color: Color, n: Int): Either[GameError, Unit] =
       require(n > 0, "n must be positive")
-      Try(hand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards)
+      Try(hand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards).map(_.foreach(deck.reinsertAtTheBottom))
 
     override def placeTrains(n: Int): Either[GameError, Unit] = // TODO to review
       require(n > 0, "n must be positive")

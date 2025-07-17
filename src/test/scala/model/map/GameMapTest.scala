@@ -5,6 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
+  import utils.Loader
   import model.utils.Color
   import model.utils.PlayerColor
 
@@ -12,15 +13,17 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
   private val route1 = Route((City(connectedCities._1), City(connectedCities._2)), 2, Route.SpecificColor(Color.BLACK))
   private val route2 = Route((City("Roma"), City("Brindisi")), 3, Route.SpecificColor(Color.WHITE))
   private val route3 = Route((City("Roma"), City("Palermo")), 4, Route.SpecificColor(Color.RED))
+  private val routes = Set(route1, route2, route3)
   private val notConnectedCities = ("Roma", "Bologna")
   private val player = PlayerColor.GREEN
 
-  private var gameMap: GameMap = GameMap(Set())
+  private val loader: Loader[Set[Route]] = () => routes
+  private var gameMap: GameMap = GameMap(loader)
 
-  override def beforeEach(): Unit = gameMap = GameMap(Set(route1, route2, route3))
+  override def beforeEach(): Unit = gameMap = GameMap(loader)
 
   "A GameMap" should "return the correct set of routes" in:
-    gameMap.routes should be(Set(route1, route2, route3))
+    gameMap.routes should be(routes)
 
   it should "return the correct requested route if present" in:
     gameMap.getRoute(connectedCities) should be(Some(route1))
@@ -42,9 +45,11 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
 end GameMapBasicTest
 
 class GameMapInitFromFileTest extends AnyFlatSpec with Matchers:
-  "A GameMap" should "not fail its initialization when created from file" in:
+  "A GameMap" should "correctly initialize when created from file" in:
     import GameMap.given
-    noException should be thrownBy GameMap()
+    lazy val gameMap = GameMap()
+    noException should be thrownBy gameMap
+    gameMap.routes should not be empty
 
   it should "fail its initialization when created from a non-existent file" in:
-    an[IllegalStateException] should be thrownBy GameMap()(using "nonExistentFile.json")
+    an[IllegalStateException] should be thrownBy GameMap()(using "nonExistentFile")

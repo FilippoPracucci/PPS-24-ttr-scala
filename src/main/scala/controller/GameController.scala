@@ -23,6 +23,8 @@ object GameController:
     */
   type City = String
 
+  type Points = Int
+
   /** Returns the singleton instance of `GameController`.
     * @return
     *   the globally shared `GameController` instance
@@ -64,11 +66,12 @@ object GameController:
     initGameView()
 
     private def initPlayers(): List[Player] =
-      val standardObjective = ObjectiveWithCompletion(("Paris", "Berlin"), 8) // TODO: modify with real objective
+      import scala.util.Random // TODO: modify with real objective
+      val list = List(ObjectiveWithCompletion(("Paris", "Berlin"), 8), ObjectiveWithCompletion(("Paris", "Venezia"), 4))
       var playerList: List[Player] = List.empty
       for
         color <- PlayerColor.values
-      yield playerList :+= Player(color, deck, objective = standardObjective)
+      yield playerList :+= Player(color, deck, objective = list(Random.nextInt(list.size)))
       playerList
 
     private def initHandsView(): List[HandView] =
@@ -85,6 +88,7 @@ object GameController:
         )
       )
       gameView.addHandView(handsView(players.indexOf(currentPlayer)))
+      gameView.updateObjective(currentPlayerObjective)
       gameView.open()
 
     override def drawCards(n: Int): Unit =
@@ -93,6 +97,7 @@ object GameController:
       currentHandView.updateHand(currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor)))
       turnManager.switchTurn()
       gameView.updateHandView(currentHandView)
+      gameView.updateObjective(currentPlayerObjective)
 
     override def claimRoute(connectedCities: (City, City)): Unit =
       val optionRoute = gameMap.getRoute(connectedCities)
@@ -130,7 +135,10 @@ object GameController:
         )
         turnManager.switchTurn()
         gameView.updateHandView(currentHandView)
+        gameView.updateObjective(currentPlayerObjective)
 
     private def currentPlayer: Player = turnManager.currentPlayer
+
+    private def currentPlayerObjective: ((City, City), Points) = currentPlayer.objective.unapply().get
 
     private def currentHandView: HandView = handsView(players.indexOf(currentPlayer))

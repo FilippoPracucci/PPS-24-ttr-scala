@@ -2,6 +2,7 @@ package model.player
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
+import controller.GameController.{City, Points}
 
 private val cities: (City, City) = ("Paris", "Berlin")
 private val points: Points = 8
@@ -22,7 +23,7 @@ class ObjectiveWithCompletionTest extends AnyFlatSpec with Matchers:
 
   private val objectiveWithCompletion: ObjectiveCompletion = ObjectiveWithCompletion(cities, points)
 
-  "A basic objective" should "be created correctly" in:
+  "An objective with completion" should "be created correctly" in:
     objectiveWithCompletion.citiesToConnect should be(cities)
     objectiveWithCompletion.points should be(points)
     objectiveWithCompletion.completed should be(false)

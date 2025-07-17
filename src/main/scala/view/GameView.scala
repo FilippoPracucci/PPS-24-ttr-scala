@@ -1,12 +1,13 @@
 package view
 
 import map.{CitiesLoader, MapView}
-import view.cards.HandView
+import cards.HandView
+import player.ObjectiveView
 
 /** Trait that represents the view of the game.
   */
 trait GameView:
-  import GameView.{City, Color}
+  import GameView.{City, Points, Color}
 
   /** Opens the view.
     */
@@ -48,6 +49,9 @@ trait GameView:
     */
   def updateRoute(connectedCities: (City, City), color: Color): Unit
 
+  /** Update the objective view. */
+  def updateObjective(objective: ((City, City), Points)): Unit
+
   /** Reports the error to the user.
     * @param message
     *   the message of the error
@@ -60,6 +64,9 @@ object GameView:
   /** Type alias that represents the city as String by its name.
     */
   export GameController.City
+
+  /** Type alias that represents the points as Int. */
+  export GameController.Points
 
   /** Type alias that represents the color as String by its name in lowercase. // TODO
     */
@@ -79,7 +86,7 @@ object GameView:
     import controller.GameController
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
-    private val panel = new BoxPanel(Orientation.Vertical)
+    private val panel = new BorderPanel()
     private val frame: MainFrame = new MainFrame {
       title = "Ticket to Ride"
       contents = panel
@@ -90,10 +97,11 @@ object GameView:
     private val southPanel = new BoxPanel(Orientation.Horizontal)
     private val handPanel = new BoxPanel(Orientation.Horizontal)
     private val scrollPane = new ScrollPane(handPanel)
-    private val handButtonPanel = new BoxPanel(Orientation.Vertical)
+    private val eastPanel = new BoxPanel(Orientation.Vertical)
     private val drawButton = new Button("Draw")
 
     private val mapView = MapView()
+    private val objectiveView = ObjectiveView()
 
     private val gameController: GameController = GameController()
 
@@ -106,16 +114,24 @@ object GameView:
           screenSize.height - insets.bottom - insets.top)
 
       def initPanels(): Unit =
-        handButtonPanel.contents += drawButton
         configDrawButton()
+        configSouthPanel()
+        configEastPanel()
+        panel.layout ++= List((mapView.component, BorderPanel.Position.Center),
+          (southPanel, BorderPanel.Position.South), (eastPanel, BorderPanel.Position.East))
+        initMap()
+        frame.repaint()
+
+      private def configSouthPanel(): Unit =
         scrollPane.horizontalScrollBarPolicy = AsNeeded
         scrollPane.verticalScrollBarPolicy = Never
         southPanel.contents += scrollPane
-        southPanel.contents += handButtonPanel
-        panel.contents += mapView.component
-        initMap()
-        panel.contents += southPanel
-        frame.repaint()
+        southPanel.contents += drawButton
+
+      private def configEastPanel(): Unit =
+        val EAST_PANEL_WIDTH_RATIO = 0.15
+        eastPanel.contents += objectiveView.component
+        eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
 
       private def configDrawButton(): Unit =
         drawButton.listenTo(drawButton.mouse.clicks)
@@ -126,8 +142,10 @@ object GameView:
 
       private def initMap(): Unit =
         import CitiesLoader.given
-        CitiesLoader(frame.size.width,
-          frame.size.height - frame.peer.getInsets.top - southPanel.peer.getPreferredSize.getHeight.toInt).load()
+        CitiesLoader(
+          frame.size.width - eastPanel.peer.getPreferredSize.getWidth.toInt,
+          frame.size.height - frame.peer.getInsets.top - southPanel.peer.getPreferredSize.getHeight.toInt
+        ).load()
 
     override def addHandView(handView: HandView): Unit =
       handPanel.contents += handView.handComponent
@@ -141,3 +159,4 @@ object GameView:
 
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
+    export objectiveView.updateObjective

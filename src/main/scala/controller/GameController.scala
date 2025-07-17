@@ -21,11 +21,7 @@ trait GameController:
 object GameController:
   /** Type alias that represents the city as String by its name.
     */
-  export view.GameView.City
-
-  /** Type aliases that represent the points as Int and the player id as a Color.
-   */
-  export model.player.{PlayerId, Points}
+  export model.player.{PlayerId, City, Points}
 
   /** Returns the singleton instance of `GameController`.
     * @return
@@ -45,6 +41,7 @@ object GameController:
     export Route.*
     export model.utils.{Color, PlayerColor, GameError}
     export view.GameView
+    export GameView.City
     export view.cards.{CardView, HandView}
     export MapViewColorHelper.*
     export model.cards.Deck

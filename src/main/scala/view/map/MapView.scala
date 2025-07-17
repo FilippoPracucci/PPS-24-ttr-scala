@@ -51,7 +51,7 @@ object MapView:
 
   /** Type alias that represents the city as String by its name.
     */
-  export view.GameView.City
+  export GameController.City
 
   /** Type alias that represents the color as String by its name in lowercase. // TODO
     */

@@ -73,16 +73,12 @@ trait GameView:
 object GameView:
   import controller.GameController
 
-  /** Type alias that represents the city as String by its name.
-   */
-  type City = String
-
-  /** Type aliases that represent the points as Int and the player id as a Color.
+  /** Type alias that represents the city as String by its name, the points as Int and the player id as a Color.
     */
-  export GameController.{Points, PlayerId}
+  export GameController.{City, Points, PlayerId}
 
   /** Type alias that represents the color as String by its name in lowercase. // TODO
-   */
+    */
   export MapView.Color
 
   /** Returns the singleton instance of `GameView`.

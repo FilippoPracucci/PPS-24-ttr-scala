@@ -3,13 +3,14 @@ package model.map
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
-class RoutesLoaderTest extends AnyFlatSpec with Matchers:
-  "A RoutesLoader" should "correctly load the routes" in:
-    import RoutesLoader.given
-    lazy val routesLoader = RoutesLoader()
-    noException should be thrownBy routesLoader
-    routesLoader.load() should not be empty
+import model.SetLoaderTest
 
-  it should "fail to load the routes if the given config file doesn't exist" in:
-    val routesLoader = RoutesLoader(using "nonExistentFile")
-    an[IllegalStateException] should be thrownBy routesLoader.load()
+class RoutesLoaderTest extends AnyFlatSpec with SetLoaderTest[Route]:
+  import config.Loader
+
+  override protected def createLoader(): Loader[Set[Route]] =
+    import RoutesLoader.given
+    RoutesLoader()
+
+  override protected def createLoaderWith(configFilePath: String): Loader[Set[Route]] =
+    RoutesLoader()(using configFilePath)

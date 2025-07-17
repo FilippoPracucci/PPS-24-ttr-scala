@@ -1,6 +1,6 @@
 package model.player
 
-import utils.{LoaderFromFile, JsonReader}
+import config.{LoaderFromFile, JsonReader}
 
 // TODO to integrate with the real Objective
 private case class ObjectiveTemp(citiesToConnect: (String, String), points: Int)

@@ -1,4 +1,4 @@
-package utils
+package config
 
 /** Trait that represents a loader of data.
   * @tparam A

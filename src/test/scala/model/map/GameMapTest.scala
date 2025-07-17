@@ -5,7 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
-  import utils.Loader
+  import config.Loader
   import model.utils.Color
   import model.utils.PlayerColor
 

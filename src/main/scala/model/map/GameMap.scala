@@ -1,6 +1,6 @@
 package model.map
 
-import utils.Loader
+import config.Loader
 import model.utils.GameError
 import model.player.PlayerId
 

@@ -1,6 +1,6 @@
 package view.map
 
-import utils.{LoaderFromFile, JsonReader}
+import config.{LoaderFromFile, JsonReader}
 
 /** Class that represents a loader of cities from a JSON file, loading them into the map view.
   * @param mapWidth

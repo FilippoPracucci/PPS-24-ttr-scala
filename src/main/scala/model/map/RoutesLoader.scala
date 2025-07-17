@@ -1,6 +1,6 @@
 package model.map
 
-import utils.{LoaderFromFile, JsonReader}
+import config.{LoaderFromFile, JsonReader}
 
 /** Class that represents a loader of routes from a JSON file.
   * @param configFilePath

@@ -1,7 +1,6 @@
 package model.map
 
 import utils.{LoaderFromFile, JsonReader}
-import scala.util.Try
 
 /** Class that represents a loader of routes from a JSON file.
   * @param configFilePath

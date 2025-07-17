@@ -43,8 +43,12 @@ classDiagram
     }
     class object_GameMap {
         <<object>>
-        +apply(routes: Set[Route]) GameMap
+        +apply(loader: Loader[Set[Route]]) GameMap
         +apply()(using configFilePath: String) GameMap
+    }
+    class Loader~A~ {
+        <<trait>>
+        +load() A
     }
     class RoutesLoader {
         +load() Set[Route]
@@ -54,7 +58,9 @@ classDiagram
     SpecificColor --|> Mechanic
     GameMap "*" o-- "*" Route
     object_GameMap -- GameMap: companion
-    object_GameMap ..> RoutesLoader: use
+    object_GameMap ..> Loader: «parameter»
+    object_GameMap ..> RoutesLoader: «use»
+    RoutesLoader ..|> Loader
 ```
 
 [TODO descrizione]: #

@@ -35,13 +35,13 @@ classDiagram
         <<trait>>
         #given readWriter: ReadWriter[Data]
     }
-    Loader <.. LoaderFromFile
-    FileReader <..LoaderFromFile
-    FileReader <.. JsonReader
-    LoaderFromFile <.. RoutesLoader
-    JsonReader <.. RoutesLoader
-    LoaderFromFile <.. CitiesLoader
-    JsonReader <.. CitiesLoader
+    Loader <|-- LoaderFromFile
+    FileReader <|-- LoaderFromFile
+    FileReader <|-- JsonReader
+    LoaderFromFile <|.. RoutesLoader
+    JsonReader <|.. RoutesLoader
+    LoaderFromFile <|.. CitiesLoader
+    JsonReader <|.. CitiesLoader
 ```
 
 [TODO descrizione]: #

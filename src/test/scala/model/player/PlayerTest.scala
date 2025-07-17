@@ -17,7 +17,6 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
   "A player" should "be created correctly in the standard mode" in:
     player.id should be(id)
-    player.deck.cards should not be empty
     player.hand.cards should not be empty
     player.objective should be(objective)
     player.trains.trainCars should be(NUMBER_TRAIN_CARS)
@@ -29,7 +28,6 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val deckFixed: Deck = Deck()(using () => fixedList)
     val customPlayer: Player = Player(id, deckFixed, objective = objective)
     customPlayer.id should be(id)
-    customPlayer.deck should be(deckFixed)
     customPlayer.hand.cards should be(fixedList.take(4))
     customPlayer.objective should be(objective)
     customPlayer.trains.trainCars should be(NUMBER_TRAIN_CARS)
@@ -40,12 +38,11 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     a[IllegalArgumentException] should be thrownBy player.trains.placeTrainCars(NUMBER_TRAIN_CARS)
 
   it should "be able to draw cards from the deck" in:
+    import model.cards.Deck
     val initialHandCards = player.hand.cards
-    val initialDeckCards = player.deck.cards
     val numberCardsToDraw = 2
     player.drawCards(numberCardsToDraw)
-    player.deck.cards should be(initialDeckCards.takeRight(initialDeckCards.size - numberCardsToDraw))
-    player.hand.cards should be(initialHandCards :++ initialDeckCards.take(numberCardsToDraw))
+    player.hand.cards should be(initialHandCards :++ Deck().cards.take(numberCardsToDraw))
 
   it should "be able to check whether certain cards can be played" in:
     val color = Color.RED

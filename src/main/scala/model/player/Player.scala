@@ -23,13 +23,6 @@ trait Player:
     */
   def objective: Objective
 
-  /** The reference to the deck of cards.
-    *
-    * @return
-    *   the reference to the deck of cards.
-    */
-  def deck: Deck // reference to the deck
-
   /** The player's train cards hand.
     *
     * @return
@@ -140,7 +133,7 @@ object Player:
       objective: Objective): Player =
     PlayerImpl(playerId, deck, trains, objective)
 
-  private case class PlayerImpl(override val id: PlayerId, override val deck: Deck,
+  private case class PlayerImpl(override val id: PlayerId, deck: Deck,
       override val trains: TrainCars, override val objective: Objective) extends Player:
     import scala.util._
 

@@ -5,7 +5,7 @@ import org.scalatest.matchers.should.Matchers
 
 class TurnManagerTest extends AnyFlatSpec with Matchers:
   import model.cards.Deck
-  import model.player.Player
+  import model.player.{Player, ObjectiveWithCompletion}
   import model.utils.PlayerColor
 
   private val deck: Deck = Deck()
@@ -13,7 +13,7 @@ class TurnManagerTest extends AnyFlatSpec with Matchers:
   private var playerList: List[Player] = List.empty
   for
     color <- PlayerColor.values
-  yield playerList :+= Player(color, deck)
+  yield playerList :+= Player(color, deck, objective = ObjectiveWithCompletion(("Paris", "Berlin"), 8))
 
   private val turnManager = TurnManager(playerList)
 

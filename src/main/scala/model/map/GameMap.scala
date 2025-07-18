@@ -7,9 +7,7 @@ import model.player.PlayerId
 /** Trait that represents the game map, composed of a set of routes.
   */
 trait GameMap:
-  /** Type alias that represents the name of a city as String.
-    */
-  type CityName = String
+  import GameMap.CityName
 
   /** Returns the set of routes of the `GameMap`
     * @return
@@ -46,6 +44,10 @@ trait GameMap:
   def claimRoute(connectedCities: (CityName, CityName), playerId: PlayerId): Either[GameError, Unit]
 
 object GameMap:
+  /** Type alias that represents the name of a city as String.
+    */
+  type CityName = String
+
   /** Error that represents the case in which a route doesn't exist.
     */
   case object NonExistentRoute extends GameError

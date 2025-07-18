@@ -55,14 +55,14 @@ trait GameView:
     */
   def updateObjective(objective: ((City, City), Points)): Unit
 
-  /** Update the player view.
+  /** Update the player information view.
     *
     * @param playerId
     *   the identifier of the player.
     * @param trains
     *   the number of train cars left to the player.
     */
-  def updatePlayer(playerId: PlayerId, trains: Int): Unit
+  def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit
 
   /** Reports the error to the user.
     * @param message
@@ -100,7 +100,7 @@ object GameView:
     import Dialog.Options
     import event.ButtonClicked
     import controller.GameController
-    import player.{PlayerView, ObjectiveView}
+    import player.{BasicPlayerInfoView, BasicObjectiveView}
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BorderPanel()
@@ -118,8 +118,8 @@ object GameView:
     private val drawButton = new Button("Draw")
 
     private val mapView = MapView()
-    private val playerView = PlayerView()
-    private val objectiveView = ObjectiveView()
+    private val playerView = BasicPlayerInfoView()
+    private val objectiveView = BasicObjectiveView()
 
     private val gameController: GameController = GameController()
 
@@ -187,4 +187,4 @@ object GameView:
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
     export objectiveView.updateObjective
-    export playerView.updatePlayer
+    export playerView.updatePlayerInfo

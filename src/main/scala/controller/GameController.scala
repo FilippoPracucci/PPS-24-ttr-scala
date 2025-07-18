@@ -113,7 +113,7 @@ object GameController:
         case _ => throw new IllegalStateException("Unhandled mechanic")
 
     private object ClaimRouteHelper:
-      def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Int)(nCards: Int, color: Color)
+      def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Points)(nCards: Int, color: Color)
           : Unit =
         (for
           claimingPlayer <- gameMap.getPlayerClaimingRoute(connectedCities)
@@ -133,7 +133,7 @@ object GameController:
 
       private def check(condition: Boolean, err: GameError): Either[GameError, Unit] = Either.cond(condition, (), err)
 
-      private def onSuccess(connectedCities: (City, City), routePoints: Int): Unit =
+      private def onSuccess(connectedCities: (City, City), routePoints: Points): Unit =
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
         currentPlayer.addPoints(routePoints)
         gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)

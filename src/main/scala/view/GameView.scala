@@ -45,7 +45,7 @@ trait GameView:
     * @param playerScores
     *   the list of player scores consisting of pairs "player's name; score"
     */
-  def initPlayerScores(playerScores: Seq[(PlayerName, Int)]): Unit
+  def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
 
   /** Updates the route connecting the specified cities.
     * @param connectedCities
@@ -78,7 +78,7 @@ trait GameView:
     * @param score
     *   the new score of the player
     */
-  def updatePlayerScore(player: PlayerName, score: Int): Unit
+  def updatePlayerScore(player: PlayerName, score: Points): Unit
 
   /** Reports the error to the user.
     * @param message
@@ -194,7 +194,7 @@ object GameView:
       addHandView(handView)
       frame.validate()
 
-    override def initPlayerScores(playerScores: Seq[(PlayerName, Int)]): Unit =
+    override def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit =
       scoreLabels = playerScores.map((player, score) => (player, new Label(score.toString))).toMap
       scoreLabels.foreach((player, scoreLabel) =>
         scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
@@ -213,7 +213,7 @@ object GameView:
           }
         case _ => ()
 
-    override def updatePlayerScore(player: PlayerName, score: Int): Unit = scoreLabels(player).text = score.toString
+    override def updatePlayerScore(player: PlayerName, score: Points): Unit = scoreLabels(player).text = score.toString
 
     override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")
 

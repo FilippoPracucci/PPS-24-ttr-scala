@@ -50,7 +50,6 @@ object GameController:
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
-    import ImportHelper.given
 
     private val gameMap = GameMap()
     private val deck: Deck = Deck()
@@ -90,7 +89,7 @@ object GameController:
       gameView.open()
 
     extension (player: Player)
-      private def name: String = player.id.toString.head.toUpper + player.id.toString.tail.toLowerCase
+      private def name: String = player.id.toString.head.toUpper.toString + player.id.toString.tail.toLowerCase
 
     override def drawCards(n: Int): Unit =
       val initialHandCards = currentPlayer.hand.cards

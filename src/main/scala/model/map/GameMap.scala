@@ -54,10 +54,6 @@ object GameMap:
     */
   case object AlreadyClaimedRoute extends GameError
 
-  /** The default path of the config file (exported from `RoutesLoader`).
-    */
-  export RoutesLoader.given String
-
   /** Creates a `GameMap` composed of the set of routes loaded by the specified loader.
     * @param loader
     *   the loader of the routes
@@ -68,12 +64,12 @@ object GameMap:
 
   /** Creates a `GameMap` composed of the routes specified in the JSON config file.
     * @param configFilePath
-    *   the given path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
-    *   the routes
+    *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
+    *   routes (default = "routes")
     * @return
     *   the created `GameMap`
     */
-  def apply()(using configFilePath: String): GameMap = GameMap(RoutesLoader()(using configFilePath))
+  def apply(configFilePath: String = "routes"): GameMap = GameMap(RoutesLoader(configFilePath))
 
   private class GameMapImpl(override val routes: Set[Route]) extends GameMap:
     private type ClaimedRoute = (Route, Option[PlayerId])

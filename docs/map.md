@@ -44,7 +44,7 @@ classDiagram
     class object_GameMap {
         <<object>>
         +apply(loader: Loader[Set[Route]]) GameMap
-        +apply()(using configFilePath: String) GameMap
+        +apply(configFilePath: String) GameMap
     }
     class Loader~A~ {
         <<trait>>

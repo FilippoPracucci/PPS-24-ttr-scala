@@ -8,9 +8,6 @@ import model.SetLoaderTest
 class RoutesLoaderTest extends AnyFlatSpec with SetLoaderTest[Route]:
   import config.Loader
 
-  override protected def createLoader(): Loader[Set[Route]] =
-    import RoutesLoader.given
-    RoutesLoader()
+  override protected def createLoader(): Loader[Set[Route]] = RoutesLoader()
 
-  override protected def createLoaderWith(configFilePath: String): Loader[Set[Route]] =
-    RoutesLoader()(using configFilePath)
+  override protected def createLoaderWith(configFilePath: String): Loader[Set[Route]] = RoutesLoader(configFilePath)

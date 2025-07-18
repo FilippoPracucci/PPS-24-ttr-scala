@@ -4,10 +4,10 @@ import config.{LoaderFromFile, JsonReader}
 
 /** Class that represents a loader of routes from a JSON file.
   * @param configFilePath
-  *   the given path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
-  *   the routes
+  *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
+  *   routes (default: "routes")
   */
-class RoutesLoader()(using override val configFilePath: String) extends LoaderFromFile[Set[Route]]
+class RoutesLoader(override val configFilePath: String = "routes") extends LoaderFromFile[Set[Route]]
     with JsonReader:
   import upickle.default.*
   import ConversionHelper.routeMechanic
@@ -73,8 +73,3 @@ class RoutesLoader()(using override val configFilePath: String) extends LoaderFr
         case "green" => GREEN
         case "pink" => PINK
         case _ => throw new IllegalStateException(s"${errorMessage}illegal color '$color' found")
-
-object RoutesLoader:
-  /** The default path of the JSON config file (starting from 'src/main/resources/', without file extension).
-    */
-  given defaultConfigFilePath: String = "routes"

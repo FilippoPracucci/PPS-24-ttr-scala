@@ -1,73 +1,75 @@
 package model.map
 
-/** Trait that represents the loader of the routes.
+import config.{LoaderFromFile, JsonReader}
+
+/** Class that represents a loader of routes from a JSON file.
+  * @param configFilePath
+  *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
+  *   routes (default: "routes")
   */
-trait RoutesLoader:
-  /** Loads the routes.
-    * @return
-    *   the loaded set of routes
-    */
-  def load(): Set[Route]
+class RoutesLoader(override val configFilePath: String = "routes") extends LoaderFromFile[Set[Route]]
+    with JsonReader:
+  import upickle.default.*
+  import ConversionHelper.routeMechanic
 
-object RoutesLoader:
-  /** The default path of the config file (starting from 'src/main/resources/').
+  /** Class that represents the structure of a route in the JSON file.
+    * @param connectedCities
+    *   the pair of cities connected by the route
+    * @param length
+    *   the length of the route
+    * @param mechanic
+    *   the mechanic of the route
     */
-  given defaultConfigFilePath: String = "routes"
+  protected case class RouteJson(connectedCities: (CityJson, CityJson), length: Int, mechanic: MechanicJson)
 
-  /** Creates a `RoutesLoader`.
-    * @param configFilePath
-    *   the given path of the json config file (starting from 'src/main/resources/', without file extension) containing
-    *   the routes
-    * @return
-    *   the created `RoutesLoader`
+  /** Class that represents a city in the JSON file.
+    * @param name
+    *   the name of the city
     */
-  def apply()(using configFilePath: String): RoutesLoader = RoutesLoaderImpl(using configFilePath)
+  protected case class CityJson(name: String)
 
-  private class RoutesLoaderImpl()(using configFilePath: String) extends RoutesLoader:
-    import scala.util._
+  /** Class that represents the structure of a route mechanic in the JSON file.
+    * @param mechanicType
+    *   the type of the mechanic expressed as String
+    * @param value
+    *   the value of the specified type of mechanic expressed as String
+    */
+  protected case class MechanicJson(mechanicType: String, value: String)
+
+  override protected type Data = Set[RouteJson]
+
+  protected given ReadWriter[RouteJson] = macroRW
+  protected given ReadWriter[CityJson] = macroRW
+  protected given ReadWriter[MechanicJson] = macroRW
+  override protected given readWriter: ReadWriter[Data] = readwriter[Seq[RouteJson]].bimap[Data](_.toSeq, _.toSet)
+
+  override protected def onSuccess(routesJson: Data): Set[Route] =
+    routesJson.map(routeJson =>
+      Route(
+        (City(routeJson.connectedCities._1.name), City(routeJson.connectedCities._2.name)),
+        routeJson.length,
+        routeJson.routeMechanic
+      )
+    )
+
+  private object ConversionHelper:
     import model.utils.Color
-    import Color._
+    import Color.*
 
-    private val errorMessage = "Error loading config file: "
-    private val fileExtension = ".json"
+    extension (routeJson: RouteJson)
+      def routeMechanic: Route.Mechanic = routeJson.mechanic.mechanicType match
+        case "specificColor" => Route.SpecificColor(routeJson.mechanic.value.toColor)
+        case _ => throw new IllegalStateException(s"${errorMessage}illegal mechanic " +
+            s"'${routeJson.mechanic.mechanicType}' found")
 
-    private case class RouteJson(connectedCities: (CityJson, CityJson), length: Int, mechanic: MechanicJson)
-    private case class CityJson(name: String)
-    private case class MechanicJson(mechanicType: String, value: String)
-
-    override def load(): Set[Route] = readRoutes() match
-      case Success(routesJson) =>
-        routesJson.map(routeJson =>
-          Route(
-            (City(routeJson.connectedCities._1.name), City(routeJson.connectedCities._2.name)),
-            routeJson.length,
-            getMechanicFrom(routeJson)
-          )
-        )
-      case Failure(e) => throw new IllegalStateException(errorMessage + e.getMessage, e)
-
-    private def readRoutes(): Try[Set[RouteJson]] =
-      import scala.io.Source
-      import upickle.default._
-
-      given ReadWriter[RouteJson] = macroRW
-      given ReadWriter[CityJson] = macroRW
-      given ReadWriter[MechanicJson] = macroRW
-
-      Using(Source.fromResource(configFilePath + fileExtension)) { source => read[Set[RouteJson]](source.mkString) }
-
-    private def getMechanicFrom(routeJson: RouteJson): Route.Mechanic = routeJson.mechanic.mechanicType match
-      case "specificColor" => Route.SpecificColor(getColorFrom(routeJson.mechanic.value))
-      case _ => throw new IllegalStateException(s"${errorMessage}illegal mechanic " +
-          s"'${routeJson.mechanic.mechanicType}' found")
-
-    private def getColorFrom(color: String): Color = color match
-      case "black" => BLACK
-      case "white" => WHITE
-      case "red" => RED
-      case "blue" => BLUE
-      case "orange" => ORANGE
-      case "yellow" => YELLOW
-      case "green" => GREEN
-      case "pink" => PINK
-      case _ => throw new IllegalStateException(s"${errorMessage}illegal color '$color' found")
+    extension (color: String)
+      private def toColor: Color = color match
+        case "black" => BLACK
+        case "white" => WHITE
+        case "red" => RED
+        case "blue" => BLUE
+        case "orange" => ORANGE
+        case "yellow" => YELLOW
+        case "green" => GREEN
+        case "pink" => PINK
+        case _ => throw new IllegalStateException(s"${errorMessage}illegal color '$color' found")

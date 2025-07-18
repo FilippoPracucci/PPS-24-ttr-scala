@@ -22,9 +22,9 @@ relativi la condizione di fine partita e il completamento degli obiettivi.
 |--------------------------------------|-------------------------------------------------------------------------|------------|:--------------:|:--------:|:----------:|
 | /                                    | Fix errore nella GUI quando si esegue il jar su Linux                   | Entrambi   |       25       |    X     |     X      |
 | /                                    | Rilascio release `v0.2.0`                                               | Entrambi   |       5        |    X     |     X      |
-| Gestione delle carte obiettivo       | Modellazione delle carte obiettivo                                      | Pracucci   |       15       |    X     |            |
-|                                      | Creazione e gestione file di configurazione per le carte obiettivo      | Bedeschi   |       10       |          |            |
-|                                      | Visualizzazione obiettivo del giocatore di turno                        | Pracucci   |       5        |    X     |            |
+| Gestione delle carte obiettivo       | Modellazione delle carte obiettivo                                      | Pracucci   |       15       |    X     |     X      |
+|                                      | Creazione e gestione file di configurazione per le carte obiettivo      | Bedeschi   |       10       |    X     |     X      |
+|                                      | Visualizzazione obiettivo del giocatore di turno                        | Pracucci   |       5        |    X     |     X      |
 | Controllo condizione di fine partita | Implementazione del controllo di fine partita ad ogni turno             | Pracucci   |       5        |    X     |            |
 |                                      | Visualizzazione inizio ultimo round e schermata di fine partita         | Pracucci   |       10       |    X     |            |
 | Gestione punteggio dei giocatori     | Implementazione calcolo punteggio relativo all'occupazione delle tratte | Bedeschi   |       10       |          |            |

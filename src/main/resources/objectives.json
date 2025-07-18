@@ -1,0 +1,68 @@
+[
+  {
+    "citiesToConnect": [
+      {
+        "name": "Lisboa"
+      },
+      {
+        "name": "Danzic"
+      }
+    ],
+    "points": 20
+  },
+  {
+    "citiesToConnect": [
+      {
+        "name": "Brest"
+      },
+      {
+        "name": "Petrograd"
+      }
+    ],
+    "points": 20
+  },
+  {
+    "citiesToConnect": [
+      {
+        "name": "Palermo"
+      },
+      {
+        "name": "Moskva"
+      }
+    ],
+    "points": 20
+  },
+  {
+    "citiesToConnect": [
+      {
+        "name": "Kobenhavn"
+      },
+      {
+        "name": "Erzurum"
+      }
+    ],
+    "points": 21
+  },
+  {
+    "citiesToConnect": [
+      {
+        "name": "Edinburgh"
+      },
+      {
+        "name": "Athina"
+      }
+    ],
+    "points": 21
+  },
+  {
+    "citiesToConnect": [
+      {
+        "name": "Cadiz"
+      },
+      {
+        "name": "Stockholm"
+      }
+    ],
+    "points": 21
+  }
+]

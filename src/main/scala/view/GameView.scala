@@ -160,11 +160,10 @@ object GameView:
         }
 
       private def initMap(): Unit =
-        import CitiesLoader.given
         CitiesLoader(
           frame.size.width - eastPanel.peer.getPreferredSize.getWidth.toInt,
           frame.size.height - frame.peer.getInsets.top - southPanel.peer.getPreferredSize.getHeight.toInt
-        ).load()
+        )().load()
 
     override def addHandView(handView: HandView): Unit =
       handPanel.contents += handView.handComponent

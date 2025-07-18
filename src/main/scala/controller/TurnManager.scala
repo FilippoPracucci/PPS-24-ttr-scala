@@ -53,7 +53,7 @@ object TurnManager:
       currentPlayer = players((players.indexOf(currentPlayer) + 1) % players.size)
 
     private def updateGameState(): Unit = _playerStartedLastRound match
-      case Some(value) => _gameState = if currentPlayer == value then END_GAME else LAST_ROUND
+      case Some(player) => _gameState = if currentPlayer == player then END_GAME else LAST_ROUND
       case None if currentPlayer.trains.trainCars <= 2 =>
         _gameState = START_LAST_ROUND
         _playerStartedLastRound = Option(currentPlayer)

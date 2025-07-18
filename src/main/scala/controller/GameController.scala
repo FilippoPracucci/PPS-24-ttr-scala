@@ -72,9 +72,6 @@ object GameController:
       yield playerList :+= Player(color, deck, objective = list(Random.nextInt(list.size)))
       playerList
 
-    private def initHandsView(): List[HandView] =
-      players.map(p => HandView(p.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))))
-
     private def initGameView(): Unit =
       gameMap.routes.foreach(route =>
         gameView.addRoute(

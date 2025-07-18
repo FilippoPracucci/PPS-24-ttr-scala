@@ -58,7 +58,7 @@ object GameController:
     private val players: List[Player] = initPlayers()
     private val turnManager: TurnManager = TurnManager(players)
 
-    private val handsView = initHandsView()
+    private val handView = HandView(currentHandCardsView)
     private val gameView = GameView()
 
     initGameView()
@@ -86,14 +86,13 @@ object GameController:
         )
       )
       gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains.trainCars)
-      gameView.addHandView(handsView(players.indexOf(currentPlayer)))
+      gameView.addHandView(handView)
       gameView.updateObjective(currentPlayerObjective)
       gameView.open()
 
     override def drawCards(n: Int): Unit =
       val initialHandCards = currentPlayer.hand.cards
       currentPlayer.drawCards(n)
-      currentHandView.updateHand(currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor)))
       switchTurn()
 
     override def claimRoute(connectedCities: (City, City)): Unit =
@@ -127,16 +126,11 @@ object GameController:
 
       private def updateView(connectedCities: (City, City)): Unit =
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
-        currentHandView.updateHand(
-          currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))
-        )
         switchTurn()
 
     private def currentPlayer: Player = turnManager.currentPlayer
 
     private def currentPlayerObjective: ((City, City), Points) = currentPlayer.objective.unapply().get
-
-    private def currentHandView: HandView = handsView(players.indexOf(currentPlayer))
 
     private def switchTurn(): Unit =
       import GameState.*
@@ -145,6 +139,10 @@ object GameController:
         case START_LAST_ROUND => gameView.startLastRound()
         case END_GAME => gameView.endGame()
         case _ => ()
+      handView.updateHand(currentHandCardsView)
       gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains.trainCars)
-      gameView.updateHandView(currentHandView)
+      gameView.updateHandView(handView)
       gameView.updateObjective(currentPlayerObjective)
+
+    private def currentHandCardsView: List[CardView] =
+      currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))

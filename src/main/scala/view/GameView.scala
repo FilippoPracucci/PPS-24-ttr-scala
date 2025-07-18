@@ -1,12 +1,12 @@
 package view
 
 import map.{CitiesLoader, MapView}
-import view.cards.HandView
+import cards.HandView
 
 /** Trait that represents the view of the game.
   */
 trait GameView:
-  import GameView.{City, Color, PlayerName}
+  import GameView.{City, Points, PlayerId, Color, PlayerName}
 
   /** Opens the view.
     */
@@ -55,6 +55,22 @@ trait GameView:
     */
   def updateRoute(connectedCities: (City, City), color: Color): Unit
 
+  /** Update the objective view.
+    *
+    * @param objective
+    *   the pair of cities to connect and its value in terms of points.
+    */
+  def updateObjective(objective: ((City, City), Points)): Unit
+
+  /** Update the player view.
+    *
+    * @param playerId
+    *   the identifier of the player.
+    * @param trains
+    *   the number of train cars left to the player.
+    */
+  def updatePlayer(playerId: PlayerId, trains: Int): Unit
+
   /** Updates the score of the specified player.
     *
     * @param player
@@ -73,9 +89,9 @@ trait GameView:
 object GameView:
   import controller.GameController
 
-  /** Type alias that represents the city as String by its name.
+  /** Type alias that represents the city as String by its name, the points as Int and the player id as a Color.
     */
-  export GameController.City
+  export GameController.{City, Points, PlayerId}
 
   /** Type alias that represents the player's name.
     */
@@ -97,6 +113,7 @@ object GameView:
     import java.awt.Toolkit
     import scala.swing.event.ButtonClicked
     import controller.GameController
+    import player.{PlayerView, ObjectiveView}
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BorderPanel()
@@ -112,14 +129,14 @@ object GameView:
     private val southPanel = new BoxPanel(Orientation.Horizontal)
     private val handPanel = new BoxPanel(Orientation.Horizontal)
     private val scrollPane = new ScrollPane(handPanel)
-    private val handButtonPanel = new BoxPanel(Orientation.Vertical)
-    private val drawButton = new Button("Draw")
-
     private val eastPanel = new BoxPanel(Orientation.Vertical)
+    private val drawButton = new Button("Draw")
     private val scoreboardPanel = new BoxPanel(Orientation.Vertical)
     private var scoreLabels: Map[String, Label] = Map()
 
     private val mapView = MapView()
+    private val playerView = PlayerView()
+    private val objectiveView = ObjectiveView()
 
     InitHelper.setFrameSize()
     InitHelper.initPanels()
@@ -130,22 +147,30 @@ object GameView:
           screenSize.height - insets.bottom - insets.top)
 
       def initPanels(): Unit =
-        handButtonPanel.contents += drawButton
         configDrawButton()
+        configSouthPanel()
+        configEastPanel()
+        panel.layout ++= List((mapView.component, BorderPanel.Position.Center),
+          (southPanel, BorderPanel.Position.South), (eastPanel, BorderPanel.Position.East))
+        initMap()
+        frame.repaint()
+
+      private def configSouthPanel(): Unit =
         scrollPane.horizontalScrollBarPolicy = AsNeeded
         scrollPane.verticalScrollBarPolicy = Never
         southPanel.contents += scrollPane
-        southPanel.contents += handButtonPanel
+        southPanel.contents += drawButton
+
+      private def configEastPanel(): Unit =
+        val EAST_PANEL_WIDTH_RATIO = 0.15
         scoreboardPanel.border = Swing.EmptyBorder(10, 10, 10, 10)
         scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
           contents += new Label("PLAYER SCORES")
         }
         eastPanel.contents += scoreboardPanel
-        panel.layout(mapView.component) = BorderPanel.Position.Center
-        initMap()
-        panel.layout(southPanel) = BorderPanel.Position.South
-        panel.layout(eastPanel) = BorderPanel.Position.East
-        frame.repaint()
+        eastPanel.contents += playerView.component
+        eastPanel.contents += objectiveView.component
+        eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
 
       private def configDrawButton(): Unit =
         drawButton.listenTo(drawButton.mouse.clicks)
@@ -194,3 +219,5 @@ object GameView:
 
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
+    export objectiveView.updateObjective
+    export playerView.updatePlayer

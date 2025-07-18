@@ -4,7 +4,6 @@ import model.cards.{Deck, Hand}
 import model.utils.{Color, PlayerColor, GameError}
 
 type PlayerId = PlayerColor
-type Objective = String //TODO
 
 /** A player, that has an id, an objective, a hand of train cards, a number of train cars and a reference to the deck.
   * The player can draw cards and claim a route.
@@ -23,13 +22,6 @@ trait Player:
     *   the player's objective.
     */
   def objective: Objective
-
-  /** The reference to the deck of cards.
-    *
-    * @return
-    *   the reference to the deck of cards.
-    */
-  def deck: Deck // reference to the deck
 
   /** The player's train cards hand.
     *
@@ -138,7 +130,7 @@ object Player:
 
   private val NUMBER_TRAIN_CARS = 45
 
-  /** Create a player, with the given identifier.
+  /** Create a player, with the given identifier and objective.
     *
     * @param playerId
     *   the player's id.
@@ -146,17 +138,19 @@ object Player:
     *   the reference to the deck.
     * @param trains
     *   the player's train cars.
+    * @param objective
+    *   the player's objective.
     * @return
     *   the player created.
     */
-  def apply(playerId: PlayerId, deck: Deck = Deck(), trains: TrainCars = TrainCars(NUMBER_TRAIN_CARS)): Player =
-    PlayerImpl(playerId, deck, trains)
+  def apply(playerId: PlayerId, deck: Deck = Deck(), trains: TrainCars = TrainCars(NUMBER_TRAIN_CARS),
+      objective: Objective): Player =
+    PlayerImpl(playerId, deck, trains, objective)
 
-  private case class PlayerImpl(override val id: PlayerId, override val deck: Deck,
-      override val trains: TrainCars) extends Player:
+  private case class PlayerImpl(override val id: PlayerId, deck: Deck,
+      override val trains: TrainCars, override val objective: Objective) extends Player:
     import scala.util.*
 
-    override val objective: Objective = "" // TODO
     override val hand: Hand = Hand(deck)
     private var _score: Int = 0
 

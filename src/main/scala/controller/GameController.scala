@@ -21,7 +21,7 @@ trait GameController:
 object GameController:
   /** Type alias that represents the city as String by its name.
     */
-  type City = String
+  export model.player.{PlayerId, City, Points}
 
   /** Returns the singleton instance of `GameController`.
     * @return
@@ -45,7 +45,7 @@ object GameController:
     export view.cards.{CardView, HandView}
     export MapViewColorHelper.*
     export model.cards.Deck
-    export model.player.Player
+    export model.player.{Player, ObjectiveWithCompletion}
     private val routePointsManager = model.map.RoutePointsManager()
     export routePointsManager.points
 
@@ -66,10 +66,12 @@ object GameController:
     initGameView()
 
     private def initPlayers(): List[Player] =
+      import scala.util.Random // TODO: modify with real objective
+      val list = List(ObjectiveWithCompletion(("Paris", "Berlin"), 8), ObjectiveWithCompletion(("Paris", "Venezia"), 4))
       var playerList: List[Player] = List.empty
       for
         color <- PlayerColor.values
-      yield playerList :+= Player(color, deck)
+      yield playerList :+= Player(color, deck, objective = list(Random.nextInt(list.size)))
       playerList
 
     private def initHandsView(): List[HandView] =
@@ -85,7 +87,9 @@ object GameController:
             case _ => throw new IllegalStateException("Unhandled mechanic")
         )
       )
+      gameView.updatePlayer(currentPlayer.id, currentPlayer.trains.trainCars)
       gameView.addHandView(handsView(players.indexOf(currentPlayer)))
+      gameView.updateObjective(currentPlayerObjective)
       gameView.initPlayerScores(players.map(player => (player.name, player.score)))
       gameView.open()
 
@@ -96,8 +100,7 @@ object GameController:
       val initialHandCards = currentPlayer.hand.cards
       currentPlayer.drawCards(n)
       currentHandView.updateHand(currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor)))
-      turnManager.switchTurn()
-      gameView.updateHandView(currentHandView)
+      switchTurn()
 
     override def claimRoute(connectedCities: (City, City)): Unit =
       val optionRoute = gameMap.getRoute(connectedCities)
@@ -137,9 +140,16 @@ object GameController:
         currentHandView.updateHand(
           currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))
         )
-        turnManager.switchTurn()
-        gameView.updateHandView(currentHandView)
+        switchTurn()
 
     private def currentPlayer: Player = turnManager.currentPlayer
 
+    private def currentPlayerObjective: ((City, City), Points) = currentPlayer.objective.unapply().get
+
     private def currentHandView: HandView = handsView(players.indexOf(currentPlayer))
+
+    private def switchTurn(): Unit =
+      turnManager.switchTurn()
+      gameView.updatePlayer(currentPlayer.id, currentPlayer.trains.trainCars)
+      gameView.updateHandView(currentHandView)
+      gameView.updateObjective(currentPlayerObjective)

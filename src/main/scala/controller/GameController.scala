@@ -139,7 +139,12 @@ object GameController:
     private def currentHandView: HandView = handsView(players.indexOf(currentPlayer))
 
     private def switchTurn(): Unit =
+      import GameState.*
       turnManager.switchTurn()
+      turnManager.gameState match
+        case START_LAST_ROUND => gameView.startLastRound()
+        case END_GAME => gameView.endGame()
+        case _ => ()
       gameView.updatePlayer(currentPlayer.id, currentPlayer.trains.trainCars)
       gameView.updateHandView(currentHandView)
       gameView.updateObjective(currentPlayerObjective)

@@ -70,6 +70,12 @@ trait GameView:
     */
   def reportError(message: String): Unit
 
+  /** Show the last round start message to the user. */
+  def startLastRound(): Unit
+
+  /** Show the message of end game to the user and then close the interface. */
+  def endGame(): Unit
+
 object GameView:
   import controller.GameController
 
@@ -91,7 +97,8 @@ object GameView:
     import scala.swing._
     import ScrollPane.BarPolicy.*
     import java.awt.Toolkit
-    import scala.swing.event.ButtonClicked
+    import Dialog.Options
+    import event.ButtonClicked
     import controller.GameController
     import player.{PlayerView, ObjectiveView}
 
@@ -168,6 +175,14 @@ object GameView:
       frame.validate()
 
     override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")
+
+    override def startLastRound(): Unit =
+      Dialog.showConfirmation(frame, "Start of the final round, so last turn for each player!",
+        title = "Last round", Options.Default)
+
+    override def endGame(): Unit =
+      Dialog.showConfirmation(frame, "The game is over!", title = "End game", Options.Default) match
+        case _ => close(); frame.closeOperation()
 
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}

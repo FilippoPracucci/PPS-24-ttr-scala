@@ -86,7 +86,11 @@ object GameController:
         )
       )
       gameView.addHandView(handsView(players.indexOf(currentPlayer)))
+      gameView.initPlayerScores(players.map(player => (player.name, player.score)))
       gameView.open()
+
+    extension (player: Player)
+      private def name: String = player.id.toString.head.toUpper + player.id.toString.tail.toLowerCase
 
     override def drawCards(n: Int): Unit =
       val initialHandCards = currentPlayer.hand.cards
@@ -129,7 +133,7 @@ object GameController:
       private def onSuccess(connectedCities: (City, City), routePoints: Int): Unit =
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
         currentPlayer.addPoints(routePoints)
-        println(currentPlayer.id.toString + "'s score: " + currentPlayer.score)
+        gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
         currentHandView.updateHand(
           currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))
         )

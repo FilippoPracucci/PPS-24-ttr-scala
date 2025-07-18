@@ -37,7 +37,6 @@ object GameController:
   private object ImportHelper:
     export CardControllerColor.*
     export model.map.{GameMap, Route}
-    export GameMap.given
     export Route.*
     export model.utils.{Color, PlayerColor, GameError}
     export view.GameView
@@ -45,7 +44,7 @@ object GameController:
     export view.cards.{CardView, HandView}
     export MapViewColorHelper.*
     export model.cards.Deck
-    export model.player.{Player, ObjectiveWithCompletion}
+    export model.player.{Player, ObjectiveWithCompletion, ObjectivesLoader}
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
@@ -64,12 +63,12 @@ object GameController:
     initGameView()
 
     private def initPlayers(): List[Player] =
-      import scala.util.Random // TODO: modify with real objective
-      val list = List(ObjectiveWithCompletion(("Paris", "Berlin"), 8), ObjectiveWithCompletion(("Paris", "Venezia"), 4))
+      import scala.util.Random
+      val objectives = ObjectivesLoader().load().toList
       var playerList: List[Player] = List.empty
       for
         color <- PlayerColor.values
-      yield playerList :+= Player(color, deck, objective = list(Random.nextInt(list.size)))
+      yield playerList :+= Player(color, deck, objective = objectives(Random.nextInt(objectives.size)))
       playerList
 
     private def initHandsView(): List[HandView] =

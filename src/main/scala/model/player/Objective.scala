@@ -1,7 +1,7 @@
 package model.player
 
 /** Type alias that represents the city as String by its name. */
-type City = String
+export model.map.GameMap.CityName as City
 
 /** Type alias that represents the points as Int. */
 type Points = Int
@@ -55,7 +55,6 @@ object Objective:
   *   the points corresponding to the objective.
   */
 case class BasicObjective(override val citiesToConnect: (City, City), override val points: Points) extends Objective:
-  // TODO: check the existence of the cities
   require(citiesToConnect._1 != citiesToConnect._2, "The cities to connect cannot be the same!")
   require(points > 0, "The points of an objective must be positive!")
 

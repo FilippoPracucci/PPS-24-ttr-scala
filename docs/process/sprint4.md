@@ -25,10 +25,10 @@ relativi la condizione di fine partita e il completamento degli obiettivi.
 | Gestione delle carte obiettivo       | Modellazione delle carte obiettivo                                      | Pracucci   |       15       |    X     |     X      |
 |                                      | Creazione e gestione file di configurazione per le carte obiettivo      | Bedeschi   |       10       |    X     |     X      |
 |                                      | Visualizzazione obiettivo del giocatore di turno                        | Pracucci   |       5        |    X     |     X      |
-| Controllo condizione di fine partita | Implementazione del controllo di fine partita ad ogni turno             | Pracucci   |       5        |    X     |            |
-|                                      | Visualizzazione inizio ultimo round e schermata di fine partita         | Pracucci   |       10       |    X     |            |
-| Gestione punteggio dei giocatori     | Implementazione calcolo punteggio relativo all'occupazione delle tratte | Bedeschi   |       10       |    X     |            |
-|                                      | Visualizzazione punteggi attuali                                        | Bedeschi   |       5        |    X     |            |
+| Controllo condizione di fine partita | Implementazione del controllo di fine partita ad ogni turno             | Pracucci   |       5        |    X     |     X      |
+|                                      | Visualizzazione inizio ultimo round e schermata di fine partita         | Pracucci   |       10       |    X     |     X      |
+| Gestione punteggio dei giocatori     | Implementazione calcolo punteggio relativo all'occupazione delle tratte | Bedeschi   |       10       |    X     |     X      |
+|                                      | Visualizzazione punteggi attuali                                        | Bedeschi   |       5        |    X     |     X      |
 | Controllo completamento obiettivi    | Implementazione logica del controllo completamento obiettivi            | Bedeschi   |       10       |          |            |
 
 ## Sprint Review

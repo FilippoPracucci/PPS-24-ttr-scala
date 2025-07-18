@@ -4,7 +4,7 @@ import scala.swing.*
 
 /** A simple test consisting in launching a frame with a player to show its representation and its update. */
 object PlayerViewTest extends App:
-  private val playerView: PlayerView = PlayerView()
+  private val playerView = BasicPlayerInfoView()
   private val frame = new MainFrame() {
     peer.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE)
     visible = true
@@ -13,7 +13,7 @@ object PlayerViewTest extends App:
   private val panel = new BoxPanel(Orientation.Vertical)
 
   import model.utils.PlayerColor.*
-  playerView.updatePlayer(GREEN, 40)
+  playerView.updatePlayerInfo(GREEN, 40)
 
   panel.contents += playerView.component
   frame.contents = panel
@@ -21,6 +21,6 @@ object PlayerViewTest extends App:
 
   Thread.sleep(2000)
 
-  playerView.updatePlayer(YELLOW, 30)
+  playerView.updatePlayerInfo(YELLOW, 30)
   frame.validate()
   frame.pack()

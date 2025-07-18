@@ -29,6 +29,14 @@ relativi la condizione di fine partita e il completamento degli obiettivi.
 |                                      | Visualizzazione inizio ultimo round e schermata di fine partita         | Pracucci   |       10       |    X     |     X      |
 | Gestione punteggio dei giocatori     | Implementazione calcolo punteggio relativo all'occupazione delle tratte | Bedeschi   |       10       |    X     |     X      |
 |                                      | Visualizzazione punteggi attuali                                        | Bedeschi   |       5        |    X     |     X      |
-| Controllo completamento obiettivi    | Implementazione logica del controllo completamento obiettivi            | Bedeschi   |       10       |          |            |
+| Controllo completamento obiettivi    | Implementazione logica del controllo completamento obiettivi            | Bedeschi   |       10       |    X     |     X      |
 
 ## Sprint Review
+
+Tutti i task dello sprint sono stati completati. Nei prossimi sprint verrà considerata la possibilità di migliorare
+alcune implementazioni. All'interno dello sprint sono state effettuate le release:
+- `v0.1.1`: fix bug di visualizzazione su linux;
+- `v0.2.0`: gestione dei turni dei giocatori;
+- `v0.3.0`: aggiunta degli obiettivi dei giocatori;
+- `v0.4.0`: aggiunta dell'assegnamento dei punti in seguito all'occupazione di una tratta e gestione del termine della
+partita.

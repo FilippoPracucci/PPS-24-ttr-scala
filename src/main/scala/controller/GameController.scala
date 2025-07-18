@@ -45,10 +45,11 @@ object GameController:
     export MapViewColorHelper.*
     export model.cards.Deck
     export model.player.{Player, ObjectiveWithCompletion, ObjectivesLoader}
+    private val routePointsManager = model.map.RoutePointsManager()
+    export routePointsManager.points
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
-    import ImportHelper.given
 
     private val gameMap = GameMap()
     private val deck: Deck = Deck()
@@ -84,7 +85,11 @@ object GameController:
       gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains.trainCars)
       gameView.addHandView(handView)
       gameView.updateObjective(currentPlayerObjective)
+      gameView.initPlayerScores(players.map(player => (player.name, player.score)))
       gameView.open()
+
+    extension (player: Player)
+      private def name: String = player.id.toString.head.toUpper.toString + player.id.toString.tail.toLowerCase
 
     override def drawCards(n: Int): Unit =
       val initialHandCards = currentPlayer.hand.cards
@@ -97,11 +102,13 @@ object GameController:
         throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
       )
       route.mechanic match
-        case SpecificColor(color) => ClaimRouteHelper.claimRoute(connectedCities, route.length)(route.length, color)
+        case SpecificColor(color) =>
+          ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
         case _ => throw new IllegalStateException("Unhandled mechanic")
 
     private object ClaimRouteHelper:
-      def claimRoute(connectedCities: (City, City), routeLength: Int)(nCards: Int, color: Color): Unit =
+      def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Points)(nCards: Int, color: Color)
+          : Unit =
         (for
           claimingPlayer <- gameMap.getPlayerClaimingRoute(connectedCities)
           _ <- check(claimingPlayer.isEmpty, GameMap.AlreadyClaimedRoute)
@@ -111,7 +118,7 @@ object GameController:
           _ <- currentPlayer.placeTrains(routeLength)
           _ <- currentPlayer.playCards(color, nCards)
         yield ()) match
-          case Right(_) => updateView(connectedCities)
+          case Right(_) => onSuccess(connectedCities, routePoints)
           case Left(GameMap.AlreadyClaimedRoute) =>
             gameView.reportError("Can't claim a route that has already been claimed!")
           case Left(Player.NotEnoughTrains) => gameView.reportError("Not enough trains to claim this route!")
@@ -120,8 +127,10 @@ object GameController:
 
       private def check(condition: Boolean, err: GameError): Either[GameError, Unit] = Either.cond(condition, (), err)
 
-      private def updateView(connectedCities: (City, City)): Unit =
+      private def onSuccess(connectedCities: (City, City), routePoints: Points): Unit =
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
+        currentPlayer.addPoints(routePoints)
+        gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
         switchTurn()
 
     private def currentPlayer: Player = turnManager.currentPlayer

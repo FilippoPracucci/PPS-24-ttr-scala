@@ -5,9 +5,9 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
-
   import model.cards.Card
   import model.utils.{PlayerColor, Color}
+
   val id: PlayerColor = PlayerColor.BLUE
   val objective: Objective = ObjectiveWithCompletion(("Paris", "Berlin"), 8)
   var player: Player = Player(id, objective = objective)
@@ -58,6 +58,17 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     player.hand.addCards(List.fill(n)(Card(Color.RED)))
     player.playCards(color, n) should be(Right(()))
 
+  it should "correctly play cards and reinsert them into the deck" in:
+    val nTotalCards = 10
+    val color = Color.RED
+    val deckFixed = model.cards.Deck()(using () => List.fill(nTotalCards)(Card(color)))
+    val customPlayer: Player = Player(id, deckFixed, objective = objective)
+    val nCardsToPlay = 2
+    customPlayer.playCards(color, nCardsToPlay)
+    deckFixed.cards.size + customPlayer.hand.cards.size should be(nTotalCards)
+    customPlayer.playCards(color, nCardsToPlay)
+    deckFixed.cards.size + customPlayer.hand.cards.size should be(nTotalCards)
+
   // TODO check on trains?
 
   it should "be able to place trains" in: // TODO to review
@@ -65,3 +76,14 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val invalidN = NUMBER_TRAIN_CARS + 1
     player.placeTrains(validN) should be(Right(()))
     player.placeTrains(invalidN) should be(Left(Player.NotEnoughTrains))
+
+  it should "correctly update the score" in:
+    val initialScore = 0
+    val pointsToAdd = 5
+    player.score should be(initialScore)
+    player.addPoints(pointsToAdd)
+    player.score should be(initialScore + pointsToAdd)
+
+  it should "fail to add negative points to the score" in:
+    val pointsToAdd = -5
+    an[IllegalArgumentException] should be thrownBy player.addPoints(pointsToAdd)

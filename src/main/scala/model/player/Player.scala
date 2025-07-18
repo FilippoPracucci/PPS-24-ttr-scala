@@ -1,9 +1,9 @@
 package model.player
 
 import model.cards.{Deck, Hand}
-import model.utils._
+import model.utils.{Color, PlayerColor, GameError}
 
-type PlayerId = model.utils.PlayerColor
+type PlayerId = PlayerColor
 
 /** A player, that has an id, an objective, a hand of train cards, a number of train cars and a reference to the deck.
   * The player can draw cards and claim a route.
@@ -38,6 +38,13 @@ trait Player:
     *   the player's train cars.
     */
   def trains: Trains
+
+  /** The player's score.
+    *
+    * @return
+    *   the player's score
+    */
+  def score: Int
 
   /** Draw the given amount of cards from the deck and put them in the player's hand.
     *
@@ -77,6 +84,13 @@ trait Player:
     *   `Right(())` if the action succeeds, `Left(NotEnoughTrains)` if the player doesn't have enough trains
     */
   def placeTrains(n: Int): Either[GameError, Unit]
+
+  /** Adds the specified number of points to the player's score.
+    *
+    * @param points
+    *   the number of points to add
+    */
+  def addPoints(points: Int): Unit
 
 /** The factory for [[Player]] instances. */
 object Player:
@@ -135,9 +149,10 @@ object Player:
 
   private case class PlayerImpl(override val id: PlayerId, deck: Deck,
       override val trains: TrainCars, override val objective: Objective) extends Player:
-    import scala.util._
+    import scala.util.*
 
     override val hand: Hand = Hand(deck)
+    private var _score: Int = 0
 
     override def drawCards(n: Int): Unit = hand.addCards(deck.draw(n))
 
@@ -145,8 +160,14 @@ object Player:
 
     override def playCards(color: Color, n: Int): Either[GameError, Unit] =
       require(n > 0, "n must be positive")
-      Try(hand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards)
+      Try(hand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards).map(_.foreach(deck.reinsertAtTheBottom))
 
     override def placeTrains(n: Int): Either[GameError, Unit] = // TODO to review
       require(n > 0, "n must be positive")
       Try(trains.placeTrainCars(n)).toEither.left.map(_ => NotEnoughTrains)
+
+    override def score: Int = _score
+
+    override def addPoints(points: Int): Unit =
+      require(points > 0, "points must be positive")
+      _score += points

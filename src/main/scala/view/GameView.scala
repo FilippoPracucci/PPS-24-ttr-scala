@@ -6,7 +6,7 @@ import cards.HandView
 /** Trait that represents the view of the game.
   */
 trait GameView:
-  import GameView.{City, Points, PlayerId, Color}
+  import GameView.{City, Points, PlayerId, Color, PlayerName}
 
   /** Opens the view.
     */
@@ -40,6 +40,13 @@ trait GameView:
     */
   def updateHandView(handView: HandView): Unit
 
+  /** Initialize player scores.
+    *
+    * @param playerScores
+    *   the list of player scores consisting of pairs "player's name; score"
+    */
+  def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
+
   /** Updates the route connecting the specified cities.
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
@@ -64,6 +71,15 @@ trait GameView:
     */
   def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit
 
+  /** Updates the score of the specified player.
+    *
+    * @param player
+    *   the name of the player whose score to update
+    * @param score
+    *   the new score of the player
+    */
+  def updatePlayerScore(player: PlayerName, score: Points): Unit
+
   /** Reports the error to the user.
     * @param message
     *   the message of the error
@@ -82,6 +98,10 @@ object GameView:
   /** Type alias that represents the city as String by its name, the points as Int and the player id as a Color.
     */
   export GameController.{City, Points, PlayerId}
+
+  /** Type alias that represents the player's name.
+    */
+  type PlayerName = String
 
   /** Type alias that represents the color as String by its name in lowercase. // TODO
     */
@@ -111,17 +131,19 @@ object GameView:
     }
     private val insets = Toolkit.getDefaultToolkit.getScreenInsets(frame.peer.getGraphicsConfiguration)
 
+    private val gameController: GameController = GameController()
+
     private val southPanel = new BoxPanel(Orientation.Horizontal)
     private val handPanel = new BoxPanel(Orientation.Horizontal)
     private val scrollPane = new ScrollPane(handPanel)
     private val eastPanel = new BoxPanel(Orientation.Vertical)
     private val drawButton = new Button("Draw")
+    private val scoreboardPanel = new BoxPanel(Orientation.Vertical)
+    private var scoreLabels: Map[String, Label] = Map()
 
     private val mapView = MapView()
     private val playerView = BasicPlayerInfoView()
     private val objectiveView = BasicObjectiveView()
-
-    private val gameController: GameController = GameController()
 
     InitHelper.setFrameSize()
     InitHelper.initPanels()
@@ -148,6 +170,11 @@ object GameView:
 
       private def configEastPanel(): Unit =
         val EAST_PANEL_WIDTH_RATIO = 0.15
+        scoreboardPanel.border = Swing.EmptyBorder(10, 10, 10, 10)
+        scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
+          contents += new Label("PLAYER SCORES")
+        }
+        eastPanel.contents += scoreboardPanel
         eastPanel.contents += playerView.component
         eastPanel.contents += objectiveView.component
         eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
@@ -172,6 +199,27 @@ object GameView:
       handPanel.contents.clear()
       addHandView(handView)
       frame.validate()
+
+    override def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit =
+      scoreLabels = playerScores.map((player, score) => (player, new Label(score.toString))).toMap
+      scoreLabels.foreach((player, scoreLabel) =>
+        scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
+          contents += new Label(player + ":")
+          contents += Swing.HGlue
+          contents += scoreLabel
+        }
+      )
+      scoreboardPanel.contents.foreach(_.updateLabelFont(15f))
+
+    extension (component: Component)
+      private def updateLabelFont(size: Float): Unit = component match
+        case panel: Panel => panel.contents.foreach {
+            case label: Label => label.font = label.font.deriveFont(15f)
+            case _ => ()
+          }
+        case _ => ()
+
+    override def updatePlayerScore(player: PlayerName, score: Points): Unit = scoreLabels(player).text = score.toString
 
     override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")
 

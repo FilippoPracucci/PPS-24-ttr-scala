@@ -27,8 +27,8 @@ relativi la condizione di fine partita e il completamento degli obiettivi.
 |                                      | Visualizzazione obiettivo del giocatore di turno                        | Pracucci   |       5        |    X     |     X      |
 | Controllo condizione di fine partita | Implementazione del controllo di fine partita ad ogni turno             | Pracucci   |       5        |    X     |            |
 |                                      | Visualizzazione inizio ultimo round e schermata di fine partita         | Pracucci   |       10       |    X     |            |
-| Gestione punteggio dei giocatori     | Implementazione calcolo punteggio relativo all'occupazione delle tratte | Bedeschi   |       10       |          |            |
-|                                      | Visualizzazione punteggi attuali                                        | Bedeschi   |       5        |          |            |
+| Gestione punteggio dei giocatori     | Implementazione calcolo punteggio relativo all'occupazione delle tratte | Bedeschi   |       10       |    X     |            |
+|                                      | Visualizzazione punteggi attuali                                        | Bedeschi   |       5        |    X     |            |
 | Controllo completamento obiettivi    | Implementazione logica del controllo completamento obiettivi            | Bedeschi   |       10       |          |            |
 
 ## Sprint Review

@@ -5,12 +5,10 @@ import org.scalatest.matchers.should.Matchers
 
 import model.SetLoaderTest
 
-class ObjectivesLoaderTest extends AnyFlatSpec with SetLoaderTest[ObjectiveTemp]:
+class ObjectivesLoaderTest extends AnyFlatSpec with SetLoaderTest[ObjectiveWithCompletion]:
   import config.Loader
 
-  override protected def createLoader(): Loader[Set[ObjectiveTemp]] =
-    import ObjectivesLoader.given
-    ObjectivesLoader()
+  override protected def createLoader(): Loader[Set[ObjectiveWithCompletion]] = ObjectivesLoader()
 
-  override protected def createLoaderWith(configFilePath: String): Loader[Set[ObjectiveTemp]] =
-    ObjectivesLoader()(using configFilePath)
+  override protected def createLoaderWith(configFilePath: String): Loader[Set[ObjectiveWithCompletion]] =
+    ObjectivesLoader(configFilePath)

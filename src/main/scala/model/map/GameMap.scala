@@ -7,9 +7,7 @@ import model.player.PlayerId
 /** Trait that represents the game map, composed of a set of routes.
   */
 trait GameMap:
-  /** Type alias that represents the name of a city as String.
-    */
-  type CityName = String
+  import GameMap.CityName
 
   /** Returns the set of routes of the `GameMap`
     * @return
@@ -46,6 +44,10 @@ trait GameMap:
   def claimRoute(connectedCities: (CityName, CityName), playerId: PlayerId): Either[GameError, Unit]
 
 object GameMap:
+  /** Type alias that represents the name of a city as String.
+    */
+  type CityName = String
+
   /** Error that represents the case in which a route doesn't exist.
     */
   case object NonExistentRoute extends GameError
@@ -53,10 +55,6 @@ object GameMap:
   /** Error that represents the case in which a route is already claimed.
     */
   case object AlreadyClaimedRoute extends GameError
-
-  /** The default path of the config file (exported from `RoutesLoader`).
-    */
-  export RoutesLoader.given String
 
   /** Creates a `GameMap` composed of the set of routes loaded by the specified loader.
     * @param loader
@@ -68,12 +66,12 @@ object GameMap:
 
   /** Creates a `GameMap` composed of the routes specified in the JSON config file.
     * @param configFilePath
-    *   the given path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
-    *   the routes
+    *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
+    *   routes (default = "routes")
     * @return
     *   the created `GameMap`
     */
-  def apply()(using configFilePath: String): GameMap = GameMap(RoutesLoader()(using configFilePath))
+  def apply(configFilePath: String = "routes"): GameMap = GameMap(RoutesLoader(configFilePath))
 
   private class GameMapImpl(override val routes: Set[Route]) extends GameMap:
     private type ClaimedRoute = (Route, Option[PlayerId])

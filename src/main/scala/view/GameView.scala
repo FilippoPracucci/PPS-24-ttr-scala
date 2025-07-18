@@ -62,14 +62,14 @@ trait GameView:
     */
   def updateObjective(objective: ((City, City), Points)): Unit
 
-  /** Update the player view.
+  /** Update the player information view.
     *
     * @param playerId
     *   the identifier of the player.
     * @param trains
     *   the number of train cars left to the player.
     */
-  def updatePlayer(playerId: PlayerId, trains: Int): Unit
+  def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit
 
   /** Updates the score of the specified player.
     *
@@ -85,6 +85,12 @@ trait GameView:
     *   the message of the error
     */
   def reportError(message: String): Unit
+
+  /** Show the last round start message to the user. */
+  def startLastRound(): Unit
+
+  /** Show the message of end game to the user and then close the interface. */
+  def endGame(): Unit
 
 object GameView:
   import controller.GameController
@@ -111,9 +117,10 @@ object GameView:
     import scala.swing._
     import ScrollPane.BarPolicy.*
     import java.awt.Toolkit
-    import scala.swing.event.ButtonClicked
+    import Dialog.Options
+    import event.ButtonClicked
     import controller.GameController
-    import player.{PlayerView, ObjectiveView}
+    import player.{BasicPlayerInfoView, BasicObjectiveView}
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BorderPanel()
@@ -135,8 +142,8 @@ object GameView:
     private var scoreLabels: Map[String, Label] = Map()
 
     private val mapView = MapView()
-    private val playerView = PlayerView()
-    private val objectiveView = ObjectiveView()
+    private val playerView = BasicPlayerInfoView()
+    private val objectiveView = BasicObjectiveView()
 
     InitHelper.setFrameSize()
     InitHelper.initPanels()
@@ -180,11 +187,10 @@ object GameView:
         }
 
       private def initMap(): Unit =
-        import CitiesLoader.given
         CitiesLoader(
           frame.size.width - eastPanel.peer.getPreferredSize.getWidth.toInt,
           frame.size.height - frame.peer.getInsets.top - southPanel.peer.getPreferredSize.getHeight.toInt
-        ).load()
+        )().load()
 
     override def addHandView(handView: HandView): Unit =
       handPanel.contents += handView.handComponent
@@ -217,7 +223,15 @@ object GameView:
 
     override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")
 
+    override def startLastRound(): Unit =
+      Dialog.showConfirmation(frame, "Start of the final round, so last turn for each player!",
+        title = "Last round", Options.Default)
+
+    override def endGame(): Unit =
+      Dialog.showConfirmation(frame, "The game is over!", title = "End game", Options.Default) match
+        case _ => close(); frame.closeOperation()
+
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
     export objectiveView.updateObjective
-    export playerView.updatePlayer
+    export playerView.updatePlayerInfo

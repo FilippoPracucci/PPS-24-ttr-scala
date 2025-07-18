@@ -2,10 +2,8 @@ package view.player
 
 import scala.swing.*
 
-/** The representation of a player. It's possible to update it. */
+/** The representation of a player. It's possible to update its text. */
 trait PlayerView:
-  import PlayerView.PlayerId
-
   /** The [[Component]] of the player view.
     *
     * @return
@@ -13,42 +11,30 @@ trait PlayerView:
     */
   def component: Component
 
-  /** Update the player representation with a new one, given as [[PlayerId]] and number of trains left.
+  /** Update component text.
     *
-    * @param playerId
-    *   the new player id to represent.
-    * @param trains
-    *   the new player number of train cars left.
+    * @param text
+    *   the text to update the component with.
     */
-  def updatePlayer(playerId: PlayerId, trains: Int): Unit
+  def updateComponentText(text: String): Unit
 
-/** The factory for [[PlayerView]] instances. */
-object PlayerView:
-  import controller.GameController
+import scala.swing.Font
+import scala.swing.Font.Style
+given Font = Font("Coursier", Style.Plain, 16)
 
-  /** Type aliases that represent the player identifier as a [[model.utils.PlayerColor]].
-    */
-  export GameController.PlayerId
+/** A basic representation of a player following the [[PlayerView]] trait. */
+protected class BasicPlayerView(using componentFont: Font) extends PlayerView:
 
-  /** Create a player's objective representation.
-    *
-    * @return
-    *   the player's objective representation.
-    */
-  def apply(): PlayerView = PlayerViewImpl
+  private val _component: TextPane = new TextPane():
+    this.initComponent(componentFont)
 
-  private object PlayerViewImpl extends PlayerView:
-    import Font.Style
+  override def component: Component = _component
 
-    private val _component: TextPane = new TextPane():
-      this.initComponent()
+  override def updateComponentText(text: String): Unit =
+    _component.text = text
 
-    override def component: Component = _component
-
-    override def updatePlayer(playerId: PlayerId, trains: Int): Unit =
-      _component.text = f"Player $playerId has $trains left"
-
-    extension (component: TextPane)
-      private def initComponent(): Unit =
-        component.editable = false
-        component.font = Font("Coursier", Style.Bold, 16)
+  extension (component: TextPane)
+    private def initComponent(font: Font): Unit =
+      component.editable = false
+      component.focusable = false
+      component.font = font

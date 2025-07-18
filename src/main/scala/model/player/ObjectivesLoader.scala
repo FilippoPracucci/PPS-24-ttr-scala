@@ -2,16 +2,13 @@ package model.player
 
 import config.{LoaderFromFile, JsonReader}
 
-// TODO to integrate with the real Objective
-private case class ObjectiveTemp(citiesToConnect: (String, String), points: Int)
-
 /** Class that represents a loader of objectives from a JSON file.
   * @param configFilePath
-  *   the given path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
-  *   the routes
+  *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
+  *   objectives (default = "objectives")
   */
-class ObjectivesLoader()(using override val configFilePath: String) extends LoaderFromFile[Set[ObjectiveTemp]]
-    with JsonReader:
+class ObjectivesLoader(override val configFilePath: String = "objectives")
+    extends LoaderFromFile[Set[ObjectiveWithCompletion]] with JsonReader:
   import upickle.default.*
 
   /** Class that represents the structure of an objective in the JSON file.
@@ -34,13 +31,10 @@ class ObjectivesLoader()(using override val configFilePath: String) extends Load
   protected given ReadWriter[CityJson] = macroRW
   override protected given readWriter: ReadWriter[Data] = readwriter[Seq[ObjectiveJson]].bimap[Data](_.toSeq, _.toSet)
 
-  override protected def onSuccess(objectivesJson: Data): Set[ObjectiveTemp] =
+  override protected def onSuccess(objectivesJson: Data): Set[ObjectiveWithCompletion] =
     objectivesJson.map(objectiveJson =>
-      ObjectiveTemp((objectiveJson.citiesToConnect._1.name, objectiveJson.citiesToConnect._2.name),
-        objectiveJson.points)
+      ObjectiveWithCompletion(
+        (objectiveJson.citiesToConnect._1.name, objectiveJson.citiesToConnect._2.name),
+        objectiveJson.points
+      )
     )
-
-object ObjectivesLoader:
-  /** The default path of the JSON config file (starting from 'src/main/resources/', without file extension).
-    */
-  given defaultConfigFilePath: String = "objectives"

@@ -46,10 +46,9 @@ end GameMapBasicTest
 
 class GameMapInitFromFileTest extends AnyFlatSpec with Matchers:
   "A GameMap" should "correctly initialize when created from file" in:
-    import GameMap.given
     lazy val gameMap = GameMap()
     noException should be thrownBy gameMap
     gameMap.routes should not be empty
 
   it should "fail its initialization when created from a non-existent file" in:
-    an[IllegalStateException] should be thrownBy GameMap()(using "nonExistentFile")
+    an[IllegalStateException] should be thrownBy GameMap("nonExistentFile")

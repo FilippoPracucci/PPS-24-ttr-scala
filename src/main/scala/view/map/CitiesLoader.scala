@@ -8,10 +8,10 @@ import config.{LoaderFromFile, JsonReader}
   * @param mapHeight
   *   the height (in pixel) of the map
   * @param configFilePath
-  *   the given path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
-  *   information on the cities
+  *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
+  *   information on the cities (default = "cities")
   */
-class CitiesLoader(mapWidth: Int, mapHeight: Int)(using override val configFilePath: String)
+class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: String = "cities")
     extends LoaderFromFile[Unit] with JsonReader:
   require(mapWidth > 0, "mapWidth must be positive")
   require(mapHeight > 0, "mapHeight must be positive")
@@ -51,8 +51,3 @@ class CitiesLoader(mapWidth: Int, mapHeight: Int)(using override val configFileP
   private def addCity(city: City)(data: Data): Unit =
     MapView().addCity(city.name, city.x / data.scaleWidth * mapWidth, city.y / data.scaleHeight * mapHeight,
       cityWidth, cityHeight)
-
-object CitiesLoader:
-  /** The default path of the JSON config file (starting from 'src/main/resources/', without file extension).
-    */
-  given defaultConfigFilePath: String = "cities"

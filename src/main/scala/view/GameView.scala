@@ -120,7 +120,7 @@ object GameView:
     import Dialog.Options
     import event.ButtonClicked
     import controller.GameController
-    import player.{BasicPlayerInfoView, BasicObjectiveView}
+    import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView}
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BorderPanel()
@@ -138,12 +138,11 @@ object GameView:
     private val scrollPane = new ScrollPane(handPanel)
     private val eastPanel = new BoxPanel(Orientation.Vertical)
     private val drawButton = new Button("Draw")
-    private val scoreboardPanel = new BoxPanel(Orientation.Vertical)
-    private var scoreLabels: Map[String, Label] = Map()
 
     private val mapView = MapView()
-    private val playerView = BasicPlayerInfoView()
-    private val objectiveView = BasicObjectiveView()
+    private val playerView = BasicPlayerInfoView("PLAYER INFO")
+    private val objectiveView = BasicObjectiveView("OBJECTIVE")
+    private val playerScoresView = PlayerScoresView("PLAYER SCORES")
 
     InitHelper.setFrameSize()
     InitHelper.initPanels()
@@ -170,14 +169,16 @@ object GameView:
 
       private def configEastPanel(): Unit =
         val EAST_PANEL_WIDTH_RATIO = 0.15
-        scoreboardPanel.border = Swing.EmptyBorder(10, 10, 10, 10)
-        scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
-          contents += new Label("PLAYER SCORES")
-        }
-        eastPanel.contents += scoreboardPanel
+        val OBJECTIVE_VIEW_WIDTH_RATIO = 0.3
+        val PLAYER_SCORE_VIEW_WIDTH_RATIO = 0.4
+        eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
         eastPanel.contents += playerView.component
         eastPanel.contents += objectiveView.component
-        eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
+        eastPanel.contents += playerScoresView.component
+        objectiveView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
+          (eastPanel.preferredSize.height * OBJECTIVE_VIEW_WIDTH_RATIO).toInt)
+        playerScoresView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
+          (eastPanel.preferredSize.height * PLAYER_SCORE_VIEW_WIDTH_RATIO).toInt)
 
       private def configDrawButton(): Unit =
         drawButton.listenTo(drawButton.mouse.clicks)
@@ -200,27 +201,6 @@ object GameView:
       addHandView(handView)
       frame.validate()
 
-    override def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit =
-      scoreLabels = playerScores.map((player, score) => (player, new Label(score.toString))).toMap
-      scoreLabels.foreach((player, scoreLabel) =>
-        scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
-          contents += new Label(player + ":")
-          contents += Swing.HGlue
-          contents += scoreLabel
-        }
-      )
-      scoreboardPanel.contents.foreach(_.updateLabelFont(15f))
-
-    extension (component: Component)
-      private def updateLabelFont(size: Float): Unit = component match
-        case panel: Panel => panel.contents.foreach {
-            case label: Label => label.font = label.font.deriveFont(15f)
-            case _ => ()
-          }
-        case _ => ()
-
-    override def updatePlayerScore(player: PlayerName, score: Points): Unit = scoreLabels(player).text = score.toString
-
     override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")
 
     override def startLastRound(): Unit =
@@ -235,3 +215,4 @@ object GameView:
     export mapView.{addRoute, updateRoute}
     export objectiveView.updateObjective
     export playerView.updatePlayerInfo
+    export playerScoresView.{initPlayerScores, updatePlayerScore}

@@ -14,10 +14,13 @@ trait ObjectiveView:
     */
   def updateObjective(objective: ((City, City), Points)): Unit =
     playerView.updateComponentText(
-      f"Objective: connect the cities ${objective._1._1} and ${objective._1._2}\n\nPoints: ${objective._2}"
+      f"Connect the cities ${objective._1._1} and ${objective._1._2}\n\nPoints: ${objective._2}"
     )
 
 /** A basic representation of a player with in addition the player's objective, so following the [[ObjectiveView]]
   * trait.
+  *
+  * @param title
+  *   the title of the view.
   */
-class BasicObjectiveView extends BasicPlayerView with ObjectiveView
+class BasicObjectiveView(title: String) extends BasicPlayerView(title) with ObjectiveView

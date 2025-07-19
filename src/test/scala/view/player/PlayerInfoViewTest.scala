@@ -3,8 +3,8 @@ package view.player
 import scala.swing.*
 
 /** A simple test consisting in launching a frame with a player to show its representation and its update. */
-object PlayerViewTest extends App:
-  private val playerView = BasicPlayerInfoView()
+object PlayerInfoViewTest extends App:
+  private val playerView = BasicPlayerInfoView("PLAYER INFO")
   private val frame = new MainFrame() {
     peer.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE)
     visible = true

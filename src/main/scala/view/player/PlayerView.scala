@@ -18,23 +18,29 @@ trait PlayerView:
     */
   def updateComponentText(text: String): Unit
 
-import scala.swing.Font
-import scala.swing.Font.Style
-given Font = Font("Coursier", Style.Plain, 16)
-
-/** A basic representation of a player following the [[PlayerView]] trait. */
-protected class BasicPlayerView(using componentFont: Font) extends PlayerView:
+/** A basic representation of a player following the [[PlayerView]] trait.
+  *
+  * @param title
+  *   the title of the component.
+  */
+protected class BasicPlayerView(title: String) extends PlayerView:
 
   private val _component: TextPane = new TextPane():
-    this.initComponent(componentFont)
+    this.initComponent()
 
   override def component: Component = _component
 
   override def updateComponentText(text: String): Unit =
-    _component.text = text
+    _component.text = title + "\n\n" + text
 
   extension (component: TextPane)
-    private def initComponent(font: Font): Unit =
+    private def initComponent(): Unit =
+      import scala.swing.Font.Style
+      import javax.swing.BorderFactory
       component.editable = false
       component.focusable = false
-      component.font = font
+      component.font = Font("Coursier", Style.Plain, 16)
+      component.border = BorderFactory.createCompoundBorder(
+        BorderFactory.createLineBorder(java.awt.Color.BLACK, 1, true),
+        Swing.EmptyBorder(10)
+      )

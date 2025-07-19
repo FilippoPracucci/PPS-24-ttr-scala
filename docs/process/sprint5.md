@@ -22,7 +22,7 @@ della versione `v1.0.0`.
 |-----------------------------------|-------------------------------------------------------------------------|------------|:--------------:|:--------:|:----------:|
 | Controllo completamento obiettivi | Integrazione del controllo completamento obiettivi                      | Bedeschi   |       10       |          |            |
 |                                   | Assegnamento punti degli obiettivi                                      | Pracucci   |       5        |          |            |
-| Miglioramento view                | Miglioramento dei pannelli della view e della sua coerenza              | Pracucci   |       5        |          |            |
+| Miglioramento view                | Miglioramento dei pannelli della view e della sua coerenza              | Pracucci   |       5        |    X     |            |
 | Refactor                          | Refactor del GameController                                             | Entrambi   |       10       |          |            |
 |                                   | Refactor della GameView                                                 | Entrambi   |       5        |          |            |
 |                                   | Refactor del Player                                                     | Entrambi   |       5        |          |            |

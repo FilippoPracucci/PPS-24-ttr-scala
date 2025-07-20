@@ -29,6 +29,7 @@ class DeckTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   it should "draw correctly" in:
     deckFixed.draw(2) should be(fixedList.take(2))
     deckFixed.cards should be(fixedList.takeRight(fixedList.size - 2))
+    a[IllegalArgumentException] should be thrownBy deckFixed.draw(deckFixed.cards.size + 1)
 
   it should "reinsert a card on the bottom correctly" in:
     val cardToAdd: Card = Card(PINK)

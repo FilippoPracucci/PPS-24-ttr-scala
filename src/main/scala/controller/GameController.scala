@@ -92,9 +92,9 @@ object GameController:
       private def name: String = player.id.toString.head.toUpper.toString + player.id.toString.tail.toLowerCase
 
     override def drawCards(n: Int): Unit =
-      val initialHandCards = currentPlayer.hand.cards
-      currentPlayer.drawCards(n)
-      switchTurn()
+      currentPlayer.drawCards(n) match
+        case Right(_) => switchTurn()
+        case _ => gameView.reportError("Not enough cards in the deck! It's possible only to claim a route!")
 
     override def claimRoute(connectedCities: (City, City)): Unit =
       val optionRoute = gameMap.getRoute(connectedCities)

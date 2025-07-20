@@ -17,6 +17,7 @@ trait GameView:
   def close(): Unit
 
   /** Adds a new route in the game map view.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     * @param length
@@ -41,6 +42,7 @@ trait GameView:
   def updateHandView(handView: HandView): Unit
 
   /** Updates the route connecting the specified cities.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     * @param color
@@ -64,11 +66,14 @@ trait GameView:
     */
   def updatePlayer(playerId: PlayerId, trains: Int): Unit
 
-  /** Reports the error to the user.
+  /** Reports a message to the user.
+    *
+    * @param messageType
+    *   the type of the message to report
     * @param message
-    *   the message of the error
+    *   the message to report
     */
-  def reportError(message: String): Unit
+  def report(messageType: String, message: String): Unit
 
 object GameView:
   import controller.GameController
@@ -82,6 +87,7 @@ object GameView:
   export MapView.Color
 
   /** Returns the singleton instance of `GameView`.
+    *
     * @return
     *   the globally shared `GameView` instance
     */
@@ -167,7 +173,8 @@ object GameView:
       addHandView(handView)
       frame.validate()
 
-    override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")
+    override def report(messageType: String, message: String): Unit =
+      Dialog.showMessage(frame, message, title = messageType)
 
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}

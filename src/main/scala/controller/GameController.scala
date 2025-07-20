@@ -13,6 +13,7 @@ trait GameController:
   def drawCards(n: Int): Unit
 
   /** Claims the route connecting the specified cities.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     */
@@ -24,6 +25,7 @@ object GameController:
   export model.player.{PlayerId, City, Points}
 
   /** Returns the singleton instance of `GameController`.
+    *
     * @return
     *   the globally shared `GameController` instance
     */
@@ -45,7 +47,7 @@ object GameController:
     export view.cards.{CardView, HandView}
     export MapViewColorHelper.*
     export model.cards.Deck
-    export model.player.{Player, ObjectiveWithCompletion}
+    export model.player.{Player, ObjectiveWithCompletion, ObjectiveChecker}
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
@@ -60,6 +62,8 @@ object GameController:
 
     private val handsView = initHandsView()
     private val gameView = GameView()
+
+    private val objectiveChecker = ObjectiveChecker(gameMap)
 
     initGameView()
 
@@ -118,14 +122,18 @@ object GameController:
         yield ()) match
           case Right(_) => updateView(connectedCities)
           case Left(GameMap.AlreadyClaimedRoute) =>
-            gameView.reportError("Can't claim a route that has already been claimed!")
-          case Left(Player.NotEnoughTrains) => gameView.reportError("Not enough trains to claim this route!")
-          case Left(Player.NotEnoughCards) => gameView.reportError("Not enough cards to claim this route!")
+            gameView.report("Error", "Can't claim a route that has already been claimed!")
+          case Left(Player.NotEnoughTrains) => gameView.report("Error", "Not enough trains to claim this route!")
+          case Left(Player.NotEnoughCards) => gameView.report("Error", "Not enough cards to claim this route!")
           case Left(_) => throw new IllegalStateException("Unexpected error")
 
       private def check(condition: Boolean, err: GameError): Either[GameError, Unit] = Either.cond(condition, (), err)
 
       private def updateView(connectedCities: (City, City)): Unit =
+        if !currentPlayer.objective.completed && objectiveChecker.check(currentPlayer.objective, currentPlayer.id) then
+          gameView.report("Objective completed", "You have completed your objective!")
+          currentPlayer.objective.markAsComplete()
+
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
         currentHandView.updateHand(
           currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))

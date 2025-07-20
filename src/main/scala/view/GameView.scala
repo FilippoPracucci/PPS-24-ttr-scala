@@ -140,7 +140,7 @@ object GameView:
     private val drawButton = new Button("Draw")
 
     private val mapView = MapView()
-    private val playerView = BasicPlayerInfoView("PLAYER INFO")
+    private val playerInfoView = BasicPlayerInfoView("PLAYER INFO")
     private val objectiveView = BasicObjectiveView("OBJECTIVE")
     private val playerScoresView = PlayerScoresView("PLAYER SCORES")
 
@@ -172,7 +172,7 @@ object GameView:
         val OBJECTIVE_VIEW_WIDTH_RATIO = 0.3
         val PLAYER_SCORE_VIEW_WIDTH_RATIO = 0.4
         eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
-        eastPanel.contents += playerView.component
+        eastPanel.contents += playerInfoView.component
         eastPanel.contents += objectiveView.component
         eastPanel.contents += playerScoresView.component
         objectiveView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
@@ -214,5 +214,5 @@ object GameView:
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
     export objectiveView.updateObjective
-    export playerView.updatePlayerInfo
+    export playerInfoView.updatePlayerInfo
     export playerScoresView.{initPlayerScores, updatePlayerScore}

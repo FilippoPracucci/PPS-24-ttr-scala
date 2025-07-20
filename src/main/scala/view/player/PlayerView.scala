@@ -11,6 +11,13 @@ trait PlayerView:
     */
   def component: Component
 
+  /** Add a [[Component]] to the inner panel of the view.
+    *
+    * @param component
+    *   the component to add to the inner panel.
+    */
+  def addComponentToInnerPanel(component: Component): Unit
+
   /** Update component text.
     *
     * @param text
@@ -24,23 +31,39 @@ trait PlayerView:
   *   the title of the component.
   */
 protected class BasicPlayerView(title: String) extends PlayerView:
+  import javax.swing.BorderFactory
+  import java.awt.Color.*
 
-  private val _component: TextPane = new TextPane():
+  private val textComponent: TextPane = new TextPane():
+    this.initComponent()
+  private val panel = new BoxPanel(Orientation.Vertical):
+    contents += textComponent
+  private val _component: BoxPanel = new BoxPanel(Orientation.Vertical):
     this.initComponent()
 
   override def component: Component = _component
 
+  override def addComponentToInnerPanel(component: Component): Unit =
+    panel.contents += component
+
   override def updateComponentText(text: String): Unit =
-    _component.text = title + "\n\n" + text
+    textComponent.text = text
 
   extension (component: TextPane)
     private def initComponent(): Unit =
       import scala.swing.Font.Style
-      import javax.swing.BorderFactory
       component.editable = false
       component.focusable = false
       component.font = Font("Coursier", Style.Plain, 16)
+
+  extension (component: BoxPanel)
+    private def initComponent(): Unit =
+      component.contents += new Label(title):
+        xLayoutAlignment = 0.5
+        font = font.deriveFont(15f)
+      component.contents += panel
+      component.background = WHITE
       component.border = BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(java.awt.Color.BLACK, 1, true),
+        BorderFactory.createLineBorder(BLACK, 1, true),
         Swing.EmptyBorder(10)
       )

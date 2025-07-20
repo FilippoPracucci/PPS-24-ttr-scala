@@ -123,7 +123,11 @@ object GameController:
           _ <- currentPlayer.placeTrains(routeLength)
           _ <- currentPlayer.playCards(color, nCards)
         yield ()) match
-          case Right(_) => onSuccess(connectedCities, routePoints)
+          case Right(_) =>
+            currentPlayer.addPoints(routePoints)
+            updateRouteView(connectedCities)
+            checkObjectiveCompletion()
+            switchTurn()
           case Left(GameMap.AlreadyClaimedRoute) =>
             gameView.report("Error", "Can't claim a route that has already been claimed!")
           case Left(Player.NotEnoughTrains) => gameView.report("Error", "Not enough trains to claim this route!")
@@ -132,15 +136,25 @@ object GameController:
 
       private def check(condition: Boolean, err: GameError): Either[GameError, Unit] = Either.cond(condition, (), err)
 
-      private def onSuccess(connectedCities: (City, City), routePoints: Points): Unit =
-        if !currentPlayer.objective.completed && objectiveChecker.check(currentPlayer.objective, currentPlayer.id) then
-          gameView.report("Objective completed", "You have completed your objective!")
-          currentPlayer.objective.markAsComplete()
-
+      private def updateRouteView(connectedCities: (City, City)): Unit =
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
-        currentPlayer.addPoints(routePoints)
         gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
-        switchTurn()
+
+      private def checkObjectiveCompletion(): Unit =
+        Option(currentPlayer.objective)
+          .filter(!_.completed)
+          .filter(objective => objectiveChecker.check(objective, currentPlayer.id))
+          .foreach(objective =>
+            objective.markAsComplete()
+            currentPlayer.addPoints(objective.points)
+            updateObjectiveView()
+          )
+
+      private def updateObjectiveView(): Unit =
+        gameView.report("Objective completed",
+          s"You have completed your objective! You gain ${currentPlayer.objective.points} points!")
+        // update objective checkbox
+        gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
     private def currentPlayer: Player = turnManager.currentPlayer
 

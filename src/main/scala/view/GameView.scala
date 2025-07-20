@@ -169,16 +169,16 @@ object GameView:
 
       private def configEastPanel(): Unit =
         val EAST_PANEL_WIDTH_RATIO = 0.15
-        val OBJECTIVE_VIEW_WIDTH_RATIO = 0.3
-        val PLAYER_SCORE_VIEW_WIDTH_RATIO = 0.4
+        val OBJECTIVE_VIEW_HEIGHT_RATIO = 0.25
+        val PLAYER_SCORE_VIEW_HEIGHT_RATIO = 0.4
         eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
         eastPanel.contents += playerInfoView.component
         eastPanel.contents += objectiveView.component
         eastPanel.contents += playerScoresView.component
         objectiveView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
-          (eastPanel.preferredSize.height * OBJECTIVE_VIEW_WIDTH_RATIO).toInt)
+          (eastPanel.preferredSize.height * OBJECTIVE_VIEW_HEIGHT_RATIO).toInt)
         playerScoresView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
-          (eastPanel.preferredSize.height * PLAYER_SCORE_VIEW_WIDTH_RATIO).toInt)
+          (eastPanel.preferredSize.height * PLAYER_SCORE_VIEW_HEIGHT_RATIO).toInt)
 
       private def configDrawButton(): Unit =
         drawButton.listenTo(drawButton.mouse.clicks)

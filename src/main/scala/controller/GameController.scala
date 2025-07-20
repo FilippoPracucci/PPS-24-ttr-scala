@@ -65,11 +65,15 @@ object GameController:
 
     private def initPlayers(): List[Player] =
       import scala.util.Random
-      val objectives = ObjectivesLoader().load().toList
+      var objectives = ObjectivesLoader().load()
+      var objToAssign: Option[ObjectiveWithCompletion] = Option.empty
       var playerList: List[Player] = List.empty
       for
         color <- PlayerColor.values
-      yield playerList :+= Player(color, deck, objective = objectives(Random.nextInt(objectives.size)))
+      yield
+        objToAssign = Option(objectives.toList(Random.nextInt(objectives.size)))
+        objectives = objectives.excl(objToAssign.get)
+        playerList :+= Player(color, deck, objective = objToAssign.get)
       playerList
 
     private def initGameView(): Unit =

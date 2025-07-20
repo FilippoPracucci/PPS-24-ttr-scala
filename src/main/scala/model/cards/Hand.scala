@@ -23,8 +23,10 @@ trait Hand extends Cards:
     *   the color of train cards to play.
     * @param n
     *   the number of train cards to play.
+    * @return
+    *   the list of train cards that have been played
     */
-  def playCards(color: Color, n: Int): Unit
+  def playCards(color: Color, n: Int): List[Card]
 
   /** Add a list of train cards to the player's hand.
     *
@@ -68,9 +70,11 @@ object Hand:
       require(n > 0, "n must be positive")
       cards.count(_.color == color) >= n
 
-    override def playCards(color: Color, n: Int): Unit =
+    override def playCards(color: Color, n: Int): List[Card] =
       require(cards.count(_.color == color) >= n, "The cards to play have to be part of the hand!")
-      cards = cards diff cards.filter(_.color == color).take(n)
+      val cardsToPlay = cards.filter(_.color == color).take(n)
+      cards = cards diff cardsToPlay
+      cardsToPlay
 
     override def addCards(cardsToAdd: List[Card]): Unit =
       cards = cards :++ cardsToAdd

@@ -6,7 +6,7 @@ import cards.HandView
 /** Trait that represents the view of the game.
   */
 trait GameView:
-  import GameView.{City, Points, PlayerId, Color}
+  import GameView.{City, Points, PlayerId, Color, PlayerName}
 
   /** Opens the view.
     */
@@ -41,6 +41,13 @@ trait GameView:
     */
   def updateHandView(handView: HandView): Unit
 
+  /** Initialize player scores.
+    *
+    * @param playerScores
+    *   the list of player scores consisting of pairs "player's name; score"
+    */
+  def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
+
   /** Updates the route connecting the specified cities.
     *
     * @param connectedCities
@@ -57,14 +64,23 @@ trait GameView:
     */
   def updateObjective(objective: ((City, City), Points)): Unit
 
-  /** Update the player view.
+  /** Update the player information view.
     *
     * @param playerId
     *   the identifier of the player.
     * @param trains
     *   the number of train cars left to the player.
     */
-  def updatePlayer(playerId: PlayerId, trains: Int): Unit
+  def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit
+
+  /** Updates the score of the specified player.
+    *
+    * @param player
+    *   the name of the player whose score to update
+    * @param score
+    *   the new score of the player
+    */
+  def updatePlayerScore(player: PlayerName, score: Points): Unit
 
   /** Reports a message to the user.
     *
@@ -75,12 +91,22 @@ trait GameView:
     */
   def report(messageType: String, message: String): Unit
 
+  /** Show the last round start message to the user. */
+  def startLastRound(): Unit
+
+  /** Show the message of end game to the user and then close the interface. */
+  def endGame(): Unit
+
 object GameView:
   import controller.GameController
 
   /** Type alias that represents the city as String by its name, the points as Int and the player id as a Color.
     */
   export GameController.{City, Points, PlayerId}
+
+  /** Type alias that represents the player's name.
+    */
+  type PlayerName = String // TODO to integrate
 
   /** Type alias that represents the color as String by its name in lowercase. // TODO
     */
@@ -97,9 +123,10 @@ object GameView:
     import scala.swing._
     import ScrollPane.BarPolicy.*
     import java.awt.Toolkit
-    import scala.swing.event.ButtonClicked
+    import Dialog.Options
+    import event.ButtonClicked
     import controller.GameController
-    import player.{PlayerView, ObjectiveView}
+    import player.{BasicPlayerInfoView, BasicObjectiveView}
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BorderPanel()
@@ -110,17 +137,19 @@ object GameView:
     }
     private val insets = Toolkit.getDefaultToolkit.getScreenInsets(frame.peer.getGraphicsConfiguration)
 
+    private val gameController: GameController = GameController()
+
     private val southPanel = new BoxPanel(Orientation.Horizontal)
     private val handPanel = new BoxPanel(Orientation.Horizontal)
     private val scrollPane = new ScrollPane(handPanel)
     private val eastPanel = new BoxPanel(Orientation.Vertical)
     private val drawButton = new Button("Draw")
+    private val scoreboardPanel = new BoxPanel(Orientation.Vertical)
+    private var scoreLabels: Map[String, Label] = Map()
 
     private val mapView = MapView()
-    private val playerView = PlayerView()
-    private val objectiveView = ObjectiveView()
-
-    private val gameController: GameController = GameController()
+    private val playerView = BasicPlayerInfoView()
+    private val objectiveView = BasicObjectiveView()
 
     InitHelper.setFrameSize()
     InitHelper.initPanels()
@@ -147,6 +176,11 @@ object GameView:
 
       private def configEastPanel(): Unit =
         val EAST_PANEL_WIDTH_RATIO = 0.15
+        scoreboardPanel.border = Swing.EmptyBorder(10, 10, 10, 10)
+        scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
+          contents += new Label("PLAYER SCORES")
+        }
+        eastPanel.contents += scoreboardPanel
         eastPanel.contents += playerView.component
         eastPanel.contents += objectiveView.component
         eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
@@ -159,11 +193,10 @@ object GameView:
         }
 
       private def initMap(): Unit =
-        import CitiesLoader.given
         CitiesLoader(
           frame.size.width - eastPanel.peer.getPreferredSize.getWidth.toInt,
           frame.size.height - frame.peer.getInsets.top - southPanel.peer.getPreferredSize.getHeight.toInt
-        ).load()
+        )().load()
 
     override def addHandView(handView: HandView): Unit =
       handPanel.contents += handView.handComponent
@@ -173,10 +206,39 @@ object GameView:
       addHandView(handView)
       frame.validate()
 
+    override def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit =
+      scoreLabels = playerScores.map((player, score) => (player, new Label(score.toString))).toMap
+      scoreLabels.foreach((player, scoreLabel) =>
+        scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
+          contents += new Label(player + ":")
+          contents += Swing.HGlue
+          contents += scoreLabel
+        }
+      )
+      scoreboardPanel.contents.foreach(_.updateLabelFont(15f))
+
+    extension (component: Component)
+      private def updateLabelFont(size: Float): Unit = component match
+        case panel: Panel => panel.contents.foreach {
+            case label: Label => label.font = label.font.deriveFont(15f)
+            case _ => ()
+          }
+        case _ => ()
+
+    override def updatePlayerScore(player: PlayerName, score: Points): Unit = scoreLabels(player).text = score.toString
+
     override def report(messageType: String, message: String): Unit =
       Dialog.showMessage(frame, message, title = messageType)
+
+    override def startLastRound(): Unit =
+      Dialog.showConfirmation(frame, "Start of the final round, so last turn for each player!",
+        title = "Last round", Options.Default)
+
+    override def endGame(): Unit =
+      Dialog.showConfirmation(frame, "The game is over!", title = "End game", Options.Default) match
+        case _ => close(); frame.closeOperation()
 
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
     export objectiveView.updateObjective
-    export playerView.updatePlayer
+    export playerView.updatePlayerInfo

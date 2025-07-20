@@ -153,7 +153,7 @@ object GameController:
       private def updateObjectiveView(): Unit =
         gameView.report("Objective completed",
           s"You have completed your objective! You gain ${currentPlayer.objective.points} points!")
-        // update objective checkbox
+        // TODO update objective checkbox
         gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
     private def currentPlayer: Player = turnManager.currentPlayer

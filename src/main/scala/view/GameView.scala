@@ -3,6 +3,8 @@ package view
 import map.{CitiesLoader, MapView}
 import cards.HandView
 
+import javax.swing.BorderFactory
+
 /** Trait that represents the view of the game.
   */
 trait GameView:
@@ -162,23 +164,34 @@ object GameView:
         frame.repaint()
 
       private def configSouthPanel(): Unit =
+        import java.awt.Color.*
+        val borderWeight = 5
+        val borderThickness = 1
+        val borderColor = LIGHT_GRAY
         scrollPane.horizontalScrollBarPolicy = AsNeeded
         scrollPane.verticalScrollBarPolicy = Never
+        scrollPane.border = Swing.CompoundBorder(
+          Swing.EmptyBorder(borderWeight),
+          BorderFactory.createLineBorder(borderColor, borderThickness, true)
+        )
         southPanel.contents += scrollPane
         southPanel.contents += drawButton
+        southPanel.border = Swing.EmptyBorder(borderWeight)
 
       private def configEastPanel(): Unit =
-        val EAST_PANEL_WIDTH_RATIO = 0.15
-        val OBJECTIVE_VIEW_HEIGHT_RATIO = 0.25
-        val PLAYER_SCORE_VIEW_HEIGHT_RATIO = 0.4
-        eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
+        val eastPanelWidthRatio = 0.15
+        val objectiveViewHeightRatio = 0.25
+        val playerScoresViewHeightRatio = 0.4
+        val borderWeight = 1
+        eastPanel.preferredSize = new Dimension((frame.size.width * eastPanelWidthRatio).toInt, frame.size.height)
         eastPanel.contents += playerInfoView.component
         eastPanel.contents += objectiveView.component
         eastPanel.contents += playerScoresView.component
+        eastPanel.border = Swing.EmptyBorder(borderWeight)
         objectiveView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
-          (eastPanel.preferredSize.height * OBJECTIVE_VIEW_HEIGHT_RATIO).toInt)
+          (eastPanel.preferredSize.height * objectiveViewHeightRatio).toInt)
         playerScoresView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
-          (eastPanel.preferredSize.height * PLAYER_SCORE_VIEW_HEIGHT_RATIO).toInt)
+          (eastPanel.preferredSize.height * playerScoresViewHeightRatio).toInt)
 
       private def configDrawButton(): Unit =
         drawButton.listenTo(drawButton.mouse.clicks)

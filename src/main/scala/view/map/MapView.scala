@@ -104,6 +104,19 @@ object MapView:
 
       def setDefaultStyle(): Unit =
 
+        def setGraphStyle(): Unit =
+          import javax.swing.BorderFactory
+          import java.awt.Color.*
+          val borderThickness = 1
+          val backgroundColor = LIGHT_GRAY
+          val borderColor = BLACK
+          graphComponent.getViewport.setOpaque(true)
+          graphComponent.getViewport.setBackground(backgroundColor)
+          graphComponent.setBorder(
+            Swing.CompoundBorder(Swing.EmptyBorder(borderThickness),
+              BorderFactory.createLineBorder(borderColor, borderThickness, true))
+          )
+
         def setVertexStyle(): Unit =
           val fontSize = 14
           val fontStyle = mxConstants.FONT_BOLD
@@ -132,6 +145,7 @@ object MapView:
           edgeStyle.put(mxConstants.STYLE_STROKEWIDTH, edgeWidth)
           graph.getStylesheet.setDefaultEdgeStyle(edgeStyle)
 
+        setGraphStyle()
         setVertexStyle()
         setEdgeStyle()
 

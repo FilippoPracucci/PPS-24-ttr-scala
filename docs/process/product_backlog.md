@@ -23,3 +23,4 @@ rivalutate.
 |    8     | Controllo condizione di fine partita                          |       10       |    10    |    10    |    15    |    15    |          |
 |    9     | Gestione punteggio dei giocatori                              |       0        |    0     |    0     |    15    |    15    |          |
 |    10    | Controllo completamento obiettivi                             |       0        |    0     |    0     |    20    |    20    |          |
+|    11    | Classifica finale                                             |       0        |    0     |    0     |    0     |    5     |          |

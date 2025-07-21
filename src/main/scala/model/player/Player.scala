@@ -21,7 +21,7 @@ trait Player:
     * @return
     *   the player's objective.
     */
-  def objective: Objective
+  def objective: ObjectiveCompletion
 
   /** The player's train cards hand.
     *
@@ -150,11 +150,11 @@ object Player:
     *   the player created.
     */
   def apply(playerId: PlayerId, deck: Deck = Deck(), trains: TrainCars = TrainCars(NUMBER_TRAIN_CARS),
-      objective: Objective): Player =
+      objective: ObjectiveCompletion): Player =
     PlayerImpl(playerId, deck, trains, objective)
 
   private case class PlayerImpl(override val id: PlayerId, deck: Deck,
-      override val trains: TrainCars, override val objective: Objective) extends Player:
+      override val trains: TrainCars, override val objective: ObjectiveCompletion) extends Player:
     import scala.util.*
 
     override val hand: Hand = Hand(deck)

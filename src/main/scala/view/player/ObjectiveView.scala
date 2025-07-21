@@ -38,8 +38,12 @@ trait ObjectiveViewWithCompletion:
   /** Add a completion checkbox to the objective view. */
   def addCompletionCheckBox(): Unit = playerView.addComponentToInnerPanel(panel)
 
-  /** Mark the objective completion checkbox. */
-  def markAsComplete(): Unit = checkBox.selected = true
+  /** Update the completion checkbox of the objective view following the given state.
+    *
+    * @param state
+    *   the updated completion state.
+    */
+  def updateCompletionCheckBox(state: Boolean): Unit = checkBox.selected = state
 
 /** A basic representation of a player with in addition the player's objective and its completion status, so following
   * the [[ObjectiveView]] [[ObjectiveViewWithCompletion]] traits.

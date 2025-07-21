@@ -64,6 +64,13 @@ trait GameView:
     */
   def updateObjective(objective: ((City, City), Points)): Unit
 
+  /** Update the completion state of the current player objective.
+    *
+    * @param state
+    *   the new completion state of the objective.
+    */
+  def updateCompletionCheckBox(state: Boolean): Unit
+
   /** Update the player information view.
     *
     * @param playerId
@@ -232,6 +239,6 @@ object GameView:
 
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
-    export objectiveView.updateObjective
+    export objectiveView.{updateObjective, updateCompletionCheckBox}
     export playerInfoView.updatePlayerInfo
     export playerScoresView.{initPlayerScores, updatePlayerScore}

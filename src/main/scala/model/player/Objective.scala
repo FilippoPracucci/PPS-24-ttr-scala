@@ -6,9 +6,7 @@ export model.map.GameMap.CityName as City
 /** Type alias that represents the points as Int. */
 type Points = Int
 
-/** An objective that has a pair of cities to connect and a number of points it assigns if completed or taken away
-  * otherwise.
-  */
+/** An objective that has a pair of cities to connect and a number of points it assigns if completed. */
 trait Objective:
   /** The pair of cities to connect in order to complete the objective.
     *
@@ -17,7 +15,7 @@ trait Objective:
     */
   def citiesToConnect: (City, City)
 
-  /** The points assigned if the objective is completed or taken away otherwise.
+  /** The points assigned if the objective is completed.
     *
     * @return
     *   the points corresponding to the objective.

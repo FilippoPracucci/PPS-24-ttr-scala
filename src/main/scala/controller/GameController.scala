@@ -156,6 +156,7 @@ object GameController:
       handView.updateHand(currentHandCardsView)
       gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains.trainCars)
       gameView.updateHandView(handView)
+      gameView.updateCompletionCheckBox(currentPlayer.objective.completed)
       gameView.updateObjective(currentPlayerObjective)
 
     private def currentHandCardsView: List[CardView] =

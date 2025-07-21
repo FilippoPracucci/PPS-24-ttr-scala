@@ -101,15 +101,12 @@ object GameController:
       currentPlayer.drawCards(n)
       switchTurn()
 
-    override def claimRoute(connectedCities: (City, City)): Unit =
-      val optionRoute = gameMap.getRoute(connectedCities)
-      val route = optionRoute.getOrElse(
-        throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
-      )
-      route.mechanic match
+    override def claimRoute(connectedCities: (City, City)): Unit = gameMap.getRoute(connectedCities) match
+      case Some(route) => route.mechanic match
         case SpecificColor(color) =>
           ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
         case _ => throw new IllegalStateException("Unhandled mechanic")
+      case _ => throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
 
     private object ClaimRouteHelper:
       def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Points)(nCards: Int, color: Color)

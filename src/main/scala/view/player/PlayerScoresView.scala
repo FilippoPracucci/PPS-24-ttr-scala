@@ -58,12 +58,11 @@ object PlayerScoresView:
     override def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit =
       scoreLabels = playerScores.map((player, score) => (player, new Label(score.toString))).toMap
       scoreLabels.foreach((player, scoreLabel) =>
-        _component.contents += new BoxPanel(Orientation.Horizontal) {
+        _component.contents += new BoxPanel(Orientation.Horizontal):
           contents += new Label(player + ":")
           contents += Swing.HGlue
           contents += scoreLabel
           background = WHITE
-        }
       )
       _component.contents.foreach(_.updateLabelFont(15f))
 

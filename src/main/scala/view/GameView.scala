@@ -92,7 +92,7 @@ trait GameView:
   def startLastRound(): Unit
 
   /** Show the message of end game to the user and then close the interface. */
-  def endGame(): Unit
+  def endGame(playerScores: Seq[(PlayerName, Points)]): Unit
 
 object GameView:
   import controller.GameController
@@ -122,7 +122,7 @@ object GameView:
     import Dialog.Options
     import event.ButtonClicked
     import controller.GameController
-    import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView}
+    import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView, FinalRankingView}
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BorderPanel()
@@ -220,8 +220,14 @@ object GameView:
       Dialog.showConfirmation(frame, "Start of the final round, so last turn for each player!",
         title = "Last round", Options.Default)
 
-    override def endGame(): Unit =
-      Dialog.showConfirmation(frame, "The game is over!", title = "End game", Options.Default) match
+    override def endGame(playerScores: Seq[(PlayerName, Points)]): Unit =
+      import scala.swing.Dialog.Result.*
+      val options: Seq[String] = Seq("See the final ranking", "Close")
+      Dialog.showOptions(frame, "The game is over!", title = "End game", Options.Default, Dialog.Message.Plain,
+        entries = options, initial = options.indexOf(options.head)) match
+        case Yes =>
+          frame.contents = FinalRankingView("PLAYERS RANKING")(playerScores).component
+          frame.centerOnScreen()
         case _ => close(); frame.closeOperation()
 
     export frame.{open, close}

@@ -19,9 +19,12 @@ trait GameController:
   def claimRoute(connectedCities: (City, City)): Unit
 
 object GameController:
-  /** Type alias that represents the city as String by its name.
+  /** Type aliases that represent the player identifier as Color, the city as String by its name and the points as Int.
     */
   export model.player.{PlayerId, City, Points}
+
+  /** Type alias that represents the player as String by its name. */
+  export view.GameView.PlayerName
 
   /** Returns the singleton instance of `GameController`.
     * @return
@@ -89,7 +92,7 @@ object GameController:
       gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains.trainCars)
       gameView.addHandView(handView)
       gameView.updateObjective(currentPlayerObjective)
-      gameView.initPlayerScores(players.map(player => (player.name, player.score)))
+      gameView.initPlayerScores(currentPlayerScores)
       gameView.open()
 
     extension (player: Player)
@@ -141,12 +144,14 @@ object GameController:
 
     private def currentPlayerObjective: ((City, City), Points) = currentPlayer.objective.unapply().get
 
+    private def currentPlayerScores: Seq[(PlayerName, Points)] = players.map(player => (player.name, player.score))
+
     private def switchTurn(): Unit =
       import GameState.*
       turnManager.switchTurn()
       turnManager.gameState match
         case START_LAST_ROUND => gameView.startLastRound()
-        case END_GAME => gameView.endGame()
+        case END_GAME => gameView.endGame(currentPlayerScores)
         case _ => ()
       handView.updateHand(currentHandCardsView)
       gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains.trainCars)

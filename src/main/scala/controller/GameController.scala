@@ -103,9 +103,9 @@ object GameController:
 
     override def claimRoute(connectedCities: (City, City)): Unit = gameMap.getRoute(connectedCities) match
       case Some(route) => route.mechanic match
-        case SpecificColor(color) =>
-          ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
-        case _ => throw new IllegalStateException("Unhandled mechanic")
+          case SpecificColor(color) =>
+            ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
+          case _ => throw new IllegalStateException("Unhandled mechanic")
       case _ => throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
 
     private object ClaimRouteHelper:

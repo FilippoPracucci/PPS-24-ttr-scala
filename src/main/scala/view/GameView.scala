@@ -17,6 +17,7 @@ trait GameView:
   def close(): Unit
 
   /** Adds a new route in the game map view.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     * @param length
@@ -48,6 +49,7 @@ trait GameView:
   def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
 
   /** Updates the route connecting the specified cities.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     * @param color
@@ -80,11 +82,14 @@ trait GameView:
     */
   def updatePlayerScore(player: PlayerName, score: Points): Unit
 
-  /** Reports the error to the user.
+  /** Reports a message to the user.
+    *
+    * @param messageType
+    *   the type of the message to report
     * @param message
-    *   the message of the error
+    *   the message to report
     */
-  def reportError(message: String): Unit
+  def report(messageType: String, message: String): Unit
 
   /** Show the last round start message to the user. */
   def startLastRound(): Unit
@@ -101,13 +106,14 @@ object GameView:
 
   /** Type alias that represents the player's name.
     */
-  type PlayerName = String
+  type PlayerName = String // TODO to integrate
 
   /** Type alias that represents the color as String by its name in lowercase. // TODO
     */
   export MapView.Color
 
   /** Returns the singleton instance of `GameView`.
+    *
     * @return
     *   the globally shared `GameView` instance
     */
@@ -221,7 +227,8 @@ object GameView:
 
     override def updatePlayerScore(player: PlayerName, score: Points): Unit = scoreLabels(player).text = score.toString
 
-    override def reportError(message: String): Unit = Dialog.showMessage(frame, message, title = "Error")
+    override def report(messageType: String, message: String): Unit =
+      Dialog.showMessage(frame, message, title = messageType)
 
     override def startLastRound(): Unit =
       Dialog.showConfirmation(frame, "Start of the final round, so last turn for each player!",

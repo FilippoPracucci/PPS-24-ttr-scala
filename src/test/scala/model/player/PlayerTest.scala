@@ -9,7 +9,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   import model.utils.{PlayerColor, Color}
 
   val id: PlayerColor = PlayerColor.BLUE
-  val objective: Objective = ObjectiveWithCompletion(("Paris", "Berlin"), 8)
+  val objective: ObjectiveCompletion = ObjectiveWithCompletion(("Paris", "Berlin"), 8)
   var player: Player = Player(id, objective = objective)
   val NUMBER_TRAIN_CARS = 45
 

@@ -19,29 +19,31 @@ classDiagram
         <<trait>>
         +load() A
     }
-    class LoaderFromFile~A~ {
-        <<trait>>
-        #configFilePath: String
-        #onSuccess(data: Data) A
-    }
     class FileReader {
         <<trait>>
+        #configFilePath: String
         #fileExtension: String
-        #type Data
-        #readFromFile(configFilePath: String) Try[Data]
-        #readFromSource(source: BufferedSource) Data
+        #readFromFile() Data
+        #readFromSource(source: Source) Data
     }
-    class JsonReader {
+    class LoaderFromFile~A~ {
         <<trait>>
-        #given readWriter: ReadWriter[Data]
+        #onSuccess(data: Data) A
     }
     Loader <|-- LoaderFromFile
     FileReader <|-- LoaderFromFile
-    FileReader <|-- JsonReader
-    LoaderFromFile <|.. RoutesLoader
-    JsonReader <|.. RoutesLoader
-    LoaderFromFile <|.. CitiesLoader
-    JsonReader <|.. CitiesLoader
 ```
 
-[TODO descrizione]: #
+# Loader
+`Loader` è un trait che descrive un generico caricatore di dati. Possiede un unico metodo per effettuare il caricamento,
+il quale ha come tipo di ritorno il tipo parametrico `A`, rappresentante il tipo di dato caricato.
+
+# FileReader
+`FileReader` è un trait che descrive un lettore di file. Possiede solo metodi protetti, usati per leggere dati da file,
+ed è pensato per essere un trait di supporto da utilizzare in maniera nascosta, per non esporre dettagli implementativi
+collegati alla lettura da file.
+
+# LoaderFromFile
+`LoaderFromFile` è un trait che descrive un caricatore di dati letti da file. Estende `Loader` e `FileReader` ed
+introduce il metodo protetto `onSuccess` che specifica le azioni da eseguire in seguito alla lettura da file, per
+ottenere i dati di tipo `A`.

@@ -60,7 +60,8 @@ object GameMap:
     */
   case object AlreadyClaimedRoute extends GameError
 
-  /** The default routes loader, which loads from the JSON file 'routes.json' located in 'src/main/resources/'.
+  /** The given instance of the default routes loader, which loads from the JSON file 'routes.json' located in
+    * 'src/main/resources/'.
     *
     * @return
     *   the default routes loader

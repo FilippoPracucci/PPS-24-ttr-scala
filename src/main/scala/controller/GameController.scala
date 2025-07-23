@@ -119,7 +119,7 @@ object GameController:
           case _ => throw new IllegalStateException("Unhandled mechanic")
       case _ => throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
 
-    override def showRules(): Unit =  gameView.showRules("RULES!")
+    override def showRules(): Unit = gameView.showRules("RULES!")
 
     private object ClaimRouteHelper:
       def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Points)(nCards: Int, color: Color)

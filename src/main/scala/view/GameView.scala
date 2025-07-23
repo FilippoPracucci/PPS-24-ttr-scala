@@ -99,10 +99,10 @@ trait GameView:
   def report(messageType: String, message: String): Unit
 
   /** Show the rules of the game.
-   *
-   * @param description
-   *    the description of the rules.
-   */
+    *
+    * @param description
+    *   the description of the rules.
+    */
   def showRules(description: String): Unit
 
   /** Show the last round start message to the user. */

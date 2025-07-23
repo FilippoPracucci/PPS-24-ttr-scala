@@ -71,7 +71,7 @@ private case class InitViewHelper(frame: MainFrame, handPanel: BoxPanel, mapView
   private def configDrawButton(): Unit =
     drawButton.listenTo(drawButton.mouse.clicks)
     drawButton.reactions += {
-      case _: ButtonClicked => gameController.drawCards(2)
+      case _: ButtonClicked => gameController.drawCards()
       case _ => ()
     }
 

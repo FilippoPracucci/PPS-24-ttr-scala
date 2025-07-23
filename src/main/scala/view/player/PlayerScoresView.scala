@@ -52,6 +52,7 @@ object PlayerScoresView:
         background = WHITE
       this.initComponent()
     private var scoreLabels: Map[String, Label] = Map()
+    private val LabelFontSize = 15f
 
     override def component: Component = _component
 
@@ -59,12 +60,10 @@ object PlayerScoresView:
       scoreLabels = playerScores.map((player, score) => (player, new Label(score.toString))).toMap
       scoreLabels.foreach((player, scoreLabel) =>
         _component.contents += new BoxPanel(Orientation.Horizontal):
-          contents += new Label(player + ":")
-          contents += Swing.HGlue
-          contents += scoreLabel
+          contents ++= List(new Label(player + ":"), Swing.HGlue, scoreLabel)
           background = WHITE
       )
-      _component.contents.foreach(_.updateLabelFont(15f))
+      _component.contents.foreach(_.updateLabelFont(LabelFontSize))
 
     override def updatePlayerScore(player: PlayerName, score: Points): Unit =
       scoreLabels(player).text = score.toString
@@ -72,16 +71,18 @@ object PlayerScoresView:
     extension (component: Component)
       private def initComponent(): Unit =
         import javax.swing.BorderFactory
+        val BorderWeight = 10
+        val BorderThickness = 1
         component.focusable = false
         component.background = WHITE
         component.border = BorderFactory.createCompoundBorder(
-          BorderFactory.createLineBorder(BLACK, 1, true),
-          Swing.EmptyBorder(10)
+          BorderFactory.createLineBorder(BLACK, BorderThickness, true),
+          Swing.EmptyBorder(BorderWeight)
         )
 
       private def updateLabelFont(size: Float): Unit = component match
         case panel: Panel => panel.contents.foreach {
-            case label: Label => label.font = label.font.deriveFont(15f)
+            case label: Label => label.font = label.font.deriveFont(LabelFontSize)
             case _ => ()
           }
         case _ => ()

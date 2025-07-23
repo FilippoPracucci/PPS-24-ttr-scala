@@ -51,19 +51,23 @@ protected class BasicPlayerView(title: String) extends PlayerView:
 
   extension (component: TextPane)
     private def initComponent(): Unit =
-      import scala.swing.Font.Style
+      import config.GameViewConfig.FontConfig.PlayerFont
       component.editable = false
       component.focusable = false
-      component.font = Font("Coursier", Style.Plain, 16)
+      component.font = PlayerFont
 
   extension (component: BoxPanel)
     private def initComponent(): Unit =
-      component.contents += new Label(title):
-        xLayoutAlignment = 0.5
-        font = font.deriveFont(15f)
-      component.contents += panel
+      val BorderWeight = 10
+      val BorderThickness = 1
+      val FontSize = 15f
+      val LabelHorizontalAlignment = 0.5
+      val label = new Label(title):
+        xLayoutAlignment = LabelHorizontalAlignment
+        font = font.deriveFont(FontSize)
+      component.contents ++= List(label, panel)
       component.background = WHITE
       component.border = BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(BLACK, 1, true),
-        Swing.EmptyBorder(10)
+        BorderFactory.createLineBorder(BLACK, BorderThickness, true),
+        Swing.EmptyBorder(BorderWeight)
       )

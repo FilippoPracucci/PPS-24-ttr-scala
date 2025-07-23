@@ -1,6 +1,7 @@
 package view.map
 
 import config.{LoaderFromFile, JsonReader}
+import config.GameConfig.CitiesPath
 
 /** Class that represents a loader of cities from a JSON file, loading them into the map view.
   * @param mapWidth
@@ -11,15 +12,15 @@ import config.{LoaderFromFile, JsonReader}
   *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
   *   information on the cities (default = "cities")
   */
-class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: String = "cities")
+class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: String = CitiesPath)
     extends LoaderFromFile[Unit] with JsonReader:
   require(mapWidth > 0, "mapWidth must be positive")
   require(mapHeight > 0, "mapHeight must be positive")
 
   import upickle.default.*
 
-  private val cityWidth = 0
-  private val cityHeight = 0
+  private val CityWidth = 0
+  private val CityHeight = 0
 
   /** Class that represents the config data contained in the JSON file.
     * @param scaleWidth
@@ -50,4 +51,4 @@ class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: S
 
   private def addCity(city: City)(data: Data): Unit =
     MapView().addCity(city.name, city.x / data.scaleWidth * mapWidth, city.y / data.scaleHeight * mapHeight,
-      cityWidth, cityHeight)
+      CityWidth, CityHeight)

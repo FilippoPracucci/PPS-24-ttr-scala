@@ -42,8 +42,7 @@ object Objective:
       *   an [[Option]] containing the cities to connect and the points assigned to the objective if the instance match,
       *   [[None]] otherwise.
       */
-    def unapply(): Option[((City, City), Points)] =
-      Some(objective.citiesToConnect, objective.points)
+    def unapply(): Option[((City, City), Points)] = Some(objective.citiesToConnect, objective.points)
 
 /** A basic objective following the [[Objective]] trait.
   *

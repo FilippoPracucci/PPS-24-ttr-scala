@@ -1,13 +1,14 @@
 package model.map
 
 import config.{LoaderFromFile, JsonReader}
+import config.GameConfig.RoutesPath
 
 /** Class that represents a loader of routes from a JSON file.
   * @param configFilePath
   *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
   *   routes (default: "routes")
   */
-class RoutesLoader(override val configFilePath: String = "routes") extends LoaderFromFile[Set[Route]]
+class RoutesLoader(override val configFilePath: String = RoutesPath) extends LoaderFromFile[Set[Route]]
     with JsonReader:
   import upickle.default.*
   import ConversionHelper.routeMechanic

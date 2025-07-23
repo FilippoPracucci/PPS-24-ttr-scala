@@ -30,6 +30,8 @@ private object ViewController:
     export GameController.Points
     export MapViewColorHelper.*
     export GameView.PlayerName
+    export config.GameViewConfig.*
+    export config.GameConfig.{ReportError, RulesDescription}
 
   private class ViewControllerImpl(turnManager: TurnManager, players: List[Player]) extends ViewController:
     import ImportHelper.*
@@ -58,8 +60,7 @@ private object ViewController:
       gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
     override def updateObjectiveView(): Unit =
-      gameView.report("Objective completed",
-        s"You have completed your objective! You gain ${currentPlayer.objective.points} points!")
+      gameView.report(ObjectiveCompletedTitle, ObjectiveCompletedDescription(currentPlayer.objective.points))
       gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
     override def updateViewNewTurn(): Unit =
@@ -74,15 +75,9 @@ private object ViewController:
       gameView.updateCompletionCheckBox(currentPlayer.objective.completed)
       gameView.updateObjective(currentPlayerObjective)
 
-    override def reportError(gameError: GameError): Unit = gameError match
-      case Player.NotEnoughCardsInTheDeck =>
-        gameView.report("Error", "Not enough cards in the deck! It's possible only to claim a route!")
-      case GameMap.AlreadyClaimedRoute => gameView.report("Error", "Can't claim a route that has already been claimed!")
-      case Player.NotEnoughTrains => gameView.report("Error", "Not enough trains to claim this route!")
-      case Player.NotEnoughCards => gameView.report("Error", "Not enough cards to claim this route!")
-      case _ => throw new IllegalStateException("Unexpected error")
+    override def reportError(gameError: GameError): Unit = gameView.report(ReportErrorTitle, ReportError(gameError))
 
-    override def showRules(): Unit = gameView.showRules("RULES!")
+    override def showRules(): Unit = gameView.showRules(RulesDescription)
 
     private def currentPlayer: Player = turnManager.currentPlayer
 

@@ -40,9 +40,10 @@ object CardView:
     override def selected: Boolean = _selected
 
     override def cardComponent: Component =
+      val BorderWeight = 5
       val cardLabel: Label = new Label(name):
         foreground = textColor
       val component: FlowPanel = new FlowPanel(FlowPanel.Alignment.Center)(cardLabel):
         background = color
-        border = Swing.EmptyBorder(0, 5, 0, 5)
+        border = Swing.EmptyBorder(BorderWeight)
       component

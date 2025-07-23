@@ -40,12 +40,12 @@ object Deck:
     */
   given standardDeckGenerator: CardsGenerator[Deck] = () =>
     import model.utils.Color
+    import config.GameConfig.NumCardsPerColor
 
-    val NUM_CARDS_PER_COLOR = 12
     var list: List[Card] = List.empty
     for
       color <- Color.values
-      i <- 0 until NUM_CARDS_PER_COLOR
+      i <- 0 until NumCardsPerColor
     yield list = list :+ Card(color)
     list
 

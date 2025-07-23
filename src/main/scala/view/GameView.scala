@@ -83,12 +83,13 @@ object GameView:
   private object GameViewSwing extends GameView:
     import scala.swing._
     import Dialog.Options
+    import config.GameViewConfig.*
     import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView, FinalRankingView}
 
     private val mapView = MapView()
-    private val playerInfoView = BasicPlayerInfoView("PLAYER INFO")
-    private val objectiveView = BasicObjectiveView("OBJECTIVE")
-    private val playerScoresView = PlayerScoresView("PLAYER SCORES")
+    private val playerInfoView = BasicPlayerInfoView(PlayerInfoTitle)
+    private val objectiveView = BasicObjectiveView(ObjectiveTitle)
+    private val playerScoresView = PlayerScoresView(PlayerScoresTitle)
     private val handPanel = new BoxPanel(Orientation.Horizontal)
     private val frame: MainFrame = new MainFrame()
     private val initViewHelper = InitViewHelper(frame, handPanel, mapView, objectiveView,
@@ -102,19 +103,18 @@ object GameView:
       Dialog.showMessage(frame, message, title = messageType)
 
     override def showRules(description: String): Unit =
-      Dialog.showMessage(frame, description, title = "Rules of the game", Dialog.Message.Plain)
+      Dialog.showMessage(frame, description, title = RulesTitle, Dialog.Message.Plain)
 
     override def startLastRound(): Unit =
-      Dialog.showConfirmation(frame, "Start of the final round, so last turn for each player!",
-        title = "Last round", Options.Default)
+      Dialog.showConfirmation(frame, StartLastRoundDescription, title = StartLastRoundTitle, Options.Default)
 
     override def endGame(playerScores: Seq[(PlayerName, Points)]): Unit =
       import scala.swing.Dialog.Result.*
-      val options: Seq[String] = Seq("See the final ranking", "Close")
-      Dialog.showOptions(frame, "The game is over!", title = "End game", Options.Default, Dialog.Message.Plain,
+      val options: Seq[String] = Seq(SeeFinalRanking, Close)
+      Dialog.showOptions(frame, EndGameDescription, title = EndGameTitle, Options.Default, Dialog.Message.Plain,
         entries = options, initial = options.indexOf(options.head)) match
         case Yes =>
-          frame.contents = FinalRankingView("PLAYERS RANKING")(playerScores).component
+          frame.contents = FinalRankingView(FinalRankingTitle)(playerScores).component
           frame.centerOnScreen()
         case _ => close(); frame.closeOperation()
 

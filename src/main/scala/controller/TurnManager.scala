@@ -52,9 +52,11 @@ object TurnManager:
       updateGameState()
       currentPlayer = players((players.indexOf(currentPlayer) + 1) % players.size)
 
-    private def updateGameState(): Unit = _playerStartedLastRound match
-      case Some(player) => _gameState = if currentPlayer == player then END_GAME else LAST_ROUND
-      case None if currentPlayer.trains <= 2 =>
-        _gameState = START_LAST_ROUND
-        _playerStartedLastRound = Option(currentPlayer)
-      case _ => _gameState = IN_GAME
+    private def updateGameState(): Unit =
+      import config.GameConfig.TrainsToStartLastRound
+      _playerStartedLastRound match
+        case Some(player) => _gameState = if currentPlayer == player then END_GAME else LAST_ROUND
+        case None if currentPlayer.trains <= TrainsToStartLastRound =>
+          _gameState = START_LAST_ROUND
+          _playerStartedLastRound = Option(currentPlayer)
+        case _ => _gameState = IN_GAME

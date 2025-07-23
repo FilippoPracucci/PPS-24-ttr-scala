@@ -59,8 +59,8 @@ object Hand:
     *   the standard [[CardsGenerator]] of type [[Hand]].
     */
   given CardsGenerator[Hand] = () =>
-    val HAND_INITIAL_SIZE = 4
-    cardsDeck.draw(HAND_INITIAL_SIZE)
+    import config.GameConfig.HandInitialSize
+    cardsDeck.draw(HandInitialSize)
 
   private class HandImpl(private val cardsList: List[Card]) extends Hand:
     cards = cardsList

@@ -19,14 +19,6 @@ object RoutePointsManager:
   def apply(): RoutePointsManager = RoutePointsManagerByLength()
 
   private class RoutePointsManagerByLength extends RoutePointsManager:
-    private type Length = Int
-    private val pointsPerRouteLength: Map[Length, Points] = Map(
-      1 -> 1,
-      2 -> 2,
-      3 -> 4,
-      4 -> 7,
-      6 -> 15,
-      8 -> 21
-    )
+    import config.GameConfig.PointsPerRouteLength
 
-    extension (route: Route) override def points: Points = pointsPerRouteLength(route.length)
+    extension (route: Route) override def points: Points = PointsPerRouteLength(route.length)

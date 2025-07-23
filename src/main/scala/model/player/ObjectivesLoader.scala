@@ -1,13 +1,14 @@
 package model.player
 
 import config.{LoaderFromFile, JsonReader}
+import config.GameConfig.ObjectivesPath
 
 /** Class that represents a loader of objectives from a JSON file.
   * @param configFilePath
   *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
   *   objectives (default = "objectives")
   */
-class ObjectivesLoader(override val configFilePath: String = "objectives")
+class ObjectivesLoader(override val configFilePath: String = ObjectivesPath)
     extends LoaderFromFile[Set[ObjectiveWithCompletion]] with JsonReader:
   import upickle.default.*
 

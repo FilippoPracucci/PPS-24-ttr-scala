@@ -1,17 +1,20 @@
 package config
 
 /** Trait that represents a loader of data.
+  *
   * @tparam A
   *   the type of data loaded
   */
 trait Loader[A]:
   /** Loads the data.
+    *
     * @return
     *   the loaded data
     */
   def load(): A
 
 /** Trait that represents a loader from file.
+  *
   * @tparam A
   *   the type of data loaded
   */
@@ -20,20 +23,18 @@ trait LoaderFromFile[A] extends Loader[A] with FileReader:
   import scala.compiletime.summonFrom
 
   /** The general error message to display when an error occurs. It can be used as a prefix for the specific error.
+    *
     * @return
     *   the error message
     */
   protected def errorMessage: String = "Error loading config file: "
 
-  /** The path of the config file (starting from 'src/main/resources/') to be defined in the implementation.
-    */
-  protected def configFilePath: String
-
-  override def load(): A = readFromFile(configFilePath) match
+  override def load(): A = readFromFile() match
     case Success(data) => onSuccess(data)
     case Failure(e) => throw new IllegalStateException(errorMessage + e.getMessage, e)
 
   /** Specifies the actions to perform after obtaining the data read from the file. To be defined in the implementation.
+    *
     * @param data
     *   the data read from the file
     * @return
@@ -47,7 +48,16 @@ trait FileReader:
   import scala.util.{Try, Using}
   import scala.io.{Source, BufferedSource}
 
+  /** The path of the config file (starting from 'src/main/resources/'), without file extension, to be defined in the
+    * implementation.
+    *
+    * @return
+    *   the path of the config file
+    */
+  protected def configFilePath: String
+
   /** The file extension, to be defined in the implementation, of the file to be read.
+    *
     * @return
     *   the file extension
     */
@@ -58,16 +68,16 @@ trait FileReader:
   protected type Data
 
   /** Reads the data from the specified file.
-    * @param configFilePath
-    *   the path of the config file to read
+    *
     * @return
     *   `Success(data)` containing the data read if no errors occurred, otherwise `Failure(e)` containing the thrown
     *   exception
     */
-  protected def readFromFile(configFilePath: String): Try[Data] =
+  protected def readFromFile(): Try[Data] =
     Using(Source.fromResource(configFilePath + "." + fileExtension))(readFromSource)
 
   /** Reads the data from the specified source. To be defined in the implementation.
+    *
     * @param source
     *   the source to read
     * @return
@@ -85,6 +95,9 @@ trait JsonReader extends FileReader:
 
   /** The given instance to read and write values of type `Data` using the upickle library, to be defined in the
     * implementation.
+    *
+    * @return
+    *   the `ReadWriter` for values of type `Data`
     */
   protected given readWriter: ReadWriter[Data]
 

@@ -13,6 +13,7 @@ trait GameController:
   def drawCards(n: Int): Unit
 
   /** Claims the route connecting the specified cities.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     */
@@ -27,6 +28,7 @@ object GameController:
   export view.GameView.PlayerName
 
   /** Returns the singleton instance of `GameController`.
+    *
     * @return
     *   the globally shared `GameController` instance
     */
@@ -40,6 +42,7 @@ object GameController:
   private object ImportHelper:
     export CardControllerColor.*
     export model.map.{GameMap, Route}
+    export GameMap.defaultRoutesLoader
     export Route.*
     export model.utils.{Color, PlayerColor, GameError}
     export view.GameView
@@ -47,12 +50,13 @@ object GameController:
     export view.cards.{CardView, HandView}
     export MapViewColorHelper.*
     export model.cards.Deck
-    export model.player.{Player, ObjectiveWithCompletion, ObjectivesLoader}
+    export model.player.{Player, ObjectiveWithCompletion, ObjectivesLoader, ObjectiveChecker}
     private val routePointsManager = model.map.RoutePointsManager()
     export routePointsManager.points
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
+    import ImportHelper.given
 
     private val gameMap = GameMap()
     private val deck: Deck = Deck()
@@ -63,6 +67,8 @@ object GameController:
 
     private val handView = HandView(currentHandCardsView)
     private val gameView = GameView()
+
+    private val objectiveChecker = ObjectiveChecker(gameMap)
 
     initGameView()
 
@@ -101,17 +107,14 @@ object GameController:
     override def drawCards(n: Int): Unit =
       currentPlayer.drawCards(n) match
         case Right(_) => switchTurn()
-        case _ => gameView.reportError("Not enough cards in the deck! It's possible only to claim a route!")
+        case _ => gameView.report("Error", "Not enough cards in the deck! It's possible only to claim a route!")
 
-    override def claimRoute(connectedCities: (City, City)): Unit =
-      val optionRoute = gameMap.getRoute(connectedCities)
-      val route = optionRoute.getOrElse(
-        throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
-      )
-      route.mechanic match
-        case SpecificColor(color) =>
-          ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
-        case _ => throw new IllegalStateException("Unhandled mechanic")
+    override def claimRoute(connectedCities: (City, City)): Unit = gameMap.getRoute(connectedCities) match
+      case Some(route) => route.mechanic match
+          case SpecificColor(color) =>
+            ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
+          case _ => throw new IllegalStateException("Unhandled mechanic")
+      case _ => throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
 
     private object ClaimRouteHelper:
       def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Points)(nCards: Int, color: Color)
@@ -125,20 +128,38 @@ object GameController:
           _ <- currentPlayer.placeTrains(routeLength)
           _ <- currentPlayer.playCards(color, nCards)
         yield ()) match
-          case Right(_) => onSuccess(connectedCities, routePoints)
+          case Right(_) =>
+            currentPlayer.addPoints(routePoints)
+            updateRouteView(connectedCities)
+            checkObjectiveCompletion()
+            switchTurn()
           case Left(GameMap.AlreadyClaimedRoute) =>
-            gameView.reportError("Can't claim a route that has already been claimed!")
-          case Left(Player.NotEnoughTrains) => gameView.reportError("Not enough trains to claim this route!")
-          case Left(Player.NotEnoughCards) => gameView.reportError("Not enough cards to claim this route!")
+            gameView.report("Error", "Can't claim a route that has already been claimed!")
+          case Left(Player.NotEnoughTrains) => gameView.report("Error", "Not enough trains to claim this route!")
+          case Left(Player.NotEnoughCards) => gameView.report("Error", "Not enough cards to claim this route!")
           case Left(_) => throw new IllegalStateException("Unexpected error")
 
       private def check(condition: Boolean, err: GameError): Either[GameError, Unit] = Either.cond(condition, (), err)
 
-      private def onSuccess(connectedCities: (City, City), routePoints: Points): Unit =
+      private def updateRouteView(connectedCities: (City, City)): Unit =
         gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
-        currentPlayer.addPoints(routePoints)
         gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
-        switchTurn()
+
+      private def checkObjectiveCompletion(): Unit =
+        Option(currentPlayer.objective)
+          .filter(!_.completed)
+          .filter(objective => objectiveChecker.check(objective, currentPlayer.id))
+          .foreach(objective =>
+            objective.markAsComplete()
+            currentPlayer.addPoints(objective.points)
+            updateObjectiveView()
+          )
+
+      private def updateObjectiveView(): Unit =
+        gameView.report("Objective completed",
+          s"You have completed your objective! You gain ${currentPlayer.objective.points} points!")
+        // TODO update objective checkbox
+        gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
     private def currentPlayer: Player = turnManager.currentPlayer
 

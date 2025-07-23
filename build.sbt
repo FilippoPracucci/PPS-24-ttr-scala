@@ -22,6 +22,8 @@ lazy val root = project
         "org.scalatest" %% "scalatest" % "3.2.19" % Test,
         "org.scala-lang.modules" %% "scala-swing" % "3.0.0",
         "com.github.vlsi.mxgraph" % "jgraphx" % "4.2.2",
-        "com.lihaoyi" %% "upickle" % "4.2.1"
+        "com.lihaoyi" %% "upickle" % "4.2.1",
+        "it.unibo.alice.tuprolog" % "2p-core" % "4.1.1",
+        "it.unibo.alice.tuprolog" % "2p-ui" % "4.1.1"
     )
   )

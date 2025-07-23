@@ -18,9 +18,9 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
   private val player = PlayerColor.GREEN
 
   private val loader: Loader[Set[Route]] = () => routes
-  private var gameMap: GameMap = GameMap(loader)
+  private var gameMap: GameMap = GameMap()(using loader)
 
-  override def beforeEach(): Unit = gameMap = GameMap(loader)
+  override def beforeEach(): Unit = gameMap = GameMap()(using loader)
 
   "A GameMap" should "return the correct set of routes" in:
     gameMap.routes should be(routes)
@@ -44,11 +44,12 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
     gameMap.getPlayerClaimingRoute(connectedCities) should be(Right(None))
 end GameMapBasicTest
 
-class GameMapInitFromFileTest extends AnyFlatSpec with Matchers:
-  "A GameMap" should "correctly initialize when created from file" in:
+class GameMapInitTest extends AnyFlatSpec with Matchers:
+  "A GameMap" should "correctly initialize using the default loader" in:
+    import GameMap.defaultRoutesLoader
     lazy val gameMap = GameMap()
     noException should be thrownBy gameMap
     gameMap.routes should not be empty
 
   it should "fail its initialization when created from a non-existent file" in:
-    an[IllegalStateException] should be thrownBy GameMap("nonExistentFile")
+    an[IllegalStateException] should be thrownBy GameMap()(using RoutesLoader("nonExistentFile"))

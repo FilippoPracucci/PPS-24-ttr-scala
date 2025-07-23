@@ -10,12 +10,14 @@ trait GameMap:
   import GameMap.CityName
 
   /** Returns the set of routes of the `GameMap`
+    *
     * @return
     *   the set of routes of the `GameMap`
     */
   def routes: Set[Route]
 
   /** Gets the player that claims the route connecting the specified cities.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names as String
     * @return
@@ -25,6 +27,7 @@ trait GameMap:
   def getPlayerClaimingRoute(connectedCities: (CityName, CityName)): Either[GameError, Option[PlayerId]]
 
   /** Gets the route connecting the specified cities.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names as String
     * @return
@@ -33,6 +36,7 @@ trait GameMap:
   def getRoute(connectedCities: (CityName, CityName)): Option[Route]
 
   /** Makes the player claim the route connecting the specified cities.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names as String
     * @param playerId
@@ -56,22 +60,22 @@ object GameMap:
     */
   case object AlreadyClaimedRoute extends GameError
 
+  /** The given instance of the default routes loader, which loads from the JSON file 'routes.json' located in
+    * 'src/main/resources/'.
+    *
+    * @return
+    *   the default routes loader
+    */
+  given defaultRoutesLoader: Loader[Set[Route]] = RoutesLoader()
+
   /** Creates a `GameMap` composed of the set of routes loaded by the specified loader.
+    *
     * @param loader
     *   the loader of the routes
     * @return
     *   the created `GameMap`
     */
-  def apply(loader: Loader[Set[Route]]): GameMap = GameMapImpl(loader.load())
-
-  /** Creates a `GameMap` composed of the routes specified in the JSON config file.
-    * @param configFilePath
-    *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
-    *   routes (default = "routes")
-    * @return
-    *   the created `GameMap`
-    */
-  def apply(configFilePath: String = "routes"): GameMap = GameMap(RoutesLoader(configFilePath))
+  def apply()(using loader: Loader[Set[Route]]): GameMap = GameMapImpl(loader.load())
 
   private class GameMapImpl(override val routes: Set[Route]) extends GameMap:
     private type ClaimedRoute = (Route, Option[PlayerId])

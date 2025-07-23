@@ -153,8 +153,8 @@ object Player:
       objective: ObjectiveCompletion): Player =
     PlayerImpl(playerId, deck, trains, objective)
 
-  private case class PlayerImpl(override val id: PlayerId, deck: Deck,
-      override val trains: TrainCars, override val objective: ObjectiveCompletion) extends Player:
+  private case class PlayerImpl(override val id: PlayerId, deck: Deck, override val trains: TrainCars,
+      override val objective: ObjectiveCompletion) extends Player:
     import scala.util.*
 
     override val hand: Hand = Hand(deck)

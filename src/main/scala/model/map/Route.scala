@@ -4,6 +4,7 @@ package model.map
   */
 trait City:
   /** Gets the name of the city.
+    *
     * @return
     *   the name of the city
     */
@@ -11,6 +12,7 @@ trait City:
 
 object City:
   /** Creates a `City`.
+    *
     * @param name
     *   the name of the city
     * @return
@@ -26,18 +28,21 @@ trait Route:
   import Route.Mechanic
 
   /** Gets the pair of cities connected by the route.
+    *
     * @return
     *   the pair of cities connected by the route
     */
   def connectedCities: (City, City)
 
   /** Gets the length of the route.
+    *
     * @return
     *   the integer number representing the length of the route
     */
   def length: Int
 
   /** Gets the `Mechanic` followed by the route.
+    *
     * @return
     *   the `Mechanic` followed by the route
     */
@@ -51,12 +56,18 @@ object Route:
   trait Mechanic
 
   /** Trait that represents the mechanic in which a route has a specific color.
-    * @param color
-    *   the color of the route
     */
-  trait SpecificColor(val color: Color) extends Mechanic
+  trait SpecificColor extends Mechanic:
+    /** Returns the color of the route.
+      *
+      * @return
+      *   the color of the route
+      */
+    def color: Color
+
   object SpecificColor:
     /** Creates a `SpecificColor` mechanic.
+      *
       * @param color
       *   the color of the route
       * @return
@@ -65,6 +76,7 @@ object Route:
     def apply(color: Color): SpecificColor = SpecificColorImpl(color)
 
     /** Allows instances of the type `SpecificColor` to be matched and deconstructed using pattern matching.
+      *
       * @param specificColor
       *   the instance to be matched and deconstructed
       * @return
@@ -72,9 +84,10 @@ object Route:
       */
     def unapply(specificColor: SpecificColor): Option[Color] = Some(specificColor.color)
 
-    private case class SpecificColorImpl(override val color: Color) extends SpecificColor(color)
+    private case class SpecificColorImpl(override val color: Color) extends SpecificColor
 
   /** Creates a `Route`.
+    *
     * @param connectedCities
     *   the pair of cities the route connects
     * @param length

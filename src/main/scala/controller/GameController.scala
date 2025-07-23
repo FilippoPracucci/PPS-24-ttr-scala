@@ -39,7 +39,7 @@ object GameController:
   private object ImportHelper:
     export CardControllerColor.*
     export model.map.{GameMap, Route}
-    export GameMap.given
+    export GameMap.defaultRoutesLoader
     export Route.*
     export model.utils.{Color, PlayerColor, GameError}
     export view.GameView
@@ -53,6 +53,7 @@ object GameController:
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*
+    import ImportHelper.given
 
     private val gameMap = GameMap()
     private val deck: Deck = Deck()

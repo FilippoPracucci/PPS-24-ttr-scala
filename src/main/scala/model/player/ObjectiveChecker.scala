@@ -30,7 +30,7 @@ object ObjectiveChecker:
   private class ObjectiveCheckerImpl(gameMap: GameMap) extends ObjectiveChecker:
     import alice.tuprolog.*
     import scala.language.implicitConversions
-    import Scala2P.{*, given}
+    import model.utils.Scala2P.{*, given}
     import ConversionHelper.*
 
     private val engine = mkPrologEngine(

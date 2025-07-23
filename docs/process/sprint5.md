@@ -24,8 +24,8 @@ della versione `v1.0.0`.
 | Classifica finale                 | Visualizzazione della classifica finale al termine della partita        | Pracucci   |       5        |    X     |     X      |
 | Miglioramento view                | Miglioramento dei pannelli della view e della sua coerenza              | Pracucci   |       5        |    X     |     X      |
 | Refactor                          | Refactor del GameController                                             | Entrambi   |       10       |    X     |            |
-|                                   | Refactor della GameView                                                 | Entrambi   |       5        |          |            |
-|                                   | Refactor del Player                                                     | Entrambi   |       5        |          |            |
-|                                   | Configurazione di caratteristiche base del gioco (n. carte, punti, ...) | Entrambi   |       5        |          |            |
+|                                   | Refactor della GameView                                                 | Entrambi   |       5        |    X     |            |
+|                                   | Refactor del Player                                                     | Entrambi   |       5        |    X     |            |
+|                                   | Configurazione di caratteristiche base del gioco (n. carte, punti, ...) | Entrambi   |       5        |    X     |            |
 
 ## Sprint Review

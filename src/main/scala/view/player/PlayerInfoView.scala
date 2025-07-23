@@ -18,10 +18,10 @@ trait PlayerInfoView:
   def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit =
     playerView.updateComponentText(f"Player $playerId has $trains train cars left")
 
-import scala.swing.Font
-import scala.swing.Font.Style
-
 /** A basic representation of a player with in addition the player information, so following the [[PlayerInfoView]]
   * trait.
+  *
+  * @param title
+  *   the title of the view.
   */
-class BasicPlayerInfoView extends BasicPlayerView(using Font("Coursier", Style.Bold, 16)) with PlayerInfoView
+class BasicPlayerInfoView(title: String) extends BasicPlayerView(title) with PlayerInfoView

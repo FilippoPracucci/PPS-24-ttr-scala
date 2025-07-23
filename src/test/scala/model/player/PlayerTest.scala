@@ -41,8 +41,9 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     import model.cards.Deck
     val initialHandCards = player.hand.cards
     val numberCardsToDraw = 2
-    player.drawCards(numberCardsToDraw)
+    player.drawCards(numberCardsToDraw) should be(Right(()))
     player.hand.cards should be(initialHandCards :++ Deck().cards.take(numberCardsToDraw))
+    player.drawCards(Deck().cards.size + 1) should be(Left(Player.NotEnoughCardsInTheDeck))
 
   it should "be able to check whether certain cards can be played" in:
     val color = Color.RED

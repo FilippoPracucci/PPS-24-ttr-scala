@@ -50,8 +50,11 @@ trait Player:
     *
     * @param n
     *   the number of cards to draw.
+    * @return
+    *   `Right(())` if the action succeeds, `Left(NotEnoughCardsInTheDeck)` if the there are not enough cards in the
+    *   deck.
     */
-  def drawCards(n: Int): Unit
+  def drawCards(n: Int): Either[GameError, Unit]
 
   /** Checks whether the specified number of cards of the specified color can be played (i.e. are present in the
     * player's hand).
@@ -94,6 +97,9 @@ trait Player:
 
 /** The factory for [[Player]] instances. */
 object Player:
+  /** Error that represents the case in which the deck doesn't have enough cards. */
+  case object NotEnoughCardsInTheDeck extends GameError
+
   /** Error that represents the case in which a player doesn't have enough cards.
     */
   case object NotEnoughCards extends GameError
@@ -154,7 +160,8 @@ object Player:
     override val hand: Hand = Hand(deck)
     private var _score: Int = 0
 
-    override def drawCards(n: Int): Unit = hand.addCards(deck.draw(n))
+    override def drawCards(n: Int): Either[GameError, Unit] =
+      Try(deck.draw(n)).toEither.left.map(_ => NotEnoughCardsInTheDeck).map(hand.addCards)
 
     export hand.canPlayCards
 

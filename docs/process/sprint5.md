@@ -21,8 +21,8 @@ della versione `v1.0.0`.
 | Feature                           | Sprint Task                                                             | Volontario | Stima iniziale | Iniziato | Completato |
 |-----------------------------------|-------------------------------------------------------------------------|------------|:--------------:|:--------:|:----------:|
 | Controllo completamento obiettivi | Integrazione del controllo completamento obiettivi                      | Bedeschi   |       10       |    X     |            |
-|                                   | Assegnamento punti degli obiettivi                                      | Pracucci   |       5        |          |            |
-| Miglioramento view                | Miglioramento dei pannelli della view e della sua coerenza              | Pracucci   |       5        |          |            |
+| Classifica finale                 | Visualizzazione della classifica finale al termine della partita        | Pracucci   |       5        |    X     |            |
+| Miglioramento view                | Miglioramento dei pannelli della view e della sua coerenza              | Pracucci   |       5        |    X     |            |
 | Refactor                          | Refactor del GameController                                             | Entrambi   |       10       |          |            |
 |                                   | Refactor della GameView                                                 | Entrambi   |       5        |          |            |
 |                                   | Refactor del Player                                                     | Entrambi   |       5        |          |            |

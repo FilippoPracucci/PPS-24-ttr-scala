@@ -20,7 +20,6 @@ trait CardView:
 
 /** The factory for [[CardView]] instances. */
 object CardView:
-  import scala.swing.event.ButtonClicked
   import java.awt.Color as ViewColor
 
   /** Create a card representation.
@@ -41,19 +40,9 @@ object CardView:
     override def selected: Boolean = _selected
 
     override def cardComponent: Component =
-      val cardButton: ToggleButton = ToggleButton(name)
-      val component: FlowPanel = FlowPanel(FlowPanel.Alignment.Center)(cardButton)
-      cardButton.configCardButton()
-      cardButton.configCardButtonReactions()
+      val cardLabel: Label = new Label(name):
+        foreground = textColor
+      val component: FlowPanel = new FlowPanel(FlowPanel.Alignment.Center)(cardLabel):
+        background = color
+        border = Swing.EmptyBorder(0, 5, 0, 5)
       component
-
-    extension (component: Component)
-      private def configCardButton(): Unit =
-        component.background = color
-        component.foreground = textColor
-      private def configCardButtonReactions(): Unit =
-        component.listenTo(component.mouse.clicks)
-        component.reactions += {
-          case _: ButtonClicked => _selected = !_selected
-          case _ => ()
-        }

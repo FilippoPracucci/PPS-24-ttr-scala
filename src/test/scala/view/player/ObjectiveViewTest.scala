@@ -4,7 +4,7 @@ import scala.swing.*
 
 /** A simple test consisting in launching a frame with a player's objective to show its representation and its update */
 object ObjectiveViewTest extends App:
-  private val objectiveView = BasicObjectiveView()
+  private val objectiveView = BasicObjectiveView("OBJECTIVE")
   private val frame = new MainFrame() {
     peer.setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE)
     visible = true

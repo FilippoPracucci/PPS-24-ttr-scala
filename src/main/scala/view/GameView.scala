@@ -64,6 +64,13 @@ trait GameView:
     */
   def updateObjective(objective: ((City, City), Points)): Unit
 
+  /** Update the completion state of the current player objective.
+    *
+    * @param state
+    *   the new completion state of the objective.
+    */
+  def updateCompletionCheckBox(state: Boolean): Unit
+
   /** Update the player information view.
     *
     * @param playerId
@@ -91,11 +98,18 @@ trait GameView:
     */
   def report(messageType: String, message: String): Unit
 
+  /** Show the rules of the game.
+    *
+    * @param description
+    *   the description of the rules.
+    */
+  def showRules(description: String): Unit
+
   /** Show the last round start message to the user. */
   def startLastRound(): Unit
 
   /** Show the message of end game to the user and then close the interface. */
-  def endGame(): Unit
+  def endGame(playerScores: Seq[(PlayerName, Points)]): Unit
 
 object GameView:
   import controller.GameController
@@ -126,7 +140,7 @@ object GameView:
     import Dialog.Options
     import event.ButtonClicked
     import controller.GameController
-    import player.{BasicPlayerInfoView, BasicObjectiveView}
+    import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView, FinalRankingView}
 
     private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
     private val panel = new BorderPanel()
@@ -144,12 +158,12 @@ object GameView:
     private val scrollPane = new ScrollPane(handPanel)
     private val eastPanel = new BoxPanel(Orientation.Vertical)
     private val drawButton = new Button("Draw")
-    private val scoreboardPanel = new BoxPanel(Orientation.Vertical)
-    private var scoreLabels: Map[String, Label] = Map()
+    private val rulesButton = new Button("Show rules")
 
     private val mapView = MapView()
-    private val playerView = BasicPlayerInfoView()
-    private val objectiveView = BasicObjectiveView()
+    private val playerInfoView = BasicPlayerInfoView("PLAYER INFO")
+    private val objectiveView = BasicObjectiveView("OBJECTIVE")
+    private val playerScoresView = PlayerScoresView("PLAYER SCORES")
 
     InitHelper.setFrameSize()
     InitHelper.initPanels()
@@ -161,6 +175,7 @@ object GameView:
 
       def initPanels(): Unit =
         configDrawButton()
+        configRulesButton()
         configSouthPanel()
         configEastPanel()
         panel.layout ++= List((mapView.component, BorderPanel.Position.Center),
@@ -169,26 +184,48 @@ object GameView:
         frame.repaint()
 
       private def configSouthPanel(): Unit =
+        import java.awt.Color.*
+        import javax.swing.BorderFactory
+        val borderWeight = 5
+        val borderThickness = 1
+        val borderColor = LIGHT_GRAY
         scrollPane.horizontalScrollBarPolicy = AsNeeded
         scrollPane.verticalScrollBarPolicy = Never
+        scrollPane.border = Swing.CompoundBorder(
+          Swing.EmptyBorder(borderWeight),
+          BorderFactory.createLineBorder(borderColor, borderThickness, true)
+        )
+        southPanel.contents += rulesButton
         southPanel.contents += scrollPane
         southPanel.contents += drawButton
+        southPanel.border = Swing.EmptyBorder(borderWeight)
 
       private def configEastPanel(): Unit =
-        val EAST_PANEL_WIDTH_RATIO = 0.15
-        scoreboardPanel.border = Swing.EmptyBorder(10, 10, 10, 10)
-        scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
-          contents += new Label("PLAYER SCORES")
-        }
-        eastPanel.contents += scoreboardPanel
-        eastPanel.contents += playerView.component
+        val eastPanelWidthRatio = 0.15
+        val objectiveViewHeightRatio = 0.25
+        val playerScoresViewHeightRatio = 0.4
+        val borderWeight = 1
+        eastPanel.preferredSize = new Dimension((frame.size.width * eastPanelWidthRatio).toInt, frame.size.height)
+        eastPanel.contents += playerInfoView.component
         eastPanel.contents += objectiveView.component
-        eastPanel.preferredSize = new Dimension((frame.size.width * EAST_PANEL_WIDTH_RATIO).toInt, frame.size.height)
+        eastPanel.contents += playerScoresView.component
+        eastPanel.border = Swing.EmptyBorder(borderWeight)
+        objectiveView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
+          (eastPanel.preferredSize.height * objectiveViewHeightRatio).toInt)
+        playerScoresView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
+          (eastPanel.preferredSize.height * playerScoresViewHeightRatio).toInt)
 
       private def configDrawButton(): Unit =
         drawButton.listenTo(drawButton.mouse.clicks)
         drawButton.reactions += {
           case _: ButtonClicked => gameController.drawCards(2)
+          case _ => ()
+        }
+
+      private def configRulesButton(): Unit =
+        rulesButton.listenTo(rulesButton.mouse.clicks)
+        rulesButton.reactions += {
+          case _: ButtonClicked => gameController.showRules()
           case _ => ()
         }
 
@@ -206,39 +243,28 @@ object GameView:
       addHandView(handView)
       frame.validate()
 
-    override def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit =
-      scoreLabels = playerScores.map((player, score) => (player, new Label(score.toString))).toMap
-      scoreLabels.foreach((player, scoreLabel) =>
-        scoreboardPanel.contents += new BoxPanel(Orientation.Horizontal) {
-          contents += new Label(player + ":")
-          contents += Swing.HGlue
-          contents += scoreLabel
-        }
-      )
-      scoreboardPanel.contents.foreach(_.updateLabelFont(15f))
-
-    extension (component: Component)
-      private def updateLabelFont(size: Float): Unit = component match
-        case panel: Panel => panel.contents.foreach {
-            case label: Label => label.font = label.font.deriveFont(15f)
-            case _ => ()
-          }
-        case _ => ()
-
-    override def updatePlayerScore(player: PlayerName, score: Points): Unit = scoreLabels(player).text = score.toString
-
     override def report(messageType: String, message: String): Unit =
       Dialog.showMessage(frame, message, title = messageType)
+
+    override def showRules(description: String): Unit =
+      Dialog.showMessage(frame, description, title = "Rules of the game", Dialog.Message.Plain)
 
     override def startLastRound(): Unit =
       Dialog.showConfirmation(frame, "Start of the final round, so last turn for each player!",
         title = "Last round", Options.Default)
 
-    override def endGame(): Unit =
-      Dialog.showConfirmation(frame, "The game is over!", title = "End game", Options.Default) match
+    override def endGame(playerScores: Seq[(PlayerName, Points)]): Unit =
+      import scala.swing.Dialog.Result.*
+      val options: Seq[String] = Seq("See the final ranking", "Close")
+      Dialog.showOptions(frame, "The game is over!", title = "End game", Options.Default, Dialog.Message.Plain,
+        entries = options, initial = options.indexOf(options.head)) match
+        case Yes =>
+          frame.contents = FinalRankingView("PLAYERS RANKING")(playerScores).component
+          frame.centerOnScreen()
         case _ => close(); frame.closeOperation()
 
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
-    export objectiveView.updateObjective
-    export playerView.updatePlayerInfo
+    export objectiveView.{updateObjective, updateCompletionCheckBox}
+    export playerInfoView.updatePlayerInfo
+    export playerScoresView.{initPlayerScores, updatePlayerScore}

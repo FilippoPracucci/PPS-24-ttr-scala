@@ -14,10 +14,46 @@ trait ObjectiveView:
     */
   def updateObjective(objective: ((City, City), Points)): Unit =
     playerView.updateComponentText(
-      f"Objective: connect the cities ${objective._1._1} and ${objective._1._2}\n\nPoints: ${objective._2}"
+      f"Connect the cities ${objective._1._1} and ${objective._1._2}\n\nPoints: ${objective._2}"
     )
 
-/** A basic representation of a player with in addition the player's objective, so following the [[ObjectiveView]]
-  * trait.
+/** The representation of a player's objective completion status. */
+trait ObjectiveViewWithCompletion:
+  playerView: PlayerView =>
+
+  import scala.swing.*
+  import Font.Style
+  import java.awt.Color.*
+
+  private val checkBox: CheckBox = new CheckBox():
+    background = WHITE
+    enabled = false
+  private val panel: BoxPanel = new BoxPanel(Orientation.Horizontal):
+    background = WHITE
+    contents += new Label("Completed:"):
+      font = Font("Coursier", Style.BoldItalic, 16)
+    contents += Swing.HGlue
+    contents += checkBox
+
+  /** Add a completion checkbox to the objective view. */
+  def addCompletionCheckBox(): Unit = playerView.addComponentToInnerPanel(panel)
+
+  /** Update the completion checkbox of the objective view following the given state.
+    *
+    * @param state
+    *   the updated completion state.
+    */
+  def updateCompletionCheckBox(state: Boolean): Unit = checkBox.selected = state
+
+/** A basic representation of a player with in addition the player's objective and its completion status, so following
+  * the [[ObjectiveView]] [[ObjectiveViewWithCompletion]] traits.
+  *
+  * @param title
+  *   the title of the view.
   */
-class BasicObjectiveView extends BasicPlayerView with ObjectiveView
+protected class BasicObjectiveView(title: String)
+    extends BasicPlayerView(title)
+    with ObjectiveView
+    with ObjectiveViewWithCompletion:
+
+  addCompletionCheckBox()

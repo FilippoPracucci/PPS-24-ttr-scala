@@ -19,10 +19,16 @@ trait GameController:
     */
   def claimRoute(connectedCities: (City, City)): Unit
 
+  /** Show the rules of the game. */
+  def showRules(): Unit
+
 object GameController:
-  /** Type alias that represents the city as String by its name.
+  /** Type aliases that represent the player identifier as Color, the city as String by its name and the points as Int.
     */
   export model.player.{PlayerId, City, Points}
+
+  /** Type alias that represents the player as String by its name. */
+  export view.GameView.PlayerName
 
   /** Returns the singleton instance of `GameController`.
     *
@@ -71,11 +77,15 @@ object GameController:
 
     private def initPlayers(): List[Player] =
       import scala.util.Random
-      val objectives = ObjectivesLoader().load().toList
+      var objectives = ObjectivesLoader().load()
+      var objToAssign: Option[ObjectiveWithCompletion] = Option.empty
       var playerList: List[Player] = List.empty
       for
         color <- PlayerColor.values
-      yield playerList :+= Player(color, deck, objective = objectives(Random.nextInt(objectives.size)))
+      yield
+        objToAssign = Option(objectives.toList(Random.nextInt(objectives.size)))
+        objectives = objectives.excl(objToAssign.get)
+        playerList :+= Player(color, deck, objective = objToAssign.get)
       playerList
 
     private def initGameView(): Unit =
@@ -91,16 +101,16 @@ object GameController:
       gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains.trainCars)
       gameView.addHandView(handView)
       gameView.updateObjective(currentPlayerObjective)
-      gameView.initPlayerScores(players.map(player => (player.name, player.score)))
+      gameView.initPlayerScores(currentPlayerScores)
       gameView.open()
 
     extension (player: Player)
       private def name: String = player.id.toString.head.toUpper.toString + player.id.toString.tail.toLowerCase
 
     override def drawCards(n: Int): Unit =
-      val initialHandCards = currentPlayer.hand.cards
-      currentPlayer.drawCards(n)
-      switchTurn()
+      currentPlayer.drawCards(n) match
+        case Right(_) => switchTurn()
+        case _ => gameView.report("Error", "Not enough cards in the deck! It's possible only to claim a route!")
 
     override def claimRoute(connectedCities: (City, City)): Unit = gameMap.getRoute(connectedCities) match
       case Some(route) => route.mechanic match
@@ -108,6 +118,8 @@ object GameController:
             ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
           case _ => throw new IllegalStateException("Unhandled mechanic")
       case _ => throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
+
+    override def showRules(): Unit = gameView.showRules("RULES!")
 
     private object ClaimRouteHelper:
       def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Points)(nCards: Int, color: Color)
@@ -158,16 +170,19 @@ object GameController:
 
     private def currentPlayerObjective: ((City, City), Points) = currentPlayer.objective.unapply().get
 
+    private def currentPlayerScores: Seq[(PlayerName, Points)] = players.map(player => (player.name, player.score))
+
     private def switchTurn(): Unit =
       import GameState.*
       turnManager.switchTurn()
       turnManager.gameState match
         case START_LAST_ROUND => gameView.startLastRound()
-        case END_GAME => gameView.endGame()
+        case END_GAME => gameView.endGame(currentPlayerScores)
         case _ => ()
       handView.updateHand(currentHandCardsView)
       gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains.trainCars)
       gameView.updateHandView(handView)
+      gameView.updateCompletionCheckBox(currentPlayer.objective.completed)
       gameView.updateObjective(currentPlayerObjective)
 
     private def currentHandCardsView: List[CardView] =

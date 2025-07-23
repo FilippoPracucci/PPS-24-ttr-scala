@@ -5,8 +5,8 @@ import cards.HandView
 
 /** Trait that represents the view of the game.
   */
-trait GameView:
-  import GameView.{City, Points, PlayerId, Color, PlayerName}
+trait GameView extends PlayerGameView:
+  import GameView.{City, Points, Color, PlayerName}
 
   /** Opens the view.
     */
@@ -27,27 +27,6 @@ trait GameView:
     */
   def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit
 
-  /** Add the hand component to the view.
-    *
-    * @param handView
-    *   the hand view to add to the panel.
-    */
-  def addHandView(handView: HandView): Unit
-
-  /** Update the hand view component.
-    *
-    * @param handView
-    *   the hand view component to update.
-    */
-  def updateHandView(handView: HandView): Unit
-
-  /** Initialize player scores.
-    *
-    * @param playerScores
-    *   the list of player scores consisting of pairs "player's name; score"
-    */
-  def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
-
   /** Updates the route connecting the specified cities.
     *
     * @param connectedCities
@@ -56,38 +35,6 @@ trait GameView:
     *   the new color of the route, expressed as the name of the color in lowercase
     */
   def updateRoute(connectedCities: (City, City), color: Color): Unit
-
-  /** Update the objective view.
-    *
-    * @param objective
-    *   the pair of cities to connect and its value in terms of points.
-    */
-  def updateObjective(objective: ((City, City), Points)): Unit
-
-  /** Update the completion state of the current player objective.
-    *
-    * @param state
-    *   the new completion state of the objective.
-    */
-  def updateCompletionCheckBox(state: Boolean): Unit
-
-  /** Update the player information view.
-    *
-    * @param playerId
-    *   the identifier of the player.
-    * @param trains
-    *   the number of train cars left to the player.
-    */
-  def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit
-
-  /** Updates the score of the specified player.
-    *
-    * @param player
-    *   the name of the player whose score to update
-    * @param score
-    *   the new score of the player
-    */
-  def updatePlayerScore(player: PlayerName, score: Points): Unit
 
   /** Reports a message to the user.
     *
@@ -135,113 +82,21 @@ object GameView:
 
   private object GameViewSwing extends GameView:
     import scala.swing._
-    import ScrollPane.BarPolicy.*
-    import java.awt.Toolkit
     import Dialog.Options
-    import event.ButtonClicked
-    import controller.GameController
     import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView, FinalRankingView}
-
-    private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
-    private val panel = new BorderPanel()
-    private val frame: MainFrame = new MainFrame {
-      title = "Ticket to Ride"
-      contents = panel
-      resizable = false
-    }
-    private val insets = Toolkit.getDefaultToolkit.getScreenInsets(frame.peer.getGraphicsConfiguration)
-
-    private val gameController: GameController = GameController()
-
-    private val southPanel = new BoxPanel(Orientation.Horizontal)
-    private val handPanel = new BoxPanel(Orientation.Horizontal)
-    private val scrollPane = new ScrollPane(handPanel)
-    private val eastPanel = new BoxPanel(Orientation.Vertical)
-    private val drawButton = new Button("Draw")
-    private val rulesButton = new Button("Show rules")
 
     private val mapView = MapView()
     private val playerInfoView = BasicPlayerInfoView("PLAYER INFO")
     private val objectiveView = BasicObjectiveView("OBJECTIVE")
     private val playerScoresView = PlayerScoresView("PLAYER SCORES")
+    private val handPanel = new BoxPanel(Orientation.Horizontal)
+    private val frame: MainFrame = new MainFrame()
+    private val initViewHelper = InitViewHelper(frame, handPanel, mapView, objectiveView,
+      playerInfoView, playerScoresView)
+    private val playerGameView = PlayerGameView(frame, handPanel, objectiveView, playerInfoView, playerScoresView)
 
-    InitHelper.setFrameSize()
-    InitHelper.initPanels()
-
-    private object InitHelper:
-      def setFrameSize(): Unit =
-        frame.size = new Dimension(screenSize.width - insets.left - insets.right,
-          screenSize.height - insets.bottom - insets.top)
-
-      def initPanels(): Unit =
-        configDrawButton()
-        configRulesButton()
-        configSouthPanel()
-        configEastPanel()
-        panel.layout ++= List((mapView.component, BorderPanel.Position.Center),
-          (southPanel, BorderPanel.Position.South), (eastPanel, BorderPanel.Position.East))
-        initMap()
-        frame.repaint()
-
-      private def configSouthPanel(): Unit =
-        import java.awt.Color.*
-        import javax.swing.BorderFactory
-        val borderWeight = 5
-        val borderThickness = 1
-        val borderColor = LIGHT_GRAY
-        scrollPane.horizontalScrollBarPolicy = AsNeeded
-        scrollPane.verticalScrollBarPolicy = Never
-        scrollPane.border = Swing.CompoundBorder(
-          Swing.EmptyBorder(borderWeight),
-          BorderFactory.createLineBorder(borderColor, borderThickness, true)
-        )
-        southPanel.contents += rulesButton
-        southPanel.contents += scrollPane
-        southPanel.contents += drawButton
-        southPanel.border = Swing.EmptyBorder(borderWeight)
-
-      private def configEastPanel(): Unit =
-        val eastPanelWidthRatio = 0.15
-        val objectiveViewHeightRatio = 0.25
-        val playerScoresViewHeightRatio = 0.4
-        val borderWeight = 1
-        eastPanel.preferredSize = new Dimension((frame.size.width * eastPanelWidthRatio).toInt, frame.size.height)
-        eastPanel.contents += playerInfoView.component
-        eastPanel.contents += objectiveView.component
-        eastPanel.contents += playerScoresView.component
-        eastPanel.border = Swing.EmptyBorder(borderWeight)
-        objectiveView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
-          (eastPanel.preferredSize.height * objectiveViewHeightRatio).toInt)
-        playerScoresView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
-          (eastPanel.preferredSize.height * playerScoresViewHeightRatio).toInt)
-
-      private def configDrawButton(): Unit =
-        drawButton.listenTo(drawButton.mouse.clicks)
-        drawButton.reactions += {
-          case _: ButtonClicked => gameController.drawCards(2)
-          case _ => ()
-        }
-
-      private def configRulesButton(): Unit =
-        rulesButton.listenTo(rulesButton.mouse.clicks)
-        rulesButton.reactions += {
-          case _: ButtonClicked => gameController.showRules()
-          case _ => ()
-        }
-
-      private def initMap(): Unit =
-        CitiesLoader(
-          frame.size.width - eastPanel.peer.getPreferredSize.getWidth.toInt,
-          frame.size.height - frame.peer.getInsets.top - southPanel.peer.getPreferredSize.getHeight.toInt
-        )().load()
-
-    override def addHandView(handView: HandView): Unit =
-      handPanel.contents += handView.handComponent
-
-    override def updateHandView(handView: HandView): Unit =
-      handPanel.contents.clear()
-      addHandView(handView)
-      frame.validate()
+    initViewHelper.setFrame()
+    initViewHelper.initPanels()
 
     override def report(messageType: String, message: String): Unit =
       Dialog.showMessage(frame, message, title = messageType)
@@ -263,8 +118,6 @@ object GameView:
           frame.centerOnScreen()
         case _ => close(); frame.closeOperation()
 
+    export playerGameView.*
     export frame.{open, close}
     export mapView.{addRoute, updateRoute}
-    export objectiveView.{updateObjective, updateCompletionCheckBox}
-    export playerInfoView.updatePlayerInfo
-    export playerScoresView.{initPlayerScores, updatePlayerScore}

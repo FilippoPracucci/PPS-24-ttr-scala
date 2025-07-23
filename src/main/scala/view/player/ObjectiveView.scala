@@ -30,10 +30,9 @@ trait ObjectiveViewWithCompletion:
     enabled = false
   private val panel: BoxPanel = new BoxPanel(Orientation.Horizontal):
     background = WHITE
-    contents += new Label("Completed:"):
+    val label: Label = new Label("Completed:"):
       font = Font("Coursier", Style.BoldItalic, 16)
-    contents += Swing.HGlue
-    contents += checkBox
+    contents ++= List(label, Swing.HGlue, checkBox)
 
   /** Add a completion checkbox to the objective view. */
   def addCompletionCheckBox(): Unit = playerView.addComponentToInnerPanel(panel)
@@ -51,7 +50,7 @@ trait ObjectiveViewWithCompletion:
   * @param title
   *   the title of the view.
   */
-protected class BasicObjectiveView(title: String)
+class BasicObjectiveView(title: String)
     extends BasicPlayerView(title)
     with ObjectiveView
     with ObjectiveViewWithCompletion:

@@ -1,0 +1,92 @@
+package view
+
+import cards.HandView
+
+trait PlayerGameView:
+  import GameView.{City, Points, PlayerId, PlayerName}
+
+  /** Add the hand component to the view.
+    *
+    * @param handView
+    *   the hand view to add to the panel.
+    */
+  def addHandView(handView: HandView): Unit
+
+  /** Update the hand view component.
+    *
+    * @param handView
+    *   the hand view component to update.
+    */
+  def updateHandView(handView: HandView): Unit
+
+  /** Initialize player scores.
+    *
+    * @param playerScores
+    *   the list of player scores consisting of pairs "player's name; score"
+    */
+  def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
+
+  /** Update the objective view.
+    *
+    * @param objective
+    *   the pair of cities to connect and its value in terms of points.
+    */
+  def updateObjective(objective: ((City, City), Points)): Unit
+
+  /** Update the completion state of the current player objective.
+    *
+    * @param state
+    *   the new completion state of the objective.
+    */
+  def updateCompletionCheckBox(state: Boolean): Unit
+
+  /** Update the player information view.
+    *
+    * @param playerId
+    *   the identifier of the player.
+    * @param trains
+    *   the number of train cars left to the player.
+    */
+  def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit
+
+  /** Updates the score of the specified player.
+    *
+    * @param player
+    *   the name of the player whose score to update
+    * @param score
+    *   the new score of the player
+    */
+  def updatePlayerScore(player: PlayerName, score: Points): Unit
+
+object PlayerGameView:
+  import player.{BasicObjectiveView, BasicPlayerInfoView, PlayerScoresView}
+  import controller.GameController
+  import scala.swing.{BoxPanel, MainFrame}
+
+  /** Type alias that represents the city as String by its name, the points as Int and the player id as a Color.
+    */
+  export GameController.{City, Points, PlayerId}
+
+  /** Type alias that represents the player's name.
+    */
+  type PlayerName = String
+
+  def apply(frame: MainFrame, handPanel: BoxPanel, objectiveView: BasicObjectiveView,
+      playerInfoView: BasicPlayerInfoView, playerScoresView: PlayerScoresView): PlayerGameView =
+    PlayerGameViewImpl(frame, handPanel, objectiveView, playerInfoView, playerScoresView)
+
+  private case class PlayerGameViewImpl(frame: MainFrame, handPanel: BoxPanel, objectiveView: BasicObjectiveView,
+      playerInfoView: BasicPlayerInfoView, playerScoresView: PlayerScoresView)
+      extends PlayerGameView:
+
+    override def addHandView(handView: HandView): Unit =
+      handPanel.contents += handView.handComponent
+
+    override def updateHandView(handView: HandView): Unit =
+      handPanel.contents.clear()
+      addHandView(handView)
+      frame.validate()
+
+    export objectiveView.{updateObjective, updateCompletionCheckBox}
+    export playerInfoView.updatePlayerInfo
+    export playerScoresView.{initPlayerScores, updatePlayerScore}

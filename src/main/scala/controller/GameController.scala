@@ -19,6 +19,9 @@ trait GameController:
     */
   def claimRoute(connectedCities: (City, City)): Unit
 
+  /** Show the rules of the game. */
+  def showRules(): Unit
+
 object GameController:
   /** Type aliases that represent the player identifier as Color, the city as String by its name and the points as Int.
     */
@@ -115,6 +118,8 @@ object GameController:
             ClaimRouteHelper.claimRoute(connectedCities, route.length, route.points)(route.length, color)
           case _ => throw new IllegalStateException("Unhandled mechanic")
       case _ => throw new IllegalStateException(s"The route between $connectedCities doesn't exist")
+
+    override def showRules(): Unit =  gameView.showRules("RULES!")
 
     private object ClaimRouteHelper:
       def claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Points)(nCards: Int, color: Color)

@@ -98,6 +98,13 @@ trait GameView:
     */
   def report(messageType: String, message: String): Unit
 
+  /** Show the rules of the game.
+   *
+   * @param description
+   *    the description of the rules.
+   */
+  def showRules(description: String): Unit
+
   /** Show the last round start message to the user. */
   def startLastRound(): Unit
 
@@ -151,6 +158,7 @@ object GameView:
     private val scrollPane = new ScrollPane(handPanel)
     private val eastPanel = new BoxPanel(Orientation.Vertical)
     private val drawButton = new Button("Draw")
+    private val rulesButton = new Button("Show rules")
 
     private val mapView = MapView()
     private val playerInfoView = BasicPlayerInfoView("PLAYER INFO")
@@ -167,6 +175,7 @@ object GameView:
 
       def initPanels(): Unit =
         configDrawButton()
+        configRulesButton()
         configSouthPanel()
         configEastPanel()
         panel.layout ++= List((mapView.component, BorderPanel.Position.Center),
@@ -186,6 +195,7 @@ object GameView:
           Swing.EmptyBorder(borderWeight),
           BorderFactory.createLineBorder(borderColor, borderThickness, true)
         )
+        southPanel.contents += rulesButton
         southPanel.contents += scrollPane
         southPanel.contents += drawButton
         southPanel.border = Swing.EmptyBorder(borderWeight)
@@ -212,6 +222,13 @@ object GameView:
           case _ => ()
         }
 
+      private def configRulesButton(): Unit =
+        rulesButton.listenTo(rulesButton.mouse.clicks)
+        rulesButton.reactions += {
+          case _: ButtonClicked => gameController.showRules()
+          case _ => ()
+        }
+
       private def initMap(): Unit =
         CitiesLoader(
           frame.size.width - eastPanel.peer.getPreferredSize.getWidth.toInt,
@@ -228,6 +245,9 @@ object GameView:
 
     override def report(messageType: String, message: String): Unit =
       Dialog.showMessage(frame, message, title = messageType)
+
+    override def showRules(description: String): Unit =
+      Dialog.showMessage(frame, description, title = "Rules of the game", Dialog.Message.Plain)
 
     override def startLastRound(): Unit =
       Dialog.showConfirmation(frame, "Start of the final round, so last turn for each player!",

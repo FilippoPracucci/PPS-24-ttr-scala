@@ -19,7 +19,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     player.id should be(id)
     player.hand.cards should not be empty
     player.objective should be(objective)
-    player.trains.trainCars should be(NUMBER_TRAIN_CARS)
+    player.trains should be(NUMBER_TRAIN_CARS)
 
   it should "be created correctly using a custom deck" in:
     import Color.*
@@ -30,12 +30,12 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     customPlayer.id should be(id)
     customPlayer.hand.cards should be(fixedList.take(4))
     customPlayer.objective should be(objective)
-    customPlayer.trains.trainCars should be(NUMBER_TRAIN_CARS)
+    customPlayer.trains should be(NUMBER_TRAIN_CARS)
 
   it should "be able to place train cars" in:
-    player.trains.placeTrainCars(5)
-    player.trains.trainCars should be(NUMBER_TRAIN_CARS - 5)
-    a[IllegalArgumentException] should be thrownBy player.trains.placeTrainCars(NUMBER_TRAIN_CARS)
+    player.placeTrains(5)
+    player.trains should be(NUMBER_TRAIN_CARS - 5)
+    player.placeTrains(NUMBER_TRAIN_CARS) should be(Left(Player.NotEnoughTrains))
 
   it should "be able to draw cards from the deck" in:
     import model.cards.Deck

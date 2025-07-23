@@ -9,6 +9,8 @@ type PlayerId = PlayerColor
   * The player can draw cards and claim a route.
   */
 trait Player:
+  import Player.Trains
+
   /** The player's identifier.
     *
     * @return
@@ -29,8 +31,6 @@ trait Player:
     *   the player's hand.
     */
   def hand: Hand
-
-  private type Trains = model.player.Player.TrainCars
 
   /** The player's train cars.
     *
@@ -97,6 +97,8 @@ trait Player:
 
 /** The factory for [[Player]] instances. */
 object Player:
+  private type Trains = Int
+
   /** Error that represents the case in which the deck doesn't have enough cards. */
   case object NotEnoughCardsInTheDeck extends GameError
 
@@ -108,32 +110,6 @@ object Player:
     */
   case object NotEnoughTrains extends GameError
 
-  /** The train cars, which are the number owned by the player with the possibility to set it or place some of them. */
-  trait TrainCars:
-    /** Number of player train cars left.
-      *
-      * @return
-      *   the number of train cars left.
-      */
-    def trainCars: Int
-
-    /** Place the given amount of player train cars, if they are sufficient.
-      *
-      * @param n
-      *   the number of train cars to place.
-      */
-    def placeTrainCars(n: Int): Unit
-
-  private object TrainCars:
-    def apply(numberTrainCars: Int): TrainCars = TrainCarsImpl(numberTrainCars)
-
-    private case class TrainCarsImpl(private var _trainCars: Int) extends TrainCars:
-      override def trainCars: Int = _trainCars
-
-      override def placeTrainCars(n: Int): Unit =
-        require(trainCars >= n, "Not enough train cars to place the amount given.")
-        _trainCars -= n
-
   private val NUMBER_TRAIN_CARS = 45
 
   /** Create a player, with the given identifier and objective.
@@ -142,23 +118,24 @@ object Player:
     *   the player's id.
     * @param deck
     *   the reference to the deck.
-    * @param trains
-    *   the player's train cars.
     * @param objective
     *   the player's objective.
     * @return
     *   the player created.
     */
-  def apply(playerId: PlayerId, deck: Deck = Deck(), trains: TrainCars = TrainCars(NUMBER_TRAIN_CARS),
-      objective: ObjectiveCompletion): Player =
-    PlayerImpl(playerId, deck, trains, objective)
+  def apply(playerId: PlayerId, deck: Deck = Deck(), objective: ObjectiveCompletion): Player =
+    PlayerImpl(playerId, deck, objective)
 
-  private case class PlayerImpl(override val id: PlayerId, deck: Deck, override val trains: TrainCars,
-      override val objective: ObjectiveCompletion) extends Player:
+  private case class PlayerImpl(override val id: PlayerId, deck: Deck, override val objective: ObjectiveCompletion)
+      extends Player:
+
     import scala.util.*
 
+    private val trainCars: TrainCars = TrainCars(NUMBER_TRAIN_CARS)
     override val hand: Hand = Hand(deck)
     private var _score: Int = 0
+
+    override def trains: Trains = trainCars.trainCars
 
     override def drawCards(n: Int): Either[GameError, Unit] =
       Try(deck.draw(n)).toEither.left.map(_ => NotEnoughCardsInTheDeck).map(hand.addCards)
@@ -171,7 +148,7 @@ object Player:
 
     override def placeTrains(n: Int): Either[GameError, Unit] = // TODO to review
       require(n > 0, "n must be positive")
-      Try(trains.placeTrainCars(n)).toEither.left.map(_ => NotEnoughTrains)
+      Try(trainCars.placeTrainCars(n)).toEither.left.map(_ => NotEnoughTrains)
 
     override def score: Int = _score
 

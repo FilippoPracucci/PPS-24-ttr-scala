@@ -36,7 +36,7 @@ class TurnManagerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     import GameState.*
     turnManager.gameState should be(IN_GAME)
     turnManager.switchTurn()
-    turnManager.currentPlayer.trains.placeTrainCars(44)
+    turnManager.currentPlayer.placeTrains(44)
     turnManager.switchTurn()
     turnManager.gameState should be(START_LAST_ROUND)
     playerList.foreach(_ => turnManager.switchTurn())

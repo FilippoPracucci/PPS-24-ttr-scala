@@ -54,7 +54,7 @@ object TurnManager:
 
     private def updateGameState(): Unit = _playerStartedLastRound match
       case Some(player) => _gameState = if currentPlayer == player then END_GAME else LAST_ROUND
-      case None if currentPlayer.trains.trainCars <= 2 =>
+      case None if currentPlayer.trains <= 2 =>
         _gameState = START_LAST_ROUND
         _playerStartedLastRound = Option(currentPlayer)
       case _ => _gameState = IN_GAME

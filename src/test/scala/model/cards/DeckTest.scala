@@ -7,14 +7,13 @@ import org.scalatest.matchers.should.Matchers
 class DeckTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
   import model.utils.Color
-  import model.utils.Color.*
-
-  val standardDeck: Deck = Deck()
-  val NUM_CARDS_PER_COLOR = 12
+  import Color.*
 
   "A deck" should "be created correctly with the standard generator" in:
-    standardDeck.cards should have size (Color.values.length * NUM_CARDS_PER_COLOR)
-    standardDeck.cards.filter(_.color == RED) should have size NUM_CARDS_PER_COLOR
+    import config.GameConfig.NumCardsPerColor
+    val standardDeck: Deck = Deck()
+    standardDeck.cards should have size (Color.values.length * NumCardsPerColor)
+    standardDeck.cards.filter(_.color == RED) should have size NumCardsPerColor
 
   val fixedList: List[Card] = List(Card(RED), Card(YELLOW), Card(RED), Card(BLACK), Card(BLUE))
   val fixedDeckGenerator: CardsGenerator[Deck] = () => fixedList
@@ -27,8 +26,9 @@ class DeckTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     deckFixed.cards.filter(_.color == RED) should have size fixedList.count(_.color == RED)
 
   it should "draw correctly" in:
-    deckFixed.draw(2) should be(fixedList.take(2))
-    deckFixed.cards should be(fixedList.takeRight(fixedList.size - 2))
+    import config.GameConfig.StandardNumberOfCardsToDraw
+    deckFixed.draw(StandardNumberOfCardsToDraw) should be(fixedList.take(StandardNumberOfCardsToDraw))
+    deckFixed.cards should be(fixedList.takeRight(fixedList.size - StandardNumberOfCardsToDraw))
     a[IllegalArgumentException] should be thrownBy deckFixed.draw(deckFixed.cards.size + 1)
 
   it should "reinsert a card on the bottom correctly" in:

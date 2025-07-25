@@ -1,6 +1,6 @@
 package model.player
 
-/** The train cars, which are the number owned by the player with the possibility to set it or place some of them. */
+/** The train cars, which are the number owned by the player with the possibility to place some of them. */
 trait TrainCars:
   /** Number of player train cars left.
     *

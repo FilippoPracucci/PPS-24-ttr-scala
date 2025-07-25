@@ -33,19 +33,25 @@ object ObjectiveChecker:
     import model.utils.Scala2P.{*, given}
     import ConversionHelper.*
 
+    private val AnyPathPredicate = "any_path"
+    private val NoPlayer = "none"
+    private val Edge: (Term, Term, Term) => Term = (city1, city2, player) => s"e($city1, $city2, $player)".toLowerCase
+    private val Goal: (Term, Term, Term, Term) => Term = (graph, city1, city2, player) =>
+      s"$AnyPathPredicate($graph, $city1, $city2, $player, _)."
+
     private val engine = mkPrologEngine(
-      """
-        % any_path(@Graph, ?SourceNode, ?DestinationNode, ?Player, ?ListEdges)
+      raw"""
+        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, ?ListEdges)
         % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by
         % Player
-        any_path(G1, N1, N2, P, L) :- any_path(G1, N1, N2, P, [N1], L).
+        $AnyPathPredicate(G1, N1, N2, P, L) :- $AnyPathPredicate(G1, N1, N2, P, [N1], L).
 
-        % any_path(@Graph, ?SourceNode, ?DestinationNode, ?Player, @ListVisitedNodes, ?ListEdges)
+        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, @ListVisitedNodes, ?ListEdges)
         % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by
         % Player, and without having duplicated nodes. ListVisitedNodes represents the list of visited nodes.
-        any_path(G, N1, N2, P, _, [e(N1, N2)]) :- connected(G, N1, N2, P).
-        any_path(G, N1, N2, P, V, [e(N1, N3) | L]) :- connected(G, N1, N3, P), not_member(N3, V),
-          any_path(G, N3, N2, P, [N3 | V], L).
+        $AnyPathPredicate(G, N1, N2, P, _, [e(N1, N2)]) :- connected(G, N1, N2, P).
+        $AnyPathPredicate(G, N1, N2, P, V, [e(N1, N3) | L]) :- connected(G, N1, N3, P), not_member(N3, V),
+          $AnyPathPredicate(G, N3, N2, P, [N3 | V], L).
 
         % connected(@Graph, ?Node1, ?Node2, ?Player)
         % It's satisfied if an edge between Node1 and Node2 controlled by Player exists in Graph.
@@ -60,13 +66,10 @@ object ObjectiveChecker:
     )
 
     override def check(objective: Objective, playerId: PlayerId): Boolean =
-      solveWithSuccess(engine, createGoalFor(objective, playerId))
+      solveWithSuccess(engine, Goal(graph, objective.city1, objective.city2, playerId.toAtom))
 
     private object ConversionHelper:
-      def createGoalFor(objective: Objective, playerId: PlayerId): Term =
-        s"any_path($graph, ${objective.city1}, ${objective.city2}, ${playerId.toAtom}, _)."
-
-      private def graph: Term =
+      def graph: Term =
         gameMap.routes
           .map(_.connectedCities)
           .map(connectedCities => (connectedCities._1.name, connectedCities._2.name))
@@ -74,14 +77,14 @@ object ObjectiveChecker:
             (city1, city2,
               gameMap.getPlayerClaimingRoute((city1, city2)) match
                 case Right(Some(player)) => player.toString
-                case _ => "none"
+                case _ => NoPlayer
             )
           )
-          .map((city1, city2, player) => s"e($city1, $city2, $player)".toLowerCase)
+          .map((city1, city2, player) => Edge(city1, city2, player))
           .toSeq
 
-      extension (objective: Objective) private def city1: Term = objective.citiesToConnect._1.toLowerCase
+      extension (objective: Objective) def city1: Term = objective.citiesToConnect._1.toLowerCase
 
-      extension (objective: Objective) private def city2: Term = objective.citiesToConnect._2.toLowerCase
+      extension (objective: Objective) def city2: Term = objective.citiesToConnect._2.toLowerCase
 
-      extension (playerId: PlayerId) private def toAtom: Term = playerId.toString.toLowerCase
+      extension (playerId: PlayerId) def toAtom: Term = playerId.toString.toLowerCase

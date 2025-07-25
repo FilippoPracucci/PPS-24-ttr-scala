@@ -110,8 +110,6 @@ object Player:
     */
   case object NotEnoughTrains extends GameError
 
-  private val NUMBER_TRAIN_CARS = 45
-
   /** Create a player, with the given identifier and objective.
     *
     * @param playerId
@@ -130,8 +128,9 @@ object Player:
       extends Player:
 
     import scala.util.*
+    import config.GameConfig.NumberTrainCars
 
-    private val trainCars: TrainCars = TrainCars(NUMBER_TRAIN_CARS)
+    private val trainCars: TrainCars = TrainCars(NumberTrainCars)
     override val hand: Hand = Hand(deck)
     private var _score: Int = 0
 
@@ -146,7 +145,7 @@ object Player:
       require(n > 0, "n must be positive")
       Try(hand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards).map(_.foreach(deck.reinsertAtTheBottom))
 
-    override def placeTrains(n: Int): Either[GameError, Unit] = // TODO to review
+    override def placeTrains(n: Int): Either[GameError, Unit] =
       require(n > 0, "n must be positive")
       Try(trainCars.placeTrainCars(n)).toEither.left.map(_ => NotEnoughTrains)
 

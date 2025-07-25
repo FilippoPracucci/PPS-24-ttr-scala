@@ -1,6 +1,6 @@
 package view
 
-import map.{CitiesLoader, MapView}
+import map.MapView
 import cards.HandView
 
 /** Trait that represents the view of the game.

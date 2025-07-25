@@ -2,11 +2,12 @@ package view.map
 
 import scala.swing.*
 import javax.swing.JComponent
+import view.GameView.City
 
 /** Trait that represents the view of the map, using scala.swing.
   */
 trait MapView:
-  import MapView.{City, Color}
+  import MapView.Color
 
   /** Returns the `scala.swing.Component` of the map view.
     * @return
@@ -48,10 +49,6 @@ trait MapView:
 
 object MapView:
   import controller.GameController
-
-  /** Type alias that represents the city as String by its name.
-    */
-  export GameController.City
 
   /** Type alias that represents the color as String by its name in lowercase. // TODO
     */

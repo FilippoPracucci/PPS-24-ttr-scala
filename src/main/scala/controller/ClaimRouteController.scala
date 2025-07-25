@@ -3,7 +3,7 @@ package controller
 import model.map.GameMap
 
 trait ClaimRouteController:
-  import ClaimRouteController.City
+  import view.GameView.City
 
   /** Claims the route connecting the specified cities.
     *
@@ -13,8 +13,17 @@ trait ClaimRouteController:
   def claimRoute(connectedCities: (City, City)): Unit
 
 object ClaimRouteController:
-  export GameController.{City, Points}
-
+  /** Creates a `ClaimRouteController`.
+    *
+    * @param turnManager
+    *   the turn manager
+    * @param viewController
+    *   the controller of the view
+    * @param gameMap
+    *   the map of the game
+    * @return
+    *   the created `ClaimRouteController`
+    */
   def apply(turnManager: TurnManager, viewController: ViewController, gameMap: GameMap): ClaimRouteController =
     ClaimRouteControllerImpl(turnManager, viewController, gameMap)
 
@@ -22,6 +31,7 @@ object ClaimRouteController:
     export model.player.{Player, ObjectiveChecker}
     export model.utils.{Color, GameError}
     export model.map.Route.SpecificColor
+    export view.GameView.{City, Points}
     private val routePointsManager = model.map.RoutePointsManager()
     export routePointsManager.points
 

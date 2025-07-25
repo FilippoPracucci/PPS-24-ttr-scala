@@ -7,10 +7,6 @@ trait GameController extends DrawCardsController with ClaimRouteController:
   def showRules(): Unit
 
 object GameController:
-  /** Type alias that represents the city as String by its name.
-    */
-  export model.player.{PlayerId, City, Points}
-
   /** Returns the singleton instance of `GameController`.
     *
     * @return

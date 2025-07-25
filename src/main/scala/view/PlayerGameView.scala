@@ -3,7 +3,7 @@ package view
 import cards.HandView
 
 trait PlayerGameView:
-  import GameView.{City, Points, PlayerId, PlayerName}
+  import GameView.{City, Points, PlayerName}
 
   /** Add the hand component to the view.
     *
@@ -47,7 +47,7 @@ trait PlayerGameView:
     * @param trains
     *   the number of train cars left to the player.
     */
-  def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit
+  def updatePlayerInfo(playerId: PlayerName, trains: Int): Unit
 
   /** Updates the score of the specified player.
     *
@@ -60,16 +60,7 @@ trait PlayerGameView:
 
 object PlayerGameView:
   import player.{BasicObjectiveView, BasicPlayerInfoView, PlayerScoresView}
-  import controller.GameController
   import scala.swing.{BoxPanel, MainFrame}
-
-  /** Type alias that represents the city as String by its name, the points as Int and the player id as a Color.
-    */
-  export GameController.{City, Points, PlayerId}
-
-  /** Type alias that represents the player's name.
-    */
-  type PlayerName = String
 
   def apply(frame: MainFrame, handPanel: BoxPanel, objectiveView: BasicObjectiveView,
       playerInfoView: BasicPlayerInfoView, playerScoresView: PlayerScoresView): PlayerGameView =

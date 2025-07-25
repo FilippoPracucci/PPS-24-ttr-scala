@@ -4,8 +4,7 @@ package view.player
 trait ObjectiveView:
   playerView: PlayerView =>
 
-  import controller.GameController
-  export GameController.{City, Points}
+  import view.GameView.{City, Points}
 
   /** Update the player's objective representation with a new one, given as a pair of [[City]] and [[Points]].
     *

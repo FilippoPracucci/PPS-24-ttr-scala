@@ -11,12 +11,12 @@ object PlayerInfoViewTest extends App with ViewTest:
   private val playerView = BasicPlayerInfoView(PlayerInfoTitle)
   private val panel = new BoxPanel(Orientation.Vertical)
 
-  playerView.updatePlayerInfo(GREEN, 40)
+  playerView.updatePlayerInfo("Green", 40)
 
   panel.contents += playerView.component
   super.setFrameContents(panel)
 
   Thread.sleep(2000)
 
-  playerView.updatePlayerInfo(YELLOW, 30)
+  playerView.updatePlayerInfo("Yellow", 30)
   super.updateView()

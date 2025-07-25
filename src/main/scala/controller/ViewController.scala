@@ -1,7 +1,7 @@
 package controller
 
 import model.map.GameMap
-import GameController.City
+import view.GameView.City
 import model.utils.GameError
 
 private trait ViewController:
@@ -14,7 +14,6 @@ private trait ViewController:
 
 private object ViewController:
   import model.player.Player
-  import view.GameView
 
   def apply(turnManager: TurnManager, players: List[Player]): ViewController = ViewControllerImpl(turnManager, players)
 
@@ -27,9 +26,9 @@ private object ViewController:
     export view.cards.{HandView, CardView}
     export CardControllerColor.*
     export model.map.Route
-    export GameController.Points
     export MapViewColorHelper.*
-    export GameView.{PlayerName, MessageType}
+    export view.GameView
+    export GameView.{PlayerName, Points, MessageType}
     export config.GameViewConfig.*
     export config.GameConfig.{ErrorDescription, RulesDescription}
 
@@ -49,7 +48,7 @@ private object ViewController:
             case _ => throw new IllegalStateException("Unhandled mechanic")
         )
       )
-      gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains)
+      gameView.updatePlayerInfo(currentPlayer.name, currentPlayer.trains)
       gameView.addHandView(handView)
       gameView.updateObjective(currentPlayerObjective)
       gameView.initPlayerScores(currentPlayerScores)
@@ -71,7 +70,7 @@ private object ViewController:
         case END_GAME => gameView.endGame(currentPlayerScores)
         case _ => ()
       handView.updateHand(currentHandCardsView)
-      gameView.updatePlayerInfo(currentPlayer.id, currentPlayer.trains)
+      gameView.updatePlayerInfo(currentPlayer.name, currentPlayer.trains)
       gameView.updateHandView(handView)
       gameView.updateCompletionCheckBox(currentPlayer.objective.completed)
       gameView.updateObjective(currentPlayerObjective)

@@ -2,7 +2,6 @@ package model.player
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import controller.GameController.{City, Points}
 
 private val Cities: (City, City) = ("Paris", "Berlin")
 private val Points: Points = 8

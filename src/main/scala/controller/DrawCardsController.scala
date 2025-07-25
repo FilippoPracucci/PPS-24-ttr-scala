@@ -5,6 +5,15 @@ trait DrawCardsController:
   def drawCards(): Unit
 
 object DrawCardsController:
+  /** Creates a `DrawCardsController`.
+    *
+    * @param turnManager
+    *   the turn manager
+    * @param viewController
+    *   the controller of the view
+    * @return
+    *   the created `DrawCardsController`
+    */
   def apply(turnManager: TurnManager, viewController: ViewController): DrawCardsController =
     DrawCardsControllerImpl(turnManager, viewController)
 

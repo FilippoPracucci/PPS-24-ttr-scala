@@ -6,7 +6,7 @@ import cards.HandView
 /** Trait that represents the view of the game.
   */
 trait GameView extends PlayerGameView:
-  import GameView.{City, Points, Color, PlayerName, MessageType}
+  import GameView.{City, PlayerName, Points, Color, MessageType}
 
   /** Opens the view.
     */
@@ -51,25 +51,26 @@ trait GameView extends PlayerGameView:
   def endGame(playerScores: Seq[(PlayerName, Points)]): Unit
 
 object GameView:
-  import controller.GameController
-
-  /** Type alias that represents the city as String by its name, the points as Int and the player id as a Color.
+  /** Type alias that represents the city as String by its name.
     */
-  export GameController.{City, Points, PlayerId}
+  type City = String
 
-  /** Type alias that represents the player's name.
+  /** Type alias that represents the player's name as String.
     */
-  type PlayerName = String // TODO to integrate
+  type PlayerName = String
 
-  /** Type alias that represents the color as String by its name in lowercase. // TODO
+  /** Type alias that represents the points as Int.
+    */
+  type Points = Int
+
+  /** Type alias that represents the color as String by its name in lowercase.
     */
   export MapView.Color
 
   /** The type of the message to show.
     */
   trait MessageType
-  object MessageType {
-
+  object MessageType:
     /** Type used to show information.
       */
     case object Info extends MessageType
@@ -81,7 +82,6 @@ object GameView:
     /** Type used to show responses.
       */
     case object Response extends MessageType
-  }
 
   /** Returns the singleton instance of `GameView`.
     *

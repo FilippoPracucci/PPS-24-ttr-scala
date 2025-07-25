@@ -10,6 +10,7 @@ private case class InitViewHelper(frame: MainFrame, handPanel: BoxPanel, mapView
   import java.awt.Toolkit
   import ScrollPane.BarPolicy.*
   import controller.GameController
+  import config.GameViewConfig.*
 
   private val screenSize: Dimension = Toolkit.getDefaultToolkit.getScreenSize
   private val insets = Toolkit.getDefaultToolkit.getScreenInsets(frame.peer.getGraphicsConfiguration)
@@ -17,13 +18,13 @@ private case class InitViewHelper(frame: MainFrame, handPanel: BoxPanel, mapView
   private val southPanel = new BoxPanel(Orientation.Horizontal)
   private val scrollPane = new ScrollPane(handPanel)
   private val eastPanel = new BoxPanel(Orientation.Vertical)
-  private val drawButton = new Button("Draw")
-  private val rulesButton = new Button("Show rules")
+  private val drawButton = new Button(DrawButtonText)
+  private val rulesButton = new Button(RulesButtonText)
 
   private val gameController: GameController = GameController()
 
   def setFrame(): Unit =
-    frame.title = "Ticket to ride"
+    frame.title = FrameTitle
     frame.contents = panel
     frame.size = new Dimension(screenSize.width - insets.left - insets.right,
       screenSize.height - insets.bottom - insets.top)
@@ -40,32 +41,27 @@ private case class InitViewHelper(frame: MainFrame, handPanel: BoxPanel, mapView
     frame.repaint()
 
   private def configSouthPanel(): Unit =
-    import java.awt.Color.*
-    import javax.swing.BorderFactory
-    val borderWeight = 5
-    val borderThickness = 1
-    val borderColor = LIGHT_GRAY
+    import config.GameViewConfig.BorderConfig.*
+    val BorderWeight = 5
+    val BorderThickness = 1
     scrollPane.horizontalScrollBarPolicy = AsNeeded
     scrollPane.verticalScrollBarPolicy = Never
-    scrollPane.border = Swing.CompoundBorder(
-      Swing.EmptyBorder(borderWeight),
-      BorderFactory.createLineBorder(borderColor, borderThickness, true)
-    )
+    scrollPane.border = CompoundBorder(EmptyBorder(BorderWeight), LineBorder(BorderThickness))
     southPanel.contents ++= List(rulesButton, scrollPane, drawButton)
-    southPanel.border = Swing.EmptyBorder(borderWeight)
+    southPanel.border = Swing.EmptyBorder(BorderWeight)
 
   private def configEastPanel(): Unit =
-    val eastPanelWidthRatio = 0.15
-    val objectiveViewHeightRatio = 0.25
-    val playerScoresViewHeightRatio = 0.4
-    val borderWeight = 1
-    eastPanel.preferredSize = new Dimension((frame.size.width * eastPanelWidthRatio).toInt, frame.size.height)
+    val EastPanelWidthRatio = 0.15
+    val ObjectiveViewHeightRatio = 0.25
+    val PlayerScoresViewHeightRatio = 0.4
+    val BorderWeight = 1
+    eastPanel.preferredSize = new Dimension((frame.size.width * EastPanelWidthRatio).toInt, frame.size.height)
     eastPanel.contents ++= List(playerInfoView.component, objectiveView.component, playerScoresView.component)
-    eastPanel.border = Swing.EmptyBorder(borderWeight)
+    eastPanel.border = Swing.EmptyBorder(BorderWeight)
     objectiveView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
-      (eastPanel.preferredSize.height * objectiveViewHeightRatio).toInt)
+      (eastPanel.preferredSize.height * ObjectiveViewHeightRatio).toInt)
     playerScoresView.component.preferredSize = new Dimension(eastPanel.preferredSize.width,
-      (eastPanel.preferredSize.height * playerScoresViewHeightRatio).toInt)
+      (eastPanel.preferredSize.height * PlayerScoresViewHeightRatio).toInt)
 
   import event.ButtonClicked
   private def configDrawButton(): Unit =

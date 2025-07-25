@@ -1,5 +1,7 @@
 package view.player
 
+import config.GameViewConfig.ObjectiveDescription
+
 /** The representation of a player's objective. */
 trait ObjectiveView:
   playerView: PlayerView =>
@@ -12,25 +14,25 @@ trait ObjectiveView:
     *   the new objective to represent.
     */
   def updateObjective(objective: ((City, City), Points)): Unit =
-    playerView.updateComponentText(
-      f"Connect the cities ${objective._1._1} and ${objective._1._2}\n\nPoints: ${objective._2}"
-    )
+    playerView.updateComponentText(ObjectiveDescription(objective._1._1, objective._1._2, objective._2))
 
 /** The representation of a player's objective completion status. */
 trait ObjectiveViewWithCompletion:
   playerView: PlayerView =>
 
   import scala.swing.*
-  import Font.Style
-  import java.awt.Color.*
+  import config.GameViewConfig.FontConfig.ObjectiveFont
+  import config.GameViewConfig.ColorConfig.BackgroundColor
+
+  private val CompletedLabelText = "Completed:"
 
   private val checkBox: CheckBox = new CheckBox():
-    background = WHITE
+    background = BackgroundColor
     enabled = false
   private val panel: BoxPanel = new BoxPanel(Orientation.Horizontal):
-    background = WHITE
-    val label: Label = new Label("Completed:"):
-      font = Font("Coursier", Style.BoldItalic, 16)
+    background = BackgroundColor
+    val label: Label = new Label(CompletedLabelText):
+      font = ObjectiveFont
     contents ++= List(label, Swing.HGlue, checkBox)
 
   /** Add a completion checkbox to the objective view. */

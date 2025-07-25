@@ -40,10 +40,11 @@ object CardView:
     override def selected: Boolean = _selected
 
     override def cardComponent: Component =
+      import config.GameViewConfig.BorderConfig.*
       val BorderWeight = 5
       val cardLabel: Label = new Label(name):
         foreground = textColor
       val component: FlowPanel = new FlowPanel(FlowPanel.Alignment.Center)(cardLabel):
         background = color
-        border = Swing.EmptyBorder(BorderWeight)
+        border = EmptyBorder(BorderWeight)
       component

@@ -44,15 +44,14 @@ object PlayerScoresView:
   export GameView.{PlayerName, Points}
 
   private case class PlayerScoresViewImpl(title: String) extends PlayerScoresView:
-    import java.awt.Color.*
+    import config.GameViewConfig.ColorConfig.BackgroundColor
 
     private val _component: BoxPanel = new BoxPanel(Orientation.Vertical):
       contents += new BoxPanel(Orientation.Horizontal):
         contents += new Label(title)
-        background = WHITE
+        background = BackgroundColor
       this.initComponent()
     private var scoreLabels: Map[String, Label] = Map()
-    private val LabelFontSize = 15f
 
     override def component: Component = _component
 
@@ -61,28 +60,27 @@ object PlayerScoresView:
       scoreLabels.foreach((player, scoreLabel) =>
         _component.contents += new BoxPanel(Orientation.Horizontal):
           contents ++= List(new Label(player + ":"), Swing.HGlue, scoreLabel)
-          background = WHITE
+          background = BackgroundColor
       )
-      _component.contents.foreach(_.updateLabelFont(LabelFontSize))
+      _component.contents.foreach(_.updateLabelFont())
 
     override def updatePlayerScore(player: PlayerName, score: Points): Unit =
       scoreLabels(player).text = score.toString
 
     extension (component: Component)
       private def initComponent(): Unit =
-        import javax.swing.BorderFactory
+        import config.GameViewConfig.BorderConfig.*
         val BorderWeight = 10
         val BorderThickness = 1
         component.focusable = false
-        component.background = WHITE
-        component.border = BorderFactory.createCompoundBorder(
-          BorderFactory.createLineBorder(BLACK, BorderThickness, true),
-          Swing.EmptyBorder(BorderWeight)
-        )
+        component.background = BackgroundColor
+        component.border = CompoundBorder(LineBorder(BorderThickness), EmptyBorder(BorderWeight))
 
-      private def updateLabelFont(size: Float): Unit = component match
-        case panel: Panel => panel.contents.foreach {
-            case label: Label => label.font = label.font.deriveFont(LabelFontSize)
-            case _ => ()
-          }
-        case _ => ()
+      private def updateLabelFont(): Unit =
+        import config.GameViewConfig.FontConfig.DerivedFont
+        component match
+          case panel: Panel => panel.contents.foreach {
+              case label: Label => label.font = DerivedFont(label.font)
+              case _ => ()
+            }
+          case _ => ()

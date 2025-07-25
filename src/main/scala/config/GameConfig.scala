@@ -53,9 +53,26 @@ case object GameViewConfig:
   val ObjectiveCompletedTitle = "Objective completed"
   val RulesTitle = "Rules of the game"
 
+  case object BorderConfig:
+    import scala.swing.*
+    import javax.swing.border.Border
+    import javax.swing.BorderFactory
+    import ColorConfig.BorderColor
+    val EmptyBorder: Int => Border = Swing.EmptyBorder
+    val LineBorder: Int => Border = BorderFactory.createLineBorder(BorderColor, _, true)
+    val CompoundBorder: (Border, Border) => Border = Swing.CompoundBorder
+
+  case object ColorConfig:
+    import java.awt.Color
+    import Color.*
+    val BackgroundColor: Color = WHITE
+    val MapBackgroundColor: Color = LIGHT_GRAY
+    val BorderColor: Color = BLACK
+
   case object FontConfig:
     import scala.swing.Font
     import scala.swing.Font.Style
     val ObjectiveFont: Font = Font("Coursier", Style.BoldItalic, 16)
     val FinalRankingFont: Font = Font("Courier", Font.Style.Bold, 18)
     val PlayerFont: Font = Font("Coursier", Style.Plain, 16)
+    val DerivedFont: Font => Font = _.deriveFont(16f)

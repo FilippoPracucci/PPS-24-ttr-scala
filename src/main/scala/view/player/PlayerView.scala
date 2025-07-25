@@ -31,8 +31,7 @@ trait PlayerView:
   *   the title of the component.
   */
 protected class BasicPlayerView(title: String) extends PlayerView:
-  import javax.swing.BorderFactory
-  import java.awt.Color.*
+  import config.GameViewConfig.FontConfig.{PlayerFont, DerivedFont}
 
   private val textComponent: TextPane = new TextPane():
     this.initComponent()
@@ -51,23 +50,20 @@ protected class BasicPlayerView(title: String) extends PlayerView:
 
   extension (component: TextPane)
     private def initComponent(): Unit =
-      import config.GameViewConfig.FontConfig.PlayerFont
       component.editable = false
       component.focusable = false
       component.font = PlayerFont
 
   extension (component: BoxPanel)
     private def initComponent(): Unit =
+      import config.GameViewConfig.BorderConfig.*
+      import config.GameViewConfig.ColorConfig.BackgroundColor
       val BorderWeight = 10
       val BorderThickness = 1
-      val FontSize = 15f
       val LabelHorizontalAlignment = 0.5
       val label = new Label(title):
         xLayoutAlignment = LabelHorizontalAlignment
-        font = font.deriveFont(FontSize)
+        font = DerivedFont(font)
       component.contents ++= List(label, panel)
-      component.background = WHITE
-      component.border = BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(BLACK, BorderThickness, true),
-        Swing.EmptyBorder(BorderWeight)
-      )
+      component.background = BackgroundColor
+      component.border = CompoundBorder(LineBorder(BorderThickness), EmptyBorder(BorderWeight))

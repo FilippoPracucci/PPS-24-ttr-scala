@@ -25,18 +25,12 @@ object GraphStyleManager:
         val graph = graphComponent.getGraph
 
         def setGraphStyle(): Unit =
-          import scala.swing.Swing
-          import javax.swing.BorderFactory
-          import java.awt.Color.*
-          val BackgroundColor = LIGHT_GRAY
-          val BorderColor = BLACK
+          import config.GameViewConfig.BorderConfig.*
+          import config.GameViewConfig.ColorConfig.MapBackgroundColor
           val BorderThickness = 1
           graphComponent.getViewport.setOpaque(true)
-          graphComponent.getViewport.setBackground(BackgroundColor)
-          graphComponent.setBorder(
-            Swing.CompoundBorder(Swing.EmptyBorder(BorderThickness),
-              BorderFactory.createLineBorder(BorderColor, BorderThickness, true))
-          )
+          graphComponent.getViewport.setBackground(MapBackgroundColor)
+          graphComponent.setBorder(CompoundBorder(EmptyBorder(BorderThickness), LineBorder(BorderThickness)))
 
         def setVertexStyle(): Unit =
           val FontSize = 14

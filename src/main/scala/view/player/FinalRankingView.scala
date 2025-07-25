@@ -30,8 +30,9 @@ object FinalRankingView:
   export GameView.{PlayerName, Points}
 
   private class FinalRankingViewImpl(title: String)(playerScores: Seq[(PlayerName, Points)]) extends FinalRankingView:
-    import config.GameViewConfig.FontConfig.FinalRankingFont
-    import java.awt.Color.*
+    import config.GameViewConfig.FontConfig.{FinalRankingFont, DerivedFont}
+    import config.GameViewConfig.BorderConfig.*
+    import config.GameViewConfig.ColorConfig.BackgroundColor
 
     private val BorderWeight = 20
 
@@ -39,8 +40,8 @@ object FinalRankingView:
       contents += new BoxPanel(Orientation.Horizontal):
         contents += new Label(title):
           font = FinalRankingFont
-        background = WHITE
-        border = Swing.EmptyBorder(BorderWeight)
+        background = BackgroundColor
+        border = EmptyBorder(BorderWeight)
     private var scoreLabels: Map[String, Label] = Map()
 
     override def component: Component =
@@ -48,12 +49,11 @@ object FinalRankingView:
       _component
 
     private def finalRanking(): Unit =
-      val ScoreLabelFontSize = 16f
       scoreLabels = playerScores.sortBy(-_._2).map((player, score) => (player, new Label(score.toString))).toMap
       scoreLabels.foreach((player, scoreLabel) =>
         _component.contents += new BoxPanel(Orientation.Horizontal):
           contents ++= List(new Label(player + ":"), Swing.HGlue, scoreLabel)
-          background = WHITE
-          border = Swing.EmptyBorder(BorderWeight)
-          contents.foreach(c => c.font = c.font.deriveFont(ScoreLabelFontSize))
+          background = BackgroundColor
+          border = EmptyBorder(BorderWeight)
+          contents.foreach(c => c.font = DerivedFont(c.font))
       )

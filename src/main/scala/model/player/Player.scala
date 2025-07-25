@@ -5,8 +5,9 @@ import model.utils.{Color, PlayerColor, GameError}
 
 type PlayerId = PlayerColor
 
-/** A player, that has an id, an objective, a hand of train cards, a number of train cars and a reference to the deck.
-  * The player can draw cards and claim a route.
+/** A player, that has an id, an objective, a hand of train cards, a number of train cars and his score. The player can
+  * draw cards, play cards, place train cars, add points to his actual score and check the possibility to play an amount
+  * of cards of a given color.
   */
 trait Player:
   import Player.Trains
@@ -18,7 +19,7 @@ trait Player:
     */
   def id: PlayerId
 
-  /** The player's objective.
+  /** The player's objective with completion features.
     *
     * @return
     *   the player's objective.
@@ -32,7 +33,7 @@ trait Player:
     */
   def hand: Hand
 
-  /** The player's train cars.
+  /** The player's number of train cars.
     *
     * @return
     *   the player's train cars.
@@ -46,13 +47,13 @@ trait Player:
     */
   def score: Int
 
-  /** Draw the given amount of cards from the deck and put them in the player's hand.
+  /** Draw the given amount of cards from the deck and put them in the player's hand if it's possible, otherwise return
+    * a [[GameError]].
     *
     * @param n
     *   the number of cards to draw.
     * @return
-    *   `Right(())` if the action succeeds, `Left(NotEnoughCardsInTheDeck)` if the there are not enough cards in the
-    *   deck.
+    *   `Right(())` if the action succeeds, `Left(NotEnoughCardsInTheDeck)` if there are not enough cards in the deck.
     */
   def drawCards(n: Int): Either[GameError, Unit]
 
@@ -115,7 +116,7 @@ object Player:
     * @param playerId
     *   the player's id.
     * @param deck
-    *   the reference to the deck.
+    *   the reference to the deck, otherwise it creates a new standard Deck.
     * @param objective
     *   the player's objective.
     * @return

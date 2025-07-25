@@ -1,6 +1,6 @@
 package model.cards
 
-/** A deck of train cards, which can be shuffled and cards can be drawn from it. */
+/** A deck of train cards, which can be shuffled, cards can be drawn from it and reinserted at the bottom of it. */
 trait Deck extends Cards:
 
   /** Shuffle the deck to reorder it randomly. */
@@ -9,7 +9,7 @@ trait Deck extends Cards:
   /** Draw the given amount of cards from the top of the deck.
     *
     * @param n
-    *   the number of cards to draw.
+    *   the number of cards to draw, which has to be inferior of the cards remaining in the deck.
     * @return
     *   the list of cards drawn.
     */
@@ -27,16 +27,16 @@ object Deck:
   /** Create a deck by means of a generator.
     *
     * @param generator
-    *   the [[CardsGenerator]] of type [[Deck]].
+    *   the [[CardsGenerator]] for type [[Deck]].
     * @return
     *   the deck created.
     */
   def apply()(using generator: CardsGenerator[Deck]): Deck = DeckImpl(generator.generate())
 
-  /** The standard deck generator according to the rules.
+  /** The standard deck generator according to the rules of the game.
     *
     * @return
-    *   the standard [[CardsGenerator]] of type [[Deck]].
+    *   the standard [[CardsGenerator]] for type [[Deck]].
     */
   given standardDeckGenerator: CardsGenerator[Deck] = () =>
     import model.utils.Color

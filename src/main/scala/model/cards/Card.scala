@@ -16,7 +16,7 @@ object Card:
   /** Create a card of the given color.
     *
     * @param color
-    *   the color of the card created.
+    *   the color of the card.
     * @return
     *   the card created.
     */
@@ -34,7 +34,7 @@ given CardsGenerator[Cards] = () => List.empty
 /** A list of train cards created by means of a generator.
   *
   * @param generator
-  *   the [[CardsGenerator]] of type [[Cards]]
+  *   the [[CardsGenerator]] of type [[Cards]].
   * @param _cards
   *   the list of cards for the initialization.
   */

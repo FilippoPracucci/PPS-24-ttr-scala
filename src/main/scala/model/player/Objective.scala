@@ -15,7 +15,7 @@ trait Objective:
     */
   def citiesToConnect: (City, City)
 
-  /** The points assigned if the objective is completed.
+  /** The points assigned to the player's score if the objective is completed.
     *
     * @return
     *   the points corresponding to the objective.
@@ -24,7 +24,7 @@ trait Objective:
 
 /** The factory for [[Objective]] instances. */
 object Objective:
-  /** Create an [[Objective]] by its cities to connect and value in terms of points.
+  /** Create an [[Objective]] by its cities to connect and its value in terms of points.
     *
     * @param cities
     *   the cities to connect.
@@ -47,15 +47,15 @@ object Objective:
 /** A basic objective following the [[Objective]] trait.
   *
   * @param citiesToConnect
-  *   the cities to connect.
+  *   the cities to connect, which cannot be the same.
   * @param points
-  *   the points corresponding to the objective.
+  *   the points corresponding to the objective, which must be a positive value.
   */
 case class BasicObjective(override val citiesToConnect: (City, City), override val points: Points) extends Objective:
   require(citiesToConnect._1 != citiesToConnect._2, "The cities to connect cannot be the same!")
   require(points > 0, "The points of an objective must be positive!")
 
-/** An objective that can also be marked as completed and has the state of his completion. */
+/** An objective that has the state of its completion and can also be marked as completed. */
 trait ObjectiveCompletion extends Objective:
   private var _completed = false
 
@@ -66,15 +66,15 @@ trait ObjectiveCompletion extends Objective:
     */
   def completed: Boolean = _completed
 
-  /** Mark the objective as complete. */
+  /** Mark the objective as completed. */
   def markAsComplete(): Unit = _completed = true
 
 /** A basic objective with in addition the completion feature, so following the [[ObjectiveCompletion]] trait.
   *
   * @param cities
-  *   the cities to connect.
+  *   the cities to connect, which cannot be the same.
   * @param points
-  *   the points corresponding to the objective.
+  *   the points corresponding to the objective, which must be a positive value.
   */
 class ObjectiveWithCompletion(cities: (City, City), points: Points)
     extends BasicObjective(cities, points)

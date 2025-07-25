@@ -17,8 +17,7 @@ class CardTest extends AnyFlatSpec with Matchers:
     val cardsList: Cards = Cards()
     cardsList.cards shouldBe empty
 
-  "A list of cards" should "be created correctly with custom generator" in:
-    val customGenerator: CardsGenerator[Cards] = () => listWithTwoCards
-    val cardsList: Cards = Cards(using customGenerator)()
+  it should "be created correctly with custom generator" in:
+    val cardsList: Cards = Cards(using () => listWithTwoCards)()
     cardsList.cards should have size listWithTwoCards.size
     cardsList.cards should be(listWithTwoCards)

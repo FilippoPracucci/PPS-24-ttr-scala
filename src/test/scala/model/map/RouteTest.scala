@@ -13,22 +13,22 @@ class RouteTest extends AnyFlatSpec with Matchers:
   import model.utils.Color
   import Color._
 
-  private val connectedCities = (City("Roma"), City("Venezia"))
-  private val blackColor = BLACK
-  private val mechanic: Route.Mechanic = Route.SpecificColor(blackColor)
+  private val ConnectedCities = (City("Roma"), City("Venezia"))
+  private val BlackColor = BLACK
+  private val mechanic: Route.Mechanic = Route.SpecificColor(BlackColor)
 
   "A Route" should "be initialized correctly" in:
     val length = 2
-    val route = Route(connectedCities, length, mechanic)
-    route.connectedCities should be(connectedCities)
+    val route = Route(ConnectedCities, length, mechanic)
+    route.connectedCities should be(ConnectedCities)
     route.length should be(length)
     route.mechanic should be(mechanic)
 
   it should "fail to initialize if the specified length isn't a positive number" in:
     val illegalLength = -5
-    an[IllegalArgumentException] should be thrownBy Route(connectedCities, illegalLength, mechanic)
+    an[IllegalArgumentException] should be thrownBy Route(ConnectedCities, illegalLength, mechanic)
 
   "A Route.SpecificColor" should "be able to be matched and deconstructed" in:
     mechanic match
-      case Route.SpecificColor(color) => color should be(blackColor)
+      case Route.SpecificColor(color) => color should be(BlackColor)
       case _ => fail("Should have matched Route.SpecificColor(color)")

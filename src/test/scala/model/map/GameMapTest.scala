@@ -9,13 +9,13 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
   import model.utils.Color
   import model.utils.PlayerColor
 
-  private val connectedCities = ("Roma", "Venezia")
-  private val route1 = Route((City(connectedCities._1), City(connectedCities._2)), 2, Route.SpecificColor(Color.BLACK))
+  private val ConnectedCities = ("Roma", "Venezia")
+  private val PlayerId = PlayerColor.GREEN
+  private val NotConnectedCities = ("Roma", "Bologna")
+  private val route1 = Route((City(ConnectedCities._1), City(ConnectedCities._2)), 2, Route.SpecificColor(Color.BLACK))
   private val route2 = Route((City("Roma"), City("Brindisi")), 3, Route.SpecificColor(Color.WHITE))
   private val route3 = Route((City("Roma"), City("Palermo")), 4, Route.SpecificColor(Color.RED))
   private val routes = Set(route1, route2, route3)
-  private val notConnectedCities = ("Roma", "Bologna")
-  private val player = PlayerColor.GREEN
 
   private val loader: Loader[Set[Route]] = () => routes
   private var gameMap: GameMap = GameMap()(using loader)
@@ -26,22 +26,22 @@ class GameMapBasicTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach
     gameMap.routes should be(routes)
 
   it should "return the correct requested route if present" in:
-    gameMap.getRoute(connectedCities) should be(Some(route1))
-    gameMap.getRoute(connectedCities.swap) should be(Some(route1))
-    gameMap.getRoute(notConnectedCities) should be(None)
+    gameMap.getRoute(ConnectedCities) should be(Some(route1))
+    gameMap.getRoute(ConnectedCities.swap) should be(Some(route1))
+    gameMap.getRoute(NotConnectedCities) should be(None)
 
   it should "claim the requested route" in:
-    gameMap.claimRoute(connectedCities, player)
-    gameMap.getPlayerClaimingRoute(connectedCities) should be(Right(Some(player)))
+    gameMap.claimRoute(ConnectedCities, PlayerId)
+    gameMap.getPlayerClaimingRoute(ConnectedCities) should be(Right(Some(PlayerId)))
 
   it should "fail to claim a non-existent or already claimed route" in:
-    gameMap.claimRoute(notConnectedCities, player) should be(Left(GameMap.NonExistentRoute))
-    gameMap.claimRoute(connectedCities, player)
-    gameMap.claimRoute(connectedCities, player) should be(Left(GameMap.AlreadyClaimedRoute))
+    gameMap.claimRoute(NotConnectedCities, PlayerId) should be(Left(GameMap.NonExistentRoute))
+    gameMap.claimRoute(ConnectedCities, PlayerId)
+    gameMap.claimRoute(ConnectedCities, PlayerId) should be(Left(GameMap.AlreadyClaimedRoute))
 
   it should "correctly handle the cases in which the player claims a non-existent or unclaimed route" in:
-    gameMap.getPlayerClaimingRoute(notConnectedCities) should be(Left(GameMap.NonExistentRoute))
-    gameMap.getPlayerClaimingRoute(connectedCities) should be(Right(None))
+    gameMap.getPlayerClaimingRoute(NotConnectedCities) should be(Left(GameMap.NonExistentRoute))
+    gameMap.getPlayerClaimingRoute(ConnectedCities) should be(Right(None))
 end GameMapBasicTest
 
 class GameMapInitTest extends AnyFlatSpec with Matchers:

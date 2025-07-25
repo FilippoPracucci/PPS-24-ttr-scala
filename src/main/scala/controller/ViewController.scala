@@ -29,9 +29,9 @@ private object ViewController:
     export model.map.Route
     export GameController.Points
     export MapViewColorHelper.*
-    export GameView.PlayerName
+    export GameView.{PlayerName, MessageType}
     export config.GameViewConfig.*
-    export config.GameConfig.{ReportError, RulesDescription}
+    export config.GameConfig.{ErrorDescription, RulesDescription}
 
   private class ViewControllerImpl(turnManager: TurnManager, players: List[Player]) extends ViewController:
     import ImportHelper.*
@@ -60,13 +60,14 @@ private object ViewController:
       gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
     override def updateObjectiveView(): Unit =
-      gameView.report(ObjectiveCompletedTitle, ObjectiveCompletedDescription(currentPlayer.objective.points))
+      gameView.show(ObjectiveCompletedDescription(currentPlayer.objective.points), ObjectiveCompletedTitle,
+        MessageType.Info)
       gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
     override def updateViewNewTurn(): Unit =
       import GameState.*
       turnManager.gameState match
-        case START_LAST_ROUND => gameView.startLastRound()
+        case START_LAST_ROUND => gameView.show(StartLastRoundDescription, StartLastRoundTitle, MessageType.Info)
         case END_GAME => gameView.endGame(currentPlayerScores)
         case _ => ()
       handView.updateHand(currentHandCardsView)
@@ -75,9 +76,10 @@ private object ViewController:
       gameView.updateCompletionCheckBox(currentPlayer.objective.completed)
       gameView.updateObjective(currentPlayerObjective)
 
-    override def reportError(gameError: GameError): Unit = gameView.report(ReportErrorTitle, ReportError(gameError))
+    override def reportError(gameError: GameError): Unit =
+      gameView.show(ErrorDescription(gameError), ReportErrorTitle, MessageType.Error)
 
-    override def showRules(): Unit = gameView.showRules(RulesDescription)
+    override def showRules(): Unit = gameView.show(RulesDescription, RulesTitle, MessageType.Response)
 
     private def currentPlayer: Player = turnManager.currentPlayer
 

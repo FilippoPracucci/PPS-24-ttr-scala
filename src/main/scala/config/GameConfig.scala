@@ -18,7 +18,7 @@ case object GameConfig:
     case 6 => 15
     case 8 => 21
     case _ => throw new NoSuchElementException("Unexpected routes length.")
-  val ReportError: GameError => String =
+  val ErrorDescription: GameError => String =
     case AlreadyClaimedRoute => "Can't claim a route that has already been claimed!"
     case NotEnoughTrains => "Not enough trains to claim this route!"
     case NotEnoughCards => "Not enough cards to claim this route!"

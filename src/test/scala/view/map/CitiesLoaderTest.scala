@@ -8,9 +8,9 @@ class CitiesLoaderTest extends AnyFlatSpec with Matchers:
   private val mapHeight = 600
   private val illegalParam = -10
 
-  import MapView.{City, Color}
   private object DummyMapView extends MapView:
     import scala.swing.Component
+    import MapView.{City, Color}
     override def component: Component = new Component {}
     override def addCity(city: City, x: Double, y: Double, width: Double, height: Double): Unit = ()
     override def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit = ()

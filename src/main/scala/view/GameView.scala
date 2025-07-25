@@ -6,7 +6,7 @@ import cards.HandView
 /** Trait that represents the view of the game.
   */
 trait GameView extends PlayerGameView:
-  import GameView.{City, Points, Color, PlayerName}
+  import GameView.{City, Points, Color, PlayerName, MessageType}
 
   /** Opens the view.
     */
@@ -36,24 +36,16 @@ trait GameView extends PlayerGameView:
     */
   def updateRoute(connectedCities: (City, City), color: Color): Unit
 
-  /** Reports a message to the user.
+  /** Shows a message to the user.
     *
-    * @param messageType
-    *   the type of the message to report
     * @param message
-    *   the message to report
+    *   the message to show
+    * @param title
+    *   the title of the message
+    * @param messageType
+    *   the type of the message
     */
-  def report(messageType: String, message: String): Unit
-
-  /** Show the rules of the game.
-    *
-    * @param description
-    *   the description of the rules.
-    */
-  def showRules(description: String): Unit
-
-  /** Show the last round start message to the user. */
-  def startLastRound(): Unit
+  def show(message: String, title: String, messageType: MessageType): Unit
 
   /** Show the message of end game to the user and then close the interface. */
   def endGame(playerScores: Seq[(PlayerName, Points)]): Unit
@@ -73,6 +65,24 @@ object GameView:
     */
   export MapView.Color
 
+  /** The type of the message to show.
+    */
+  trait MessageType
+  object MessageType {
+
+    /** Type used to show information.
+      */
+    case object Info extends MessageType
+
+    /** Type used to report errors.
+      */
+    case object Error extends MessageType
+
+    /** Type used to show responses.
+      */
+    case object Response extends MessageType
+  }
+
   /** Returns the singleton instance of `GameView`.
     *
     * @return
@@ -81,10 +91,10 @@ object GameView:
   def apply(): GameView = GameViewSwing
 
   private object GameViewSwing extends GameView:
-    import scala.swing._
-    import Dialog.Options
-    import config.GameViewConfig.*
+    import scala.swing.*
     import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView, FinalRankingView}
+    import MessageType.*
+    import config.GameViewConfig.*
 
     private val mapView = MapView()
     private val playerInfoView = BasicPlayerInfoView(PlayerInfoTitle)
@@ -99,19 +109,20 @@ object GameView:
     initViewHelper.setFrame()
     initViewHelper.initPanels()
 
-    override def report(messageType: String, message: String): Unit =
-      Dialog.showMessage(frame, message, title = messageType)
+    override def show(message: String, title: String, messageType: MessageType): Unit =
+      Dialog.showMessage(frame, message, title, messageType.toIcon)
 
-    override def showRules(description: String): Unit =
-      Dialog.showMessage(frame, description, title = RulesTitle, Dialog.Message.Plain)
-
-    override def startLastRound(): Unit =
-      Dialog.showConfirmation(frame, StartLastRoundDescription, title = StartLastRoundTitle, Options.Default)
+    extension (messageType: MessageType)
+      private def toIcon = messageType match
+        case Info => Dialog.Message.Info
+        case Error => Dialog.Message.Error
+        case Response => Dialog.Message.Plain
+        case _ => throw new IllegalArgumentException("Unexpected message type")
 
     override def endGame(playerScores: Seq[(PlayerName, Points)]): Unit =
       import scala.swing.Dialog.Result.*
       val options: Seq[String] = Seq(SeeFinalRanking, Close)
-      Dialog.showOptions(frame, EndGameDescription, title = EndGameTitle, Options.Default, Dialog.Message.Plain,
+      Dialog.showOptions(frame, EndGameDescription, title = EndGameTitle, Dialog.Options.Default, Dialog.Message.Plain,
         entries = options, initial = options.indexOf(options.head)) match
         case Yes =>
           frame.contents = FinalRankingView(FinalRankingTitle)(playerScores).component

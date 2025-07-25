@@ -7,6 +7,7 @@ class CitiesLoaderTest extends AnyFlatSpec with Matchers:
   private val mapWidth = 900
   private val mapHeight = 600
   private val illegalParam = -10
+  private given MapView = MapView()
 
   "A CitiesLoader" should "fail to initialize if the given map width or height aren't positive numbers" in:
     an[IllegalArgumentException] should be thrownBy CitiesLoader(illegalParam, mapHeight)()

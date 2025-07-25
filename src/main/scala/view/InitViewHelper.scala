@@ -86,4 +86,4 @@ private case class InitViewHelper(frame: MainFrame, handPanel: BoxPanel, mapView
     CitiesLoader(
       frame.size.width - eastPanel.peer.getPreferredSize.getWidth.toInt,
       frame.size.height - frame.peer.getInsets.top - southPanel.peer.getPreferredSize.getHeight.toInt
-    )().load()
+    )()(using mapView).load()

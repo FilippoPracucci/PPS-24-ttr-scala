@@ -3,7 +3,8 @@ package view.map
 import config.{LoaderFromFile, JsonReader}
 import config.GameConfig.CitiesPath
 
-/** Class that represents a loader of cities from a JSON file, loading them into the map view.
+/** Class that represents a loader of cities from a JSON file, loading them into the specified map view.
+  *
   * @param mapWidth
   *   the width (in pixel) of the map
   * @param mapHeight
@@ -11,9 +12,12 @@ import config.GameConfig.CitiesPath
   * @param configFilePath
   *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
   *   information on the cities (default = "cities")
+  * @param mapView
+  *   the given mapView where to load the cities
   */
-class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: String = CitiesPath)
-    extends LoaderFromFile[Unit] with JsonReader:
+class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: String = CitiesPath)(
+    using mapView: MapView
+) extends LoaderFromFile[Unit] with JsonReader:
   require(mapWidth > 0, "mapWidth must be positive")
   require(mapHeight > 0, "mapHeight must be positive")
 
@@ -50,5 +54,5 @@ class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: S
   override protected def onSuccess(data: Data): Unit = data.cities.foreach(city => addCity(city)(data))
 
   private def addCity(city: City)(data: Data): Unit =
-    MapView().addCity(city.name, city.x / data.scaleWidth * mapWidth, city.y / data.scaleHeight * mapHeight,
+    mapView.addCity(city.name, city.x / data.scaleWidth * mapWidth, city.y / data.scaleHeight * mapHeight,
       CityWidth, CityHeight)

@@ -64,6 +64,7 @@ object MapView:
   def apply(): MapView = MapViewImpl
 
   private object MapViewImpl extends MapView:
+    import event.MouseReleased
     import com.mxgraph.view.mxGraph
     import com.mxgraph.swing.mxGraphComponent
     import com.mxgraph.model.mxCell
@@ -81,73 +82,29 @@ object MapView:
     initView()
 
     private def initView(): Unit =
-      graphComponent.setEnabled(false)
-      StyleHelper.setDefaultStyle()
-      val graphControl = new Component { override lazy val peer: JComponent = graphComponent.getGraphControl }
-      graphControl.listenTo(graphControl.mouse.clicks)
-      graphControl.reactions += {
-        case e: event.MouseReleased =>
-          Option(graphComponent.getCellAt(e.point.x, e.point.y))
-            .map(_.asInstanceOf[mxCell])
-            .filter(graph.getModel.isEdge)
-            .map(edge =>
-              val city1 = graph.getModel.getTerminal(edge, true).asInstanceOf[mxCell]
-              val city2 = graph.getModel.getTerminal(edge, false).asInstanceOf[mxCell]
-              (city1.getId, city2.getId)
-            )
-            .foreach(GameController().claimRoute)
-      }
-
-    private object StyleHelper:
-      import com.mxgraph.util.mxConstants
-      private val blackColor = "#000000"
-
       def setDefaultStyle(): Unit =
+        val graphStyleManager = GraphStyleManager()
+        import graphStyleManager.setStyle
+        graphComponent.setStyle()
 
-        def setGraphStyle(): Unit =
-          import javax.swing.BorderFactory
-          import java.awt.Color.*
-          val borderThickness = 1
-          val backgroundColor = LIGHT_GRAY
-          val borderColor = BLACK
-          graphComponent.getViewport.setOpaque(true)
-          graphComponent.getViewport.setBackground(backgroundColor)
-          graphComponent.setBorder(
-            Swing.CompoundBorder(Swing.EmptyBorder(borderThickness),
-              BorderFactory.createLineBorder(borderColor, borderThickness, true))
+      def onMouseReleased(handler: MouseReleased => Unit): Unit =
+        val graphControl = new Component { override lazy val peer: JComponent = graphComponent.getGraphControl }
+        graphControl.listenTo(graphControl.mouse.clicks)
+        graphControl.reactions += { case e: MouseReleased => handler(e) }
+
+      setDefaultStyle()
+      onMouseReleased(e =>
+        Option(graphComponent.getCellAt(e.point.x, e.point.y))
+          .map(_.asInstanceOf[mxCell])
+          .filter(graph.getModel.isEdge)
+          .map(edge =>
+            val city1 = graph.getModel.getTerminal(edge, true).asInstanceOf[mxCell]
+            val city2 = graph.getModel.getTerminal(edge, false).asInstanceOf[mxCell]
+            (city1.getId, city2.getId)
           )
-
-        def setVertexStyle(): Unit =
-          val fontSize = 14
-          val fontStyle = mxConstants.FONT_BOLD
-          val fontColor = blackColor
-          val vertexStyle = graph.getStylesheet.getDefaultVertexStyle
-          vertexStyle.put(mxConstants.STYLE_FONTSIZE, fontSize)
-          vertexStyle.put(mxConstants.STYLE_FONTSTYLE, fontStyle)
-          vertexStyle.put(mxConstants.STYLE_FONTCOLOR, fontColor)
-          graph.getStylesheet.setDefaultVertexStyle(vertexStyle)
-
-        def setEdgeStyle(): Unit =
-          val fontSize = 18
-          val fontStyle = mxConstants.FONT_BOLD
-          val fontColor = blackColor
-          val endArrow = mxConstants.NONE
-          val edgeColor = blackColor
-          val dashed = true
-          val edgeWidth = 2
-          val edgeStyle = graph.getStylesheet.getDefaultEdgeStyle
-          edgeStyle.put(mxConstants.STYLE_FONTSIZE, fontSize)
-          edgeStyle.put(mxConstants.STYLE_FONTSTYLE, fontStyle)
-          edgeStyle.put(mxConstants.STYLE_FONTCOLOR, fontColor)
-          edgeStyle.put(mxConstants.STYLE_ENDARROW, endArrow)
-          edgeStyle.put(mxConstants.STYLE_STROKECOLOR, edgeColor)
-          edgeStyle.put(mxConstants.STYLE_DASHED, dashed)
-          edgeStyle.put(mxConstants.STYLE_STROKEWIDTH, edgeWidth)
-          graph.getStylesheet.setDefaultEdgeStyle(edgeStyle)
-
-        setGraphStyle()
-        setVertexStyle()
-        setEdgeStyle()
+          .foreach(GameController().claimRoute)
+      )
+      graphComponent.setEnabled(false)
 
     private def changeGraph(change: => Unit): Unit =
       graph.getModel.beginUpdate()

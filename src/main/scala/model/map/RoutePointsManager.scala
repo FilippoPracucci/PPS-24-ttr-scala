@@ -16,9 +16,9 @@ object RoutePointsManager:
     * @return
     *   the created `RoutePointsManager`
     */
-  def apply(): RoutePointsManager = RoutePointsManagerByLength()
+  def apply(): RoutePointsManager = RoutePointsManagerByLength
 
-  private class RoutePointsManagerByLength extends RoutePointsManager:
+  private object RoutePointsManagerByLength extends RoutePointsManager:
     import config.GameConfig.PointsPerRouteLength
 
     extension (route: Route) override def points: Points = PointsPerRouteLength(route.length)

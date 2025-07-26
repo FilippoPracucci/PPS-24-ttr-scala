@@ -54,7 +54,7 @@ object ClaimRouteController:
         (for
           claimingPlayer <- gameMap.getPlayerClaimingRoute(connectedCities)
           _ <- check(claimingPlayer.isEmpty, GameMap.AlreadyClaimedRoute)
-          _ <- check(currentPlayer.trains >= routeLength, Player.NotEnoughTrains)
+          _ <- check(currentPlayer.canPlaceTrains(routeLength), Player.NotEnoughTrains)
           _ <- check(currentPlayer.canPlayCards(color, nCards), Player.NotEnoughCards)
           _ <- gameMap.claimRoute(connectedCities, currentPlayer.id)
           _ <- currentPlayer.placeTrains(routeLength)

@@ -2,7 +2,7 @@ package model.map
 
 import config.Loader
 import model.utils.GameError
-import model.player.PlayerId
+import model.player.Player.PlayerId
 
 /** Trait that represents the game map, composed of a set of routes.
   */

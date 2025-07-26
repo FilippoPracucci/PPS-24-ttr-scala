@@ -10,6 +10,7 @@ case object GameConfig:
   val HandInitialSize = 4
   val StandardNumberOfCardsToDraw = 2
   val TrainsToStartLastRound = 2
+  val InitialScore = 0
   val PointsPerRouteLength: Int => Int =
     case 1 => 1
     case 2 => 2

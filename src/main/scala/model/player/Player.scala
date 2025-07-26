@@ -2,14 +2,12 @@ package model.player
 
 import model.utils.{Color, PlayerColor, GameError}
 
-type PlayerId = PlayerColor
-
 /** A player, that has an id, an objective, a hand of train cards, a number of train cars and his score. The player can
   * draw cards, play cards, place train cars, add points to his actual score and check the possibility to play an amount
   * of cards of a given color.
   */
 trait Player:
-  import Player.{Trains, Hand}
+  import Player.{PlayerId, Hand, Trains}
 
   /** The player's identifier.
     *
@@ -44,7 +42,7 @@ trait Player:
     * @return
     *   the player's score
     */
-  def score: Int
+  def score: Points
 
   /** Draw the given amount of cards from the deck and put them in the player's hand if it's possible, otherwise return
     * a [[GameError]].
@@ -79,6 +77,15 @@ trait Player:
     */
   def playCards(color: Color, n: Int): Either[GameError, Unit]
 
+  /** Checks whether the specified number of trains can be placed.
+    *
+    * @param n
+    *   the number of trains to place
+    * @return
+    *   true if the trains can be placed, false otherwise
+    */
+  def canPlaceTrains(n: Trains): Boolean
+
   /** Places the specified number of trains.
     *
     * @param n
@@ -86,20 +93,27 @@ trait Player:
     * @return
     *   `Right(())` if the action succeeds, `Left(NotEnoughTrains)` if the player doesn't have enough trains
     */
-  def placeTrains(n: Int): Either[GameError, Unit]
+  def placeTrains(n: Trains): Either[GameError, Unit]
 
   /** Adds the specified number of points to the player's score.
     *
     * @param points
     *   the number of points to add
     */
-  def addPoints(points: Int): Unit
+  def addPoints(points: Points): Unit
 
 /** The factory for [[Player]] instances. */
 object Player:
   import model.cards.{Card, Deck}
-  private type Trains = Int
-  private type Hand = List[Card]
+
+  /** Type alias that represents a player id as PlayerColor. */
+  type PlayerId = PlayerColor
+
+  /** Type alias that represents the hand of a player as a list of cards. */
+  type Hand = List[Card]
+
+  /** Type alias that represents the trains as Int. */
+  type Trains = Int
 
   /** Error that represents the case in which the deck doesn't have enough cards. */
   case object NotEnoughCardsInTheDeck extends GameError
@@ -131,11 +145,11 @@ object Player:
 
     import scala.util.*
     import model.cards.Hand as PlayerHand
-    import config.GameConfig.NumberTrainCars
+    import config.GameConfig.{NumberTrainCars, InitialScore}
 
     private val trainCars: TrainCars = TrainCars(NumberTrainCars)
     private val playerHand: PlayerHand = PlayerHand(deck)
-    private var _score: Int = 0
+    private var _score: Points = InitialScore
 
     override def hand: Hand = playerHand.cards
     override def trains: Trains = trainCars.trainCars
@@ -145,18 +159,24 @@ object Player:
 
     export playerHand.canPlayCards
 
+    private def requirePositiveNumber(n: Int): Unit = require(n > 0, "the number must be positive")
+
     override def playCards(color: Color, n: Int): Either[GameError, Unit] =
-      require(n > 0, "n must be positive")
+      requirePositiveNumber(n)
       Try(playerHand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards).map(
         _.foreach(deck.reinsertAtTheBottom)
       )
 
-    override def placeTrains(n: Int): Either[GameError, Unit] =
-      require(n > 0, "n must be positive")
+    override def canPlaceTrains(n: Trains): Boolean =
+      requirePositiveNumber(n)
+      trains >= n
+
+    override def placeTrains(n: Trains): Either[GameError, Unit] =
+      requirePositiveNumber(n)
       Try(trainCars.placeTrainCars(n)).toEither.left.map(_ => NotEnoughTrains)
 
-    override def score: Int = _score
+    override def score: Points = _score
 
-    override def addPoints(points: Int): Unit =
-      require(points > 0, "points must be positive")
+    override def addPoints(points: Points): Unit =
+      requirePositiveNumber(points)
       _score += points

@@ -1,6 +1,7 @@
 package model.player
 
 import model.map.GameMap
+import Player.PlayerId
 
 /** Trait that represents an objective checker that tells whether a certain objective has been completed or not by a
   * certain player.

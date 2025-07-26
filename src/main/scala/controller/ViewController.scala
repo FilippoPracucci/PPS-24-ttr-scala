@@ -17,16 +17,11 @@ private object ViewController:
 
   def apply(turnManager: TurnManager, players: List[Player]): ViewController = ViewControllerImpl(turnManager, players)
 
-  private object MapViewColorHelper:
-    import model.utils.{Color, PlayerColor}
-    extension (color: Color) def toMapViewColor: String = color.toString.toLowerCase()
-    extension (playerColor: PlayerColor) def toMapViewColor: String = playerColor.toString.toLowerCase()
-
   private object ImportHelper:
     export view.cards.{HandView, CardView}
     export CardControllerColor.*
     export model.map.Route
-    export MapViewColorHelper.*
+    export MapColorConverter.*
     export view.GameView
     export GameView.{PlayerName, Points, MessageType}
     export config.GameViewConfig.*
@@ -44,7 +39,7 @@ private object ViewController:
           (route.connectedCities._1.name, route.connectedCities._2.name),
           route.length,
           route.mechanic match
-            case Route.SpecificColor(color) => color.toMapViewColor
+            case Route.SpecificColor(color) => color.viewColor
             case _ => throw new IllegalStateException("Unhandled mechanic")
         )
       )
@@ -55,7 +50,7 @@ private object ViewController:
       gameView.open()
 
     override def updateRouteView(connectedCities: (City, City)): Unit =
-      gameView.updateRoute(connectedCities, currentPlayer.id.toMapViewColor)
+      gameView.updateRoute(connectedCities, currentPlayer.id.viewColor)
       gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
     override def updateObjectiveView(): Unit =

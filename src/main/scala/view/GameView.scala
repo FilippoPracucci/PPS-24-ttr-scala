@@ -4,9 +4,12 @@ import map.MapView
 import cards.HandView
 
 /** Trait that represents the view of the game.
+  *
+  * @tparam Color
+  *   the type of the colors
   */
-trait GameView extends PlayerGameView:
-  import GameView.{City, PlayerName, Points, Color, MessageType}
+trait GameView[Color] extends PlayerGameView:
+  import GameView.{City, PlayerName, Points, MessageType}
 
   /** Opens the view.
     */
@@ -51,23 +54,19 @@ trait GameView extends PlayerGameView:
   def endGame(playerScores: Seq[(PlayerName, Points)]): Unit
 
 object GameView:
-  /** Type alias that represents the city as String by its name.
+  /** Type alias that represents a city as String by its name.
     */
   type City = String
 
-  /** Type alias that represents the player's name as String.
+  /** Type alias that represents a player's name as String.
     */
   type PlayerName = String
 
-  /** Type alias that represents the points as Int.
+  /** Type alias that represents points as Int.
     */
   type Points = Int
 
-  /** Type alias that represents the color as String by its name in lowercase.
-    */
-  export MapView.Color
-
-  /** The type of the message to show.
+  /** Trait that represents a type of message to show.
     */
   trait MessageType
   object MessageType:
@@ -88,9 +87,9 @@ object GameView:
     * @return
     *   the globally shared `GameView` instance
     */
-  def apply(): GameView = GameViewSwing
+  def apply(): GameView[java.awt.Color] = GameViewSwing
 
-  private object GameViewSwing extends GameView:
+  private object GameViewSwing extends GameView[java.awt.Color]:
     import scala.swing.*
     import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView, FinalRankingView}
     import MessageType.*

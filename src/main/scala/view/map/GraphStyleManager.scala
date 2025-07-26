@@ -1,13 +1,11 @@
 package view.map
 
 import com.mxgraph.swing.mxGraphComponent
-import view.map.MapView.Color
+import MapView.Color
 
 /** Trait that represents a style manager for a graph component. It provides a way to set the style of graph components.
   */
 trait GraphStyleManager:
-  import MapView.Color
-
   /** Sets the style of a graph component.
     */
   extension (graphComponent: mxGraphComponent) def setDefaultStyle(): Unit
@@ -78,4 +76,6 @@ object GraphStyleManager:
         setEdgeStyle()
 
     override def edgeStyle(color: Color, dashed: Boolean): String =
-      s"${mxConstants.STYLE_STROKECOLOR}=$color;${mxConstants.STYLE_DASHED}=$dashed"
+      extension (color: Color)
+        private def toHex: String = f"#${color.getRed}%02X${color.getGreen}%02X${color.getBlue}%02X"
+      s"${mxConstants.STYLE_STROKECOLOR}=${color.toHex};${mxConstants.STYLE_DASHED}=$dashed"

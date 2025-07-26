@@ -53,9 +53,9 @@ trait MapView:
 object MapView:
   import controller.GameController
 
-  /** Type alias that represents the color as String by its name in lowercase. // TODO
+  /** Type alias that represents a color as java.awt.Color.
     */
-  type Color = String
+  type Color = java.awt.Color
 
   /** Returns the singleton instance of `MapView`.
     *

@@ -10,7 +10,8 @@ class CitiesLoaderTest extends AnyFlatSpec with Matchers:
 
   private object DummyMapView extends MapView:
     import scala.swing.Component
-    import view.GameView.{City, Color}
+    import view.GameView.City
+    import MapView.Color
     override def component: Component = new Component {}
     override def addCity(city: City, x: Double, y: Double, width: Double, height: Double): Unit = ()
     override def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit = ()

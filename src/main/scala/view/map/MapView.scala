@@ -1,7 +1,6 @@
 package view.map
 
 import scala.swing.*
-import javax.swing.JComponent
 import view.GameView.City
 
 /** Trait that represents the view of the map, using scala.swing.
@@ -10,12 +9,14 @@ trait MapView:
   import MapView.Color
 
   /** Returns the `scala.swing.Component` of the map view.
+    *
     * @return
     *   the `scala.swing.Component` of the map view.
     */
   def component: Component
 
   /** Adds a new city in the map view.
+    *
     * @param city
     *   the name of the city
     * @param x
@@ -30,6 +31,7 @@ trait MapView:
   def addCity(city: City, x: Double, y: Double, width: Double, height: Double): Unit
 
   /** Adds a new route in the map view.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     * @param length
@@ -40,6 +42,7 @@ trait MapView:
   def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit
 
   /** Updates the route connecting the specified cities.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     * @param color
@@ -55,6 +58,7 @@ object MapView:
   type Color = String
 
   /** Returns the singleton instance of `MapView`.
+    *
     * @return
     *   the globally shared `MapView` instance
     */
@@ -69,6 +73,7 @@ object MapView:
     //       always mxCell. In an effort to maintain decent type checking, every vertex and edge is cast to mxCell.
 
     private val graph = new mxGraph()
+    private val graphStyleManager = GraphStyleManager()
     private val parent = graph.getDefaultParent
     private val graphComponent = new mxGraphComponent(graph)
     override val component: Component = Component.wrap(graphComponent)
@@ -79,25 +84,22 @@ object MapView:
     initView()
 
     private def initView(): Unit =
-      def setDefaultStyle(): Unit =
-        val graphStyleManager = GraphStyleManager()
-        import graphStyleManager.setStyle
-        graphComponent.setStyle()
+      import graphStyleManager.setDefaultStyle
 
       def onMouseReleased(handler: MouseReleased => Unit): Unit =
+        import javax.swing.JComponent
         val graphControl = new Component { override lazy val peer: JComponent = graphComponent.getGraphControl }
         graphControl.listenTo(graphControl.mouse.clicks)
         graphControl.reactions += { case e: MouseReleased => handler(e) }
 
-      setDefaultStyle()
+      graphComponent.setDefaultStyle()
       onMouseReleased(e =>
         Option(graphComponent.getCellAt(e.point.x, e.point.y))
           .map(_.asInstanceOf[mxCell])
           .filter(graph.getModel.isEdge)
           .map(edge =>
-            val city1 = graph.getModel.getTerminal(edge, true).asInstanceOf[mxCell]
-            val city2 = graph.getModel.getTerminal(edge, false).asInstanceOf[mxCell]
-            (city1.getId, city2.getId)
+            val getCityName: Boolean => City = graph.getModel.getTerminal(edge, _).asInstanceOf[mxCell].getId
+            (getCityName(true), getCityName(false))
           )
           .foreach(GameController().claimRoute)
       )
@@ -105,25 +107,30 @@ object MapView:
 
     private def changeGraph(change: => Unit): Unit =
       graph.getModel.beginUpdate()
-      try
-        change
-      finally
-        graph.getModel.endUpdate()
+      try change
+      finally graph.getModel.endUpdate()
 
     override def addCity(city: City, x: Double, y: Double, width: Double, height: Double): Unit =
-      changeGraph {
-        val vertex = graph.insertVertex(parent, city, city, x, y, width, height).asInstanceOf[mxCell]
-        vertices = vertices.updated(city, vertex)
-      }
+      changeGraph:
+        vertices =
+          vertices.updated(city, graph.insertVertex(parent, city, city, x, y, width, height).asInstanceOf[mxCell])
 
     override def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit =
-      changeGraph {
-        val edge = graph.insertEdge(parent, null, length, vertices(connectedCities._1), vertices(connectedCities._2))
-        graph.setCellStyle(s"strokeColor=$color", Array(edge))
-      }
+      val AutomaticId: String = null // note: null required by JGraphX library to indicate automatic id generation
+      val Dashed = true
+      changeGraph:
+        graph.setCellStyle(
+          graphStyleManager.edgeStyle(color, Dashed),
+          Array(
+            graph.insertEdge(parent, AutomaticId, length, vertices(connectedCities._1), vertices(connectedCities._2))
+          )
+        )
 
     override def updateRoute(connectedCities: (City, City), color: Color): Unit =
-      changeGraph {
-        val edge = graph.getEdgesBetween(vertices(connectedCities._1), vertices(connectedCities._2))(0)
-        graph.setCellStyle(s"strokeColor=$color;dashed=false", Array(edge))
-      }
+      val Dashed = false
+      val FirstEdge = 0
+      changeGraph:
+        graph.setCellStyle(
+          graphStyleManager.edgeStyle(color, Dashed),
+          Array(graph.getEdgesBetween(vertices(connectedCities._1), vertices(connectedCities._2))(FirstEdge))
+        )

@@ -1,13 +1,27 @@
 package view.map
 
 import com.mxgraph.swing.mxGraphComponent
+import view.map.MapView.Color
 
 /** Trait that represents a style manager for a graph component. It provides a way to set the style of graph components.
   */
 trait GraphStyleManager:
+  import MapView.Color
+
   /** Sets the style of a graph component.
     */
-  extension (graphComponent: mxGraphComponent) def setStyle(): Unit
+  extension (graphComponent: mxGraphComponent) def setDefaultStyle(): Unit
+
+  /** Returns the custom style of an edge.
+    *
+    * @param color
+    *   the color the edge will have
+    * @param dashed
+    *   indicates whether the edge will be dashed or not
+    * @return
+    *   the edge style
+    */
+  def edgeStyle(color: Color, dashed: Boolean): String
 
 object GraphStyleManager:
   /** Creates a `GraphStyleManager`.
@@ -18,9 +32,10 @@ object GraphStyleManager:
   def apply(): GraphStyleManager = MapStyleManager
 
   private object MapStyleManager extends GraphStyleManager:
+    import com.mxgraph.util.mxConstants
+
     extension (graphComponent: mxGraphComponent)
-      override def setStyle(): Unit =
-        import com.mxgraph.util.mxConstants
+      override def setDefaultStyle(): Unit =
         val BlackColor = "#000000"
         val graph = graphComponent.getGraph
 
@@ -48,7 +63,6 @@ object GraphStyleManager:
           val FontColor = BlackColor
           val EndArrow = mxConstants.NONE
           val EdgeColor = BlackColor
-          val Dashed = true
           val EdgeWidth = 2
           val edgeStyle = graph.getStylesheet.getDefaultEdgeStyle
           edgeStyle.put(mxConstants.STYLE_FONTSIZE, FontSize)
@@ -56,10 +70,12 @@ object GraphStyleManager:
           edgeStyle.put(mxConstants.STYLE_FONTCOLOR, FontColor)
           edgeStyle.put(mxConstants.STYLE_ENDARROW, EndArrow)
           edgeStyle.put(mxConstants.STYLE_STROKECOLOR, EdgeColor)
-          edgeStyle.put(mxConstants.STYLE_DASHED, Dashed)
           edgeStyle.put(mxConstants.STYLE_STROKEWIDTH, EdgeWidth)
           graph.getStylesheet.setDefaultEdgeStyle(edgeStyle)
 
         setGraphStyle()
         setVertexStyle()
         setEdgeStyle()
+
+    override def edgeStyle(color: Color, dashed: Boolean): String =
+      s"${mxConstants.STYLE_STROKECOLOR}=$color;${mxConstants.STYLE_DASHED}=$dashed"

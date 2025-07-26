@@ -1,6 +1,5 @@
 package model.player
 
-import model.cards.{Deck, Hand}
 import model.utils.{Color, PlayerColor, GameError}
 
 type PlayerId = PlayerColor
@@ -10,7 +9,7 @@ type PlayerId = PlayerColor
   * of cards of a given color.
   */
 trait Player:
-  import Player.Trains
+  import Player.{Trains, Hand}
 
   /** The player's identifier.
     *
@@ -98,7 +97,9 @@ trait Player:
 
 /** The factory for [[Player]] instances. */
 object Player:
+  import model.cards.{Card, Deck}
   private type Trains = Int
+  private type Hand = List[Card]
 
   /** Error that represents the case in which the deck doesn't have enough cards. */
   case object NotEnoughCardsInTheDeck extends GameError
@@ -129,22 +130,26 @@ object Player:
       extends Player:
 
     import scala.util.*
+    import model.cards.Hand as PlayerHand
     import config.GameConfig.NumberTrainCars
 
     private val trainCars: TrainCars = TrainCars(NumberTrainCars)
-    override val hand: Hand = Hand(deck)
+    private val playerHand: PlayerHand = PlayerHand(deck)
     private var _score: Int = 0
 
+    override def hand: Hand = playerHand.cards
     override def trains: Trains = trainCars.trainCars
 
     override def drawCards(n: Int): Either[GameError, Unit] =
-      Try(deck.draw(n)).toEither.left.map(_ => NotEnoughCardsInTheDeck).map(hand.addCards)
+      Try(deck.draw(n)).toEither.left.map(_ => NotEnoughCardsInTheDeck).map(playerHand.addCards)
 
-    export hand.canPlayCards
+    export playerHand.canPlayCards
 
     override def playCards(color: Color, n: Int): Either[GameError, Unit] =
       require(n > 0, "n must be positive")
-      Try(hand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards).map(_.foreach(deck.reinsertAtTheBottom))
+      Try(playerHand.playCards(color, n)).toEither.left.map(_ => NotEnoughCards).map(
+        _.foreach(deck.reinsertAtTheBottom)
+      )
 
     override def placeTrains(n: Int): Either[GameError, Unit] =
       require(n > 0, "n must be positive")

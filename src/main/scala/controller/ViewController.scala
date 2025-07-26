@@ -85,4 +85,4 @@ private object ViewController:
       private def name: String = player.id.toString.head.toUpper.toString + player.id.toString.tail.toLowerCase
 
     private def currentHandCardsView: List[CardView] =
-      currentPlayer.hand.cards.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))
+      currentPlayer.hand.map(c => CardView(c.cardName)(c.cardColor, c.cardTextColor))

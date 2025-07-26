@@ -1,5 +1,6 @@
 package model.player
 
+import model.cards.Deck
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -17,7 +18,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
   "A player" should "be created correctly in the standard mode" in:
     player.id should be(id)
-    player.hand.cards should not be empty
+    player.hand should not be empty
     player.objective should be(objective)
     player.trains should be(NumberTrainCars)
 
@@ -28,7 +29,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val deckFixed: Deck = Deck()(using () => fixedList)
     val customPlayer: Player = Player(id, deckFixed, objective = objective)
     customPlayer.id should be(id)
-    customPlayer.hand.cards should be(fixedList.take(4))
+    customPlayer.hand should be(fixedList.take(4))
     customPlayer.objective should be(objective)
     customPlayer.trains should be(NumberTrainCars)
 
@@ -40,32 +41,36 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   it should "be able to draw cards from the deck" in:
     import model.cards.Deck
     import config.GameConfig.StandardNumberOfCardsToDraw
-    val initialHandCards = player.hand.cards
+    val initialHandCards = player.hand
     player.drawCards(StandardNumberOfCardsToDraw) should be(Right(()))
-    player.hand.cards should be(initialHandCards :++ Deck().cards.take(StandardNumberOfCardsToDraw))
+    player.hand should be(initialHandCards :++ Deck().cards.take(StandardNumberOfCardsToDraw))
     player.drawCards(Deck().cards.size + 1) should be(Left(Player.NotEnoughCardsInTheDeck))
 
   val nCards = 10
   val color: Color = Color.RED
+  private var deckFilledWithOneColor: Deck = Deck()(using () => List.fill(nCards)(Card(color)))
+  private var playerWithFixedHand = Player(id, deckFilledWithOneColor, objective)
 
   it should "be able to check whether certain cards can be played" in:
+    playerWithFixedHand.drawCards(deckFilledWithOneColor.cards.size)
     player.canPlayCards(color, nCards) should be(false)
-    player.hand.addCards(List.fill(nCards)(Card(Color.RED)))
-    player.canPlayCards(color, nCards) should be(true)
+    playerWithFixedHand.canPlayCards(color, nCards) should be(true)
 
   it should "be able to play cards" in:
+    deckFilledWithOneColor = Deck()(using () => List.fill(nCards)(Card(color)))
+    playerWithFixedHand = Player(id, deckFilledWithOneColor, objective)
+    playerWithFixedHand.drawCards(deckFilledWithOneColor.cards.size)
     player.playCards(color, nCards) should be(Left(Player.NotEnoughCards))
-    player.hand.addCards(List.fill(nCards)(Card(Color.RED)))
-    player.playCards(color, nCards) should be(Right(()))
+    playerWithFixedHand.playCards(color, nCards) should be(Right(()))
 
   it should "correctly play cards and reinsert them into the deck" in:
     val deckFixed = model.cards.Deck()(using () => List.fill(nCards)(Card(color)))
     val customPlayer: Player = Player(id, deckFixed, objective = objective)
     val nCardsToPlay = 2
     customPlayer.playCards(color, nCardsToPlay)
-    deckFixed.cards.size + customPlayer.hand.cards.size should be(nCards)
+    deckFixed.cards.size + customPlayer.hand.size should be(nCards)
     customPlayer.playCards(color, nCardsToPlay)
-    deckFixed.cards.size + customPlayer.hand.cards.size should be(nCards)
+    deckFixed.cards.size + customPlayer.hand.size should be(nCards)
 
   // TODO check on trains?
 

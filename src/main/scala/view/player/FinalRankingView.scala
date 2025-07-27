@@ -18,16 +18,14 @@ object FinalRankingView:
     * @param title
     *   the title of the final player rankings view.
     * @param playerScores
-    *   the list of player scores consisting of pairs "player's name; score"
+    *   the list of player scores consisting of pairs [[PlayerName]] and [[Points]].
     * @return
+    *   the final player rankings representation.
     */
   def apply(title: String)(playerScores: Seq[(PlayerName, Points)]): FinalRankingView =
     FinalRankingViewImpl(title)(playerScores)
 
-  import view.GameView
-
-  /** Type aliases that represent the player's name and points. */
-  export GameView.{PlayerName, Points}
+  export view.GameView.{PlayerName, Points}
 
   private class FinalRankingViewImpl(title: String)(playerScores: Seq[(PlayerName, Points)]) extends FinalRankingView:
     import config.GameViewConfig.FontConfig.{FinalRankingFont, DerivedFont}

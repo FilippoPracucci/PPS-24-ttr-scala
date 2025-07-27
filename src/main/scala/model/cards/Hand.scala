@@ -2,8 +2,7 @@ package model.cards
 
 import model.utils.Color
 
-/** A player's hand of train cards. It's possible to play some cards, add some cards or reorder them grouping by color.
-  */
+/** A player's hand of train cards. It's possible to play and add some cards to it. */
 trait Hand extends Cards:
   /** Checks whether the specified number of cards of the specified color can be played (i.e. are present in the
     * player's hand).
@@ -13,18 +12,18 @@ trait Hand extends Cards:
     * @param n
     *   the number of the cards
     * @return
-    *   true if the cards can be played, false otherwise
+    *   [[true]] if the cards can be played, [[false]] otherwise
     */
   def canPlayCards(color: Color, n: Int): Boolean
 
-  /** Play a number of train cards of the given color from the player's hand.
+  /** Play the specified number of cards of the specified color from the player's hand.
     *
     * @param color
     *   the color of train cards to play.
     * @param n
     *   the number of train cards to play.
     * @return
-    *   the list of train cards that have been played
+    *   the list of train cards that has been played.
     */
   def playCards(color: Color, n: Int): List[Card]
 
@@ -44,7 +43,7 @@ object Hand:
     * @param deck
     *   the [[Deck]] of train cards.
     * @param generator
-    *   the [[CardsGenerator]] of type [[Hand]].
+    *   the [[CardsGenerator]] for type [[Hand]].
     * @return
     *   the player's hand created.
     */
@@ -53,10 +52,10 @@ object Hand:
     cardsDeck = deck
     HandImpl(generator.generate())
 
-  /** The standard hand generator according to the rules.
+  /** The standard hand generator according to the rules of the game.
     *
     * @return
-    *   the standard [[CardsGenerator]] of type [[Hand]].
+    *   the standard [[CardsGenerator]] for type [[Hand]].
     */
   given CardsGenerator[Hand] = () =>
     import config.GameConfig.HandInitialSize

@@ -16,7 +16,7 @@ trait PlayerScoresView:
   /** Initialize player scores.
     *
     * @param playerScores
-    *   the list of player scores consisting of pairs "player's name; score"
+    *   the list of player scores consisting of pairs [[PlayerName]] and [[Points]].
     */
   def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
 
@@ -40,8 +40,7 @@ object PlayerScoresView:
     */
   def apply(title: String): PlayerScoresView = PlayerScoresViewImpl(title)
 
-  import view.GameView
-  export GameView.{PlayerName, Points}
+  export view.GameView.{PlayerName, Points}
 
   private case class PlayerScoresViewImpl(title: String) extends PlayerScoresView:
     import config.GameViewConfig.ColorConfig.BackgroundColor

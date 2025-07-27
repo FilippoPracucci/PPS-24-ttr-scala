@@ -11,9 +11,9 @@ trait PlayerInfoView:
     * cars left.
     *
     * @param playerName
-    *   the new player name to represent.
+    *   the player new name to represent.
     * @param trains
-    *   the new player number of train cars left.
+    *   the player new number of train cars left.
     */
   def updatePlayerInfo(playerName: PlayerName, trains: Int): Unit =
     playerView.updateComponentText(PlayerInfoDescription(playerName, trains))

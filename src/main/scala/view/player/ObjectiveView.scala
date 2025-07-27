@@ -16,7 +16,7 @@ trait ObjectiveView:
   def updateObjective(objective: ((City, City), Points)): Unit =
     playerView.updateComponentText(ObjectiveDescription(objective._1._1, objective._1._2, objective._2))
 
-/** The representation of a player's objective completion status. */
+/** The representation of a player's objective with in addition completion status. */
 trait ObjectiveViewWithCompletion:
   playerView: PlayerView =>
 
@@ -25,7 +25,6 @@ trait ObjectiveViewWithCompletion:
   import config.GameViewConfig.ColorConfig.BackgroundColor
 
   private val CompletedLabelText = "Completed:"
-
   private val checkBox: CheckBox = new CheckBox():
     background = BackgroundColor
     enabled = false
@@ -46,7 +45,7 @@ trait ObjectiveViewWithCompletion:
   def updateCompletionCheckBox(state: Boolean): Unit = checkBox.selected = state
 
 /** A basic representation of a player with in addition the player's objective and its completion status, so following
-  * the [[ObjectiveView]] [[ObjectiveViewWithCompletion]] traits.
+  * the [[ObjectiveView]] and [[ObjectiveViewWithCompletion]] traits.
   *
   * @param title
   *   the title of the view.

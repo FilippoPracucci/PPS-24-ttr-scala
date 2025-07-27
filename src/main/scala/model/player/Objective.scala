@@ -1,6 +1,5 @@
 package model.player
 
-/** Type alias that represents the city as String by its name. */
 export model.map.GameMap.CityName as City
 
 /** Type alias that represents the points as Int. */
@@ -55,7 +54,7 @@ case class BasicObjective(override val citiesToConnect: (City, City), override v
   require(citiesToConnect._1 != citiesToConnect._2, "The cities to connect cannot be the same!")
   require(points > 0, "The points of an objective must be positive!")
 
-/** An objective that has the state of its completion and can also be marked as completed. */
+/** An objective that has in addition the state of its completion and can also be marked as completed. */
 trait ObjectiveCompletion extends Objective:
   private var _completed = false
 

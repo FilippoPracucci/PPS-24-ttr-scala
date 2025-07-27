@@ -2,7 +2,7 @@ package view
 
 import cards.HandView
 
-trait PlayerGameView:
+private trait PlayerGameView:
   import GameView.{City, Points, PlayerName}
 
   /** Add the hand component to the view.
@@ -22,7 +22,7 @@ trait PlayerGameView:
   /** Initialize player scores.
     *
     * @param playerScores
-    *   the list of player scores consisting of pairs "player's name; score"
+    *   the list of player scores consisting of pairs [[PlayerName]] and [[Points]].
     */
   def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
 
@@ -52,13 +52,13 @@ trait PlayerGameView:
   /** Updates the score of the specified player.
     *
     * @param player
-    *   the name of the player whose score to update
+    *   the name of the player whose score is to update.
     * @param score
-    *   the new score of the player
+    *   the new score of the player.
     */
   def updatePlayerScore(player: PlayerName, score: Points): Unit
 
-object PlayerGameView:
+private object PlayerGameView:
   import player.{BasicObjectiveView, BasicPlayerInfoView, PlayerScoresView}
   import scala.swing.{BoxPanel, MainFrame}
 

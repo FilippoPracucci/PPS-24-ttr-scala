@@ -7,11 +7,11 @@ trait CardView:
   /** The selection state of the card view component.
     *
     * @return
-    *   [[true]] if the card view component is selected, [[false]] otherwise
+    *   [[true]] if the card view component is selected, [[false]] otherwise.
     */
   def selected: Boolean
 
-  /** The card view component.
+  /** The [[Component]] of the card view.
     *
     * @return
     *   the card view component.

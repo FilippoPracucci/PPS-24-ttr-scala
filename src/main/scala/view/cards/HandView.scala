@@ -2,9 +2,9 @@ package view.cards
 
 import scala.swing.*
 
-/** The representation of a player hand of train cards. It's possible to update it, remove or add some train cards. */
+/** The representation of a player hand of train cards. It's possible to update it. */
 trait HandView:
-  /** The hand view component.
+  /** The [[Component]] hand view.
     *
     * @return
     *   the hand view component.

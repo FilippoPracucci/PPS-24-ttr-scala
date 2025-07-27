@@ -4,7 +4,7 @@ import model.utils.{Color, PlayerColor, GameError}
 
 /** A player, that has an id, an objective, a hand of train cards, a number of train cars and his score. The player can
   * draw cards, play cards, place train cars, add points to his actual score and check the possibility to play an amount
-  * of cards of a given color.
+  * of cards of a given color or place an amount of train cars.
   */
 trait Player:
   import Player.{PlayerId, Hand, Trains}
@@ -37,7 +37,7 @@ trait Player:
     */
   def trains: Trains
 
-  /** The player's score.
+  /** The player's score as amount of points.
     *
     * @return
     *   the player's score
@@ -106,6 +106,8 @@ trait Player:
 object Player:
   import model.cards.{Card, Deck}
 
+  export PlayerGameErrors.*
+
   /** Type alias that represents a player id as PlayerColor. */
   type PlayerId = PlayerColor
 
@@ -114,17 +116,6 @@ object Player:
 
   /** Type alias that represents the trains as Int. */
   type Trains = Int
-
-  /** Error that represents the case in which the deck doesn't have enough cards. */
-  case object NotEnoughCardsInTheDeck extends GameError
-
-  /** Error that represents the case in which a player doesn't have enough cards.
-    */
-  case object NotEnoughCards extends GameError
-
-  /** Error that represents the case in which a player doesn't have enough trains.
-    */
-  case object NotEnoughTrains extends GameError
 
   /** Create a player, with the given identifier and objective.
     *

@@ -2,7 +2,7 @@ package view.player
 
 import scala.swing.*
 
-/** The representation of a player. It's possible to update its text. */
+/** The representation of a player. It's possible to add a component to the inner panel and update its text. */
 trait PlayerView:
   /** The [[Component]] of the player view.
     *
@@ -18,7 +18,7 @@ trait PlayerView:
     */
   def addComponentToInnerPanel(component: Component): Unit
 
-  /** Update component text.
+  /** Update the [[Component]] text.
     *
     * @param text
     *   the text to update the component with.

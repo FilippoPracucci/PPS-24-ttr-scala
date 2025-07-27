@@ -9,7 +9,7 @@ trait Deck extends Cards:
   /** Draw the given amount of cards from the top of the deck.
     *
     * @param n
-    *   the number of cards to draw, which has to be inferior of the cards remaining in the deck.
+    *   the number of cards to draw, which must be less or equal of the cards remaining in the deck.
     * @return
     *   the list of cards drawn.
     */

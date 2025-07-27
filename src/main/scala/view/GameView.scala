@@ -15,10 +15,6 @@ trait GameView[Color] extends PlayerGameView:
     */
   def open(): Unit
 
-  /** Closes the view.
-    */
-  def close(): Unit
-
   /** Adds a new route in the game map view.
     *
     * @param connectedCities
@@ -126,8 +122,8 @@ object GameView:
         case Yes =>
           frame.contents = FinalRankingView(FinalRankingTitle)(playerScores).component
           frame.centerOnScreen()
-        case _ => close(); frame.closeOperation()
+        case _ => frame.close(); frame.closeOperation()
 
     export playerGameView.*
-    export frame.{open, close}
+    export frame.open
     export mapView.{addRoute, updateRoute}

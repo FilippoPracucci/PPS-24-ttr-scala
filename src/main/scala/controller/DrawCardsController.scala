@@ -1,5 +1,6 @@
 package controller
 
+/** The controller about drawing cards from the deck. */
 trait DrawCardsController:
   /** Player action that consists in draw the given amount of the card from the deck. */
   def drawCards(): Unit

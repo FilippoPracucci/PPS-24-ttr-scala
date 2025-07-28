@@ -2,6 +2,7 @@ package controller
 
 import model.map.GameMap
 
+/** Trait that represents a game controller responsible for claiming a route. */
 trait ClaimRouteController:
   import view.GameView.City
 

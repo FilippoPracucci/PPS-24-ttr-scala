@@ -29,7 +29,23 @@ case object GameConfig:
   val RoutesPath = "routes"
   val CitiesPath = "cities"
   val ObjectivesPath = "objectives"
-  val RulesDescription = "RULES HERE!" // TODO
+  val RulesDescription: String =
+    s"""
+      |Ticket to Ride is a board game in which four players compete to obtain points, that are gained by claiming routes
+      |and completing objectives. During a turn a player can draw 2 cards from the deck (pressing the "Draw" button) or
+      |claim a route (clicking the route on the map). After clicking on a route, a number of cards of the route's color
+      |corresponding to the route's length, will be automatically discarded from the player's hand. Each player has 45
+      |train cars, which are placed to claim routes and when a player remains with less than 3 train cars starts the
+      |last round. At the end of the game the player with the most points wins.
+      |
+      |Route scoring table (route length -> points gained):
+      |1 -> ${PointsPerRouteLength(1)}
+      |2 -> ${PointsPerRouteLength(2)}
+      |3 -> ${PointsPerRouteLength(3)}
+      |4 -> ${PointsPerRouteLength(4)}
+      |6 -> ${PointsPerRouteLength(6)}
+      |8 -> ${PointsPerRouteLength(8)}
+      |""".stripMargin
 
 /** Object that contains constant values used in the game view. */
 case object GameViewConfig:

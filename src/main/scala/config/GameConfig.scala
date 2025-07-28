@@ -4,6 +4,7 @@ import model.map.GameMap.AlreadyClaimedRoute
 import model.player.Player.{NotEnoughCards, NotEnoughCardsInTheDeck, NotEnoughTrains}
 import model.utils.GameError
 
+/** Object that contains constant values following the rules of the game. */
 case object GameConfig:
   val NumberTrainCars = 45
   val NumCardsPerColor = 12
@@ -30,6 +31,7 @@ case object GameConfig:
   val ObjectivesPath = "objectives"
   val RulesDescription = "RULES HERE!" // TODO
 
+/** Object that contains constant values used in the game view. */
 case object GameViewConfig:
   val FrameTitle = "Ticket to Ride"
   val DrawButtonText = "Draw"

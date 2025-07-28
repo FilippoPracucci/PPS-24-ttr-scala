@@ -11,8 +11,7 @@ import cards.HandView
 trait GameView[Color] extends PlayerGameView:
   import GameView.{City, PlayerName, Points, MessageType}
 
-  /** Opens the view.
-    */
+  /** Opens the view. */
   def open(): Unit
 
   /** Adds a new route in the game map view.
@@ -50,38 +49,31 @@ trait GameView[Color] extends PlayerGameView:
   def endGame(playerScores: Seq[(PlayerName, Points)]): Unit
 
 object GameView:
-  /** Type alias that represents a city as String by its name.
-    */
+  /** Type alias that represents a city as [[String]] by its name. */
   type City = String
 
-  /** Type alias that represents a player's name as String.
-    */
+  /** Type alias that represents a player's name as [[String]]. */
   type PlayerName = String
 
-  /** Type alias that represents points as Int.
-    */
+  /** Type alias that represents points as [[Int]]. */
   type Points = Int
 
-  /** Trait that represents a type of message to show.
-    */
+  /** Trait that represents a type of message to show. */
   trait MessageType
   object MessageType:
-    /** Type used to show information.
-      */
+    /** Type used to show information. */
     case object Info extends MessageType
 
-    /** Type used to report errors.
-      */
+    /** Type used to report errors. */
     case object Error extends MessageType
 
-    /** Type used to show responses.
-      */
+    /** Type used to show responses. */
     case object Response extends MessageType
 
-  /** Returns the singleton instance of `GameView`.
+  /** Returns the singleton instance of [[GameView]].
     *
     * @return
-    *   the globally shared `GameView` instance
+    *   the globally shared [[GameView]] instance
     */
   def apply(): GameView[java.awt.Color] = GameViewSwing
 

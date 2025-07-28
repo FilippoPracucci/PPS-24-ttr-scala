@@ -3,8 +3,7 @@ package controller
 import model.utils.{Color, PlayerColor}
 import java.awt.Color as ViewColor
 
-/** Object that provides conversion methods for the colors of the game map (from model to view).
-  */
+/** Object that provides conversion methods for the colors of the game map (from model to view). */
 object MapColorConverter:
 
   /** Returns the view color of the route color.

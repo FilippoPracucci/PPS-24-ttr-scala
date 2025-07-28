@@ -1,16 +1,15 @@
 package controller
 
-/** Trait that represents the controller of the game.
-  */
+/** Trait that represents the controller of the game. */
 trait GameController extends DrawCardsController with ClaimRouteController:
   /** Show the rules of the game. */
   def showRules(): Unit
 
 object GameController:
-  /** Returns the singleton instance of `GameController`.
+  /** Returns the singleton instance of [[GameController]].
     *
     * @return
-    *   the globally shared `GameController` instance
+    *   the globally shared [[GameController]] instance
     */
   def apply(): GameController = GameControllerImpl
 

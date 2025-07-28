@@ -2,7 +2,8 @@ package view
 
 import cards.HandView
 
-private trait PlayerGameView:
+/** Trait that represents the view about the player. */
+trait PlayerGameView:
   import GameView.{City, Points, PlayerName}
 
   /** Add the hand component to the view.
@@ -58,10 +59,25 @@ private trait PlayerGameView:
     */
   def updatePlayerScore(player: PlayerName, score: Points): Unit
 
-private object PlayerGameView:
+object PlayerGameView:
   import player.{BasicObjectiveView, BasicPlayerInfoView, PlayerScoresView}
   import scala.swing.{BoxPanel, MainFrame}
 
+  /** Creates a [[PlayerGameView]].
+    *
+    * @param frame
+    *   the main frame
+    * @param handPanel
+    *   the panel of the player hand
+    * @param objectiveView
+    *   the view of the objective
+    * @param playerInfoView
+    *   the view of the player info
+    * @param playerScoresView
+    *   the view of the player scores
+    * @return
+    *   the created [[PlayerGameView]]
+    */
   def apply(frame: MainFrame, handPanel: BoxPanel, objectiveView: BasicObjectiveView,
       playerInfoView: BasicPlayerInfoView, playerScoresView: PlayerScoresView): PlayerGameView =
     PlayerGameViewImpl(frame, handPanel, objectiveView, playerInfoView, playerScoresView)

@@ -13,7 +13,7 @@ trait ClaimRouteController:
   def claimRoute(connectedCities: (City, City)): Unit
 
 object ClaimRouteController:
-  /** Creates a `ClaimRouteController`.
+  /** Creates a [[ClaimRouteController]].
     *
     * @param turnManager
     *   the turn manager
@@ -22,7 +22,7 @@ object ClaimRouteController:
     * @param gameMap
     *   the map of the game
     * @return
-    *   the created `ClaimRouteController`
+    *   the created [[ClaimRouteController]]
     */
   def apply(turnManager: TurnManager, viewController: ViewController, gameMap: GameMap): ClaimRouteController =
     ClaimRouteControllerImpl(turnManager, viewController, gameMap)

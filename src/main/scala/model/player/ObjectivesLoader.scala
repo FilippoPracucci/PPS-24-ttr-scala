@@ -4,6 +4,7 @@ import config.{LoaderFromFile, JsonReader}
 import config.GameConfig.ObjectivesPath
 
 /** Class that represents a loader of objectives from a JSON file.
+  *
   * @param configFilePath
   *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
   *   objectives (default = "objectives")
@@ -13,6 +14,7 @@ class ObjectivesLoader(override val configFilePath: String = ObjectivesPath)
   import upickle.default.*
 
   /** Class that represents the structure of an objective in the JSON file.
+    *
     * @param citiesToConnect
     *   the pair of cities to connect to complete the objective
     * @param points
@@ -21,6 +23,7 @@ class ObjectivesLoader(override val configFilePath: String = ObjectivesPath)
   protected case class ObjectiveJson(citiesToConnect: (CityJson, CityJson), points: Int)
 
   /** Class that represents a city in the JSON file.
+    *
     * @param name
     *   the name of the city
     */

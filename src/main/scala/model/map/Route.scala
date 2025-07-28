@@ -11,12 +11,12 @@ trait City:
   def name: String
 
 object City:
-  /** Creates a `City`.
+  /** Creates a [[City]].
     *
     * @param name
     *   the name of the city
     * @return
-    *   the created `City`
+    *   the created [[City]]
     */
   def apply(name: String): City = CityImpl(name)
 
@@ -41,10 +41,10 @@ trait Route:
     */
   def length: Int
 
-  /** Gets the `Mechanic` followed by the route.
+  /** Gets the [[Mechanic]] followed by the route.
     *
     * @return
-    *   the `Mechanic` followed by the route
+    *   the [[Mechanic]] followed by the route
     */
   def mechanic: Mechanic
 
@@ -66,27 +66,27 @@ object Route:
     def color: Color
 
   object SpecificColor:
-    /** Creates a `SpecificColor` mechanic.
+    /** Creates a [[SpecificColor]] mechanic.
       *
       * @param color
       *   the color of the route
       * @return
-      *   the created `SpecificColor`
+      *   the created [[SpecificColor]]
       */
     def apply(color: Color): SpecificColor = SpecificColorImpl(color)
 
-    /** Allows instances of the type `SpecificColor` to be matched and deconstructed using pattern matching.
+    /** Allows instances of the type [[SpecificColor]] to be matched and deconstructed using pattern matching.
       *
       * @param specificColor
       *   the instance to be matched and deconstructed
       * @return
-      *   an Option containing the extracted color if the instance matches, None otherwise
+      *   an [[Option]] containing the extracted color if the instance matches, [[None]] otherwise
       */
     def unapply(specificColor: SpecificColor): Option[Color] = Some(specificColor.color)
 
     private case class SpecificColorImpl(override val color: Color) extends SpecificColor
 
-  /** Creates a `Route`.
+  /** Creates a [[Route]].
     *
     * @param connectedCities
     *   the pair of cities the route connects
@@ -95,7 +95,7 @@ object Route:
     * @param mechanic
     *   the mechanic of the route
     * @return
-    *   the created `Route`
+    *   the created [[Route]]
     */
   def apply(connectedCities: (City, City), length: Int, mechanic: Mechanic): Route =
     RouteImpl(connectedCities, length, mechanic)

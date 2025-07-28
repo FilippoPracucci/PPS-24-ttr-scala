@@ -3,15 +3,14 @@ package view.map
 import scala.swing.*
 import view.GameView.City
 
-/** Trait that represents the view of the map, using scala.swing.
-  */
+/** Trait that represents the view of the map, using [[scala.swing]]. */
 trait MapView:
   import MapView.Color
 
-  /** Returns the `scala.swing.Component` of the map view.
+  /** Returns the [[Component]] of the map view.
     *
     * @return
-    *   the `scala.swing.Component` of the map view.
+    *   the [[Component]] of the map view.
     */
   def component: Component
 
@@ -37,7 +36,7 @@ trait MapView:
     * @param length
     *   the length of the route
     * @param color
-    *   the color of the route expressed as the name of the color in lowercase
+    *   the color of the route
     */
   def addRoute(connectedCities: (City, City), length: Int, color: Color): Unit
 
@@ -46,21 +45,20 @@ trait MapView:
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names
     * @param color
-    *   the new color of the route, expressed as the name of the color in lowercase
+    *   the new color of the route
     */
   def updateRoute(connectedCities: (City, City), color: Color): Unit
 
 object MapView:
   import controller.GameController
 
-  /** Type alias that represents a color as java.awt.Color.
-    */
+  /** Type alias that represents a color as [[java.awt.Color]]. */
   type Color = java.awt.Color
 
-  /** Returns the singleton instance of `MapView`.
+  /** Returns the singleton instance of [[MapView]].
     *
     * @return
-    *   the globally shared `MapView` instance
+    *   the globally shared [[MapView]] instance
     */
   def apply(): MapView = MapViewImpl
 

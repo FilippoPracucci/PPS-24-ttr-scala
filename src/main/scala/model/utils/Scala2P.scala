@@ -7,16 +7,13 @@ object Scala2P:
   import alice.tuprolog.*
   import scala.language.implicitConversions
 
-  /** Implicit conversion from `String` to `Term`.
-    */
+  /** Implicit conversion from [[String]] to [[Term]]. */
   given Conversion[String, Term] = Term.createTerm(_)
 
-  /** Implicit conversion from `Seq[_]` to `Term`.
-    */
+  /** Implicit conversion from [[Seq]] to [[Term]]. */
   given Conversion[Seq[_], Term] = _.mkString("[", ",", "]")
 
-  /** Implicit conversion from `String` to `Theory`.
-    */
+  /** Implicit conversion from [[String]] to [[Theory]]. */
   given Conversion[String, Theory] = Theory.parseWithStandardOperators(_)
 
   /** Creates a Prolog engine from the specified theory.

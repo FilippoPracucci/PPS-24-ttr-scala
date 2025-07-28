@@ -6,8 +6,7 @@ import MapView.Color
 /** Trait that represents a style manager for a graph component. It provides a way to set the style of graph components.
   */
 trait GraphStyleManager:
-  /** Sets the style of a graph component.
-    */
+  /** Sets the style of a graph component. */
   extension (graphComponent: mxGraphComponent) def setDefaultStyle(): Unit
 
   /** Returns the custom style of an edge.
@@ -22,10 +21,10 @@ trait GraphStyleManager:
   def edgeStyle(color: Color, dashed: Boolean): String
 
 object GraphStyleManager:
-  /** Creates a `GraphStyleManager`.
+  /** Creates a [[GraphStyleManager]].
     *
     * @return
-    *   the created `GraphStyleManager`
+    *   the created [[GraphStyleManager]]
     */
   def apply(): GraphStyleManager = MapStyleManager
 

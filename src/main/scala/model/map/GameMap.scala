@@ -4,15 +4,14 @@ import config.Loader
 import model.utils.GameError
 import model.player.Player.PlayerId
 
-/** Trait that represents the game map, composed of a set of routes.
-  */
+/** Trait that represents the game map, composed of a set of routes. */
 trait GameMap:
   import GameMap.CityName
 
-  /** Returns the set of routes of the `GameMap`
+  /** Returns the set of routes of the [[GameMap]]
     *
     * @return
-    *   the set of routes of the `GameMap`
+    *   the set of routes of the [[GameMap]]
     */
   def routes: Set[Route]
 
@@ -21,8 +20,8 @@ trait GameMap:
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names as String
     * @return
-    *   a `Right` of an `Option` containing the player claiming the route or `None` if no player claims it,
-    *   `Left(NonExistentRoute)` if the route doesn't exist
+    *   a [[Right]] of an [[Option]] containing the player claiming the route or [[None]] if no player claims it,
+    *   [[Left]] containing the error [[GameMap.NonExistentRoute]] if the route doesn't exist
     */
   def getPlayerClaimingRoute(connectedCities: (CityName, CityName)): Either[GameError, Option[PlayerId]]
 
@@ -31,33 +30,30 @@ trait GameMap:
     * @param connectedCities
     *   the pair of cities connected by the route, specifying their names as String
     * @return
-    *   an Option containing the requested `Route`, None if the route doesn't exist
+    *   an [[Option]] containing the requested [[Route]], [[None]] if the route doesn't exist
     */
   def getRoute(connectedCities: (CityName, CityName)): Option[Route]
 
   /** Makes the player claim the route connecting the specified cities.
     *
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names as String
+    *   the pair of cities connected by the route, specifying their names as [[String]]
     * @param playerId
-    *   the `PlayerId` of the player
+    *   the [[PlayerId]] of the player
     * @return
-    *   `Right(())` if the action succeeds, `Left(NonExistentRoute)` if the route doesn't exist,
-    *   `Left(AlreadyClaimedRoute)` if the route has already been claimed
+    *   an empty [[Right]] if the action succeeds, [[Left]] containing the error [[NonExistentRoute]] if the route
+    *   doesn't exist, [[Left]] containing [[AlreadyClaimedRoute]] if the route has already been claimed
     */
   def claimRoute(connectedCities: (CityName, CityName), playerId: PlayerId): Either[GameError, Unit]
 
 object GameMap:
-  /** Type alias that represents the name of a city as String.
-    */
+  /** Type alias that represents the name of a city as [[String]]. */
   type CityName = String
 
-  /** Error that represents the case in which a route doesn't exist.
-    */
+  /** Error that represents the case in which a route doesn't exist. */
   case object NonExistentRoute extends GameError
 
-  /** Error that represents the case in which a route is already claimed.
-    */
+  /** Error that represents the case in which a route is already claimed. */
   case object AlreadyClaimedRoute extends GameError
 
   /** The given instance of the default routes loader, which loads from the JSON file 'routes.json' located in
@@ -68,12 +64,12 @@ object GameMap:
     */
   given defaultRoutesLoader: Loader[Set[Route]] = RoutesLoader()
 
-  /** Creates a `GameMap` composed of the set of routes loaded by the specified loader.
+  /** Creates a [[GameMap]] composed of the set of routes loaded by the specified loader.
     *
     * @param loader
     *   the loader of the routes
     * @return
-    *   the created `GameMap`
+    *   the created [[GameMap]]
     */
   def apply()(using loader: Loader[Set[Route]]): GameMap = GameMapImpl(loader.load())
 

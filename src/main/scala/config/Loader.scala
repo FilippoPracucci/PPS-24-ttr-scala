@@ -42,8 +42,7 @@ trait LoaderFromFile[A] extends Loader[A] with FileReader:
     */
   protected def onSuccess(data: Data): A
 
-/** Trait that represents a file reader.
-  */
+/** Trait that represents a file reader. */
 trait FileReader:
   import scala.util.{Try, Using}
   import scala.io.{Source, BufferedSource}
@@ -63,15 +62,14 @@ trait FileReader:
     */
   protected def fileExtension: String
 
-  /** The type of the data read from file, to be defined in the implementation.
-    */
+  /** The type of the data read from file, to be defined in the implementation. */
   protected type Data
 
   /** Reads the data from the specified file.
     *
     * @return
-    *   `Success(data)` containing the data read if no errors occurred, otherwise `Failure(e)` containing the thrown
-    *   exception
+    *   [[scala.util.Success]] containing the data read if no errors occurred, otherwise [[scala.util.Failure]]
+    *   containing the thrown exception
     */
   protected def readFromFile(): Try[Data] =
     Using(Source.fromResource(configFilePath + "." + fileExtension))(readFromSource)
@@ -85,19 +83,18 @@ trait FileReader:
     */
   protected def readFromSource(source: BufferedSource): Data
 
-/** Trait that represents a JSON file reader.
-  */
+/** Trait that represents a JSON file reader. */
 trait JsonReader extends FileReader:
   import scala.io.BufferedSource
   import upickle.default.*
 
   final override protected def fileExtension: String = "json"
 
-  /** The given instance to read and write values of type `Data` using the upickle library, to be defined in the
+  /** The given instance to read and write values of type [[Data]] using the upickle library, to be defined in the
     * implementation.
     *
     * @return
-    *   the `ReadWriter` for values of type `Data`
+    *   the [[ReadWriter]] for values of type [[Data]]
     */
   protected given readWriter: ReadWriter[Data]
 

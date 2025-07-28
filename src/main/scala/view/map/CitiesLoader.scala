@@ -13,7 +13,7 @@ import config.GameConfig.CitiesPath
   *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
   *   information on the cities (default = "cities")
   * @param mapView
-  *   the given mapView where to load the cities
+  *   the given [[MapView]] where to load the cities
   */
 class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: String = CitiesPath)(
     using mapView: MapView
@@ -27,6 +27,7 @@ class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: S
   private val CityHeight = 0
 
   /** Class that represents the config data contained in the JSON file.
+    *
     * @param scaleWidth
     *   the max value of the width (x coordinates), used for scaling
     * @param scaleHeight
@@ -37,6 +38,7 @@ class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: S
   protected case class ConfigData(scaleWidth: Double, scaleHeight: Double, cities: Set[City])
 
   /** Class that represents a city in the JSON file.
+    *
     * @param name
     *   the name of the city
     * @param x

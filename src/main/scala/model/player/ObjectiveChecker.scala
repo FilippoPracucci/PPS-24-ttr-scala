@@ -19,12 +19,12 @@ trait ObjectiveChecker:
   def check(objective: Objective, playerId: PlayerId): Boolean
 
 object ObjectiveChecker:
-  /** Creates an `ObjectiveChecker` that performs checks based on the specified game map.
+  /** Creates an [[ObjectiveChecker]] that performs checks based on the specified game map.
     *
     * @param gameMap
-    *   the game map to use to check the objectives
+    *   the [[GameMap]] to use to check the objectives
     * @return
-    *   the created `ObjectiveChecker`
+    *   the created [[ObjectiveChecker]]
     */
   def apply(gameMap: GameMap): ObjectiveChecker = ObjectiveCheckerImpl(gameMap)
 

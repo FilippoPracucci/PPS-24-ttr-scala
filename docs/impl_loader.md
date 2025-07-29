@@ -41,4 +41,6 @@ classDiagram
     JsonReader <|.. RoutesLoader
     LoaderFromFile <|.. CitiesLoader
     JsonReader <|.. CitiesLoader
+    LoaderFromFile <|.. ObjectivesLoader
+    JsonReader <|.. ObjectivesLoader
 ```

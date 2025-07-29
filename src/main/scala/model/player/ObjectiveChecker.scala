@@ -67,22 +67,24 @@ object ObjectiveChecker:
     )
 
     override def check(objective: Objective, playerId: PlayerId): Boolean =
-      solveWithSuccess(engine, Goal(graph, objective.city1, objective.city2, playerId.toAtom))
+      solveWithSuccess(engine, Goal(gameMap.graph, objective.city1, objective.city2, playerId.toAtom))
 
     private object ConversionHelper:
-      def graph: Term =
-        gameMap.routes
-          .map(_.connectedCities)
-          .map(connectedCities => (connectedCities._1.name, connectedCities._2.name))
-          .map((city1, city2) =>
-            (city1, city2,
-              gameMap.getPlayerClaimingRoute((city1, city2)) match
-                case Right(Some(player)) => player.toString
-                case _ => NoPlayer
+
+      extension (gameMap: GameMap)
+        def graph: Term =
+          gameMap.routes
+            .map(_.connectedCities)
+            .map(connectedCities => (connectedCities._1.name, connectedCities._2.name))
+            .map((city1, city2) =>
+              (city1, city2,
+                gameMap.getPlayerClaimingRoute((city1, city2)) match
+                  case Right(Some(player)) => player.toString
+                  case _ => NoPlayer
+              )
             )
-          )
-          .map((city1, city2, player) => Edge(city1, city2, player))
-          .toSeq
+            .map((city1, city2, player) => Edge(city1, city2, player))
+            .toSeq
 
       extension (objective: Objective) def city1: Term = objective.citiesToConnect._1.toLowerCase
 

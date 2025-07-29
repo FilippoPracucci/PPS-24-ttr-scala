@@ -45,7 +45,7 @@ trait LoaderFromFile[A] extends Loader[A] with FileReader:
 /** Trait that represents a file reader. */
 trait FileReader:
   import scala.util.{Try, Using}
-  import scala.io.{Source, BufferedSource}
+  import scala.io.Source
 
   /** The path of the config file (starting from 'src/main/resources/'), without file extension, to be defined in the
     * implementation.
@@ -81,11 +81,11 @@ trait FileReader:
     * @return
     *   the data read
     */
-  protected def readFromSource(source: BufferedSource): Data
+  protected def readFromSource(source: Source): Data
 
 /** Trait that represents a JSON file reader. */
 trait JsonReader extends FileReader:
-  import scala.io.BufferedSource
+  import scala.io.Source
   import upickle.default.*
 
   final override protected def fileExtension: String = "json"
@@ -98,4 +98,4 @@ trait JsonReader extends FileReader:
     */
   protected given readWriter: ReadWriter[Data]
 
-  final override protected def readFromSource(source: BufferedSource): Data = read[Data](ujson.read(source.mkString))
+  final override protected def readFromSource(source: Source): Data = read[Data](ujson.read(source.mkString))

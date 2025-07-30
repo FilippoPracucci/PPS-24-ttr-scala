@@ -83,8 +83,7 @@ object PlayerGameView:
     PlayerGameViewImpl(frame, handPanel, objectiveView, playerInfoView, playerScoresView)
 
   private case class PlayerGameViewImpl(frame: MainFrame, handPanel: BoxPanel, objectiveView: BasicObjectiveView,
-      playerInfoView: BasicPlayerInfoView, playerScoresView: PlayerScoresView)
-      extends PlayerGameView:
+      playerInfoView: BasicPlayerInfoView, playerScoresView: PlayerScoresView) extends PlayerGameView:
 
     override def addHandView(handView: HandView): Unit =
       handPanel.contents += handView.handComponent

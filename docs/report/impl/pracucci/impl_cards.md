@@ -55,12 +55,12 @@ classDiagram
     Color "1" --o "*" Card
     Card "1..*" --o "0..1" Cards
     Deck "1" --|> "1" Cards
-    Cards "*" ..> "1" CardsGenerator: usa
-    Deck "*" ..> "1" DeckGenerator: usa
+    Cards "*" ..> "1" CardsGenerator: «use»
+    Deck "*" ..> "1" DeckGenerator: «use»
     HandGenerator "*" ..|> "1" Generator~T~
     CardsGenerator "*" ..|> "1" Generator~T~
     DeckGenerator "*" ..|> "1" Generator~T~
-    Hand "*" ..> "1" HandGenerator: usa
+    Hand "*" ..> "1" HandGenerator: «use»
     class Color {
         <<Enumeration>>
         BLACK

@@ -60,9 +60,9 @@ classDiagram
     Color "1..*" --o "*" Card
     Card "1..*" --o "0..1" Cards
     Deck "1" --|> "1" Cards
-    Hand "*" ..> "1" HandGenerator: usa
-    Deck "*" ..> "1" DeckGenerator: usa
-    Cards "*" ..> "1" CardsGenerator: usa
+    Hand "*" ..> "1" HandGenerator: «use»
+    Deck "*" ..> "1" DeckGenerator: «use»
+    Cards "*" ..> "1" CardsGenerator: «use»
     HandGenerator "*" ..|> "1" Generator~T~
     CardsGenerator "*" ..|> "1" Generator~T~
     DeckGenerator "*" ..|> "1" Generator~T~

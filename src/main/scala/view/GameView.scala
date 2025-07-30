@@ -1,8 +1,5 @@
 package view
 
-import map.MapView
-import cards.HandView
-
 /** Trait that represents the view of the game.
   *
   * @tparam Color
@@ -80,6 +77,7 @@ object GameView:
   private object GameViewSwing extends GameView[java.awt.Color]:
     import scala.swing.*
     import player.{BasicPlayerInfoView, BasicObjectiveView, PlayerScoresView, FinalRankingView}
+    import map.MapView
     import MessageType.*
     import config.GameViewConfig.*
 

@@ -1,7 +1,7 @@
-package model.player
+package model.objective
 
 import model.map.GameMap
-import Player.PlayerId
+import model.player.Player.PlayerId
 
 /** Trait that represents an objective checker that tells whether a certain objective has been completed or not by a
   * certain player.
@@ -29,10 +29,10 @@ object ObjectiveChecker:
   def apply(gameMap: GameMap): ObjectiveChecker = ObjectiveCheckerImpl(gameMap)
 
   private class ObjectiveCheckerImpl(gameMap: GameMap) extends ObjectiveChecker:
-    import alice.tuprolog.*
-    import scala.language.implicitConversions
-    import model.utils.Scala2P.{*, given}
     import ConversionHelper.*
+    import alice.tuprolog.*
+    import model.utils.Scala2P.{*, given}
+    import scala.language.implicitConversions
 
     private val AnyPathPredicate = "any_path"
     private val NoPlayer = "none"

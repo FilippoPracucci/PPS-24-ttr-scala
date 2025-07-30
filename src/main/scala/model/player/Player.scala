@@ -1,6 +1,7 @@
 package model.player
 
-import model.utils.{Color, PlayerColor, GameError}
+import model.objective.{ObjectiveCompletion, Points}
+import model.utils.{Color, GameError, PlayerColor}
 
 /** A player, that has an id, an objective, a hand of train cards, a number of train cars and his score. The player can
   * draw cards, play cards, place train cars, add points to his actual score and check the possibility to play an amount

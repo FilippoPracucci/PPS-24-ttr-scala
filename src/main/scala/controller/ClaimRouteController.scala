@@ -1,6 +1,7 @@
 package controller
 
 import model.map.GameMap
+import model.objective.ObjectiveChecker
 
 /** Trait that represents a game controller responsible for claiming a route. */
 trait ClaimRouteController:
@@ -29,7 +30,8 @@ object ClaimRouteController:
     ClaimRouteControllerImpl(turnManager, viewController, gameMap)
 
   private object ImportHelper:
-    export model.player.{Player, ObjectiveChecker}
+    export model.player.Player
+    export model.objective.ObjectiveChecker
     export model.utils.{Color, GameError}
     export model.map.Route.SpecificColor
     export view.GameView.{City, Points}

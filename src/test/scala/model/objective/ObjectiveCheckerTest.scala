@@ -1,5 +1,7 @@
-package model.player
+package model.objective
 
+import model.objective.{ObjectiveChecker, ObjectiveWithCompletion}
+import model.player.Player
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers

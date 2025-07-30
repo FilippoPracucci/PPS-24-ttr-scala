@@ -6,7 +6,8 @@ import org.scalatest.matchers.should.Matchers
 
 class TurnManagerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   import model.cards.Deck
-  import model.player.{Player, ObjectiveWithCompletion}
+  import model.objective.ObjectiveWithCompletion
+  import model.player.Player
   import model.utils.PlayerColor
 
   private val deck: Deck = Deck()

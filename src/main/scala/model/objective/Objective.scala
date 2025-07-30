@@ -1,4 +1,4 @@
-package model.player
+package model.objective
 
 export model.map.GameMap.CityName as City
 

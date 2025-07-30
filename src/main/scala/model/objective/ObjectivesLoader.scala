@@ -1,7 +1,7 @@
-package model.player
+package model.objective
 
-import config.{LoaderFromFile, JsonReader}
 import config.GameConfig.ObjectivesPath
+import config.{JsonReader, LoaderFromFile}
 
 /** Class that represents a loader of objectives from a JSON file.
   *

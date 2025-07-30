@@ -1,5 +1,7 @@
 package controller
 
+import model.objective.{ObjectiveWithCompletion, ObjectivesLoader}
+
 /** Trait that represents the controller of the game. */
 trait GameController extends DrawCardsController with ClaimRouteController:
   /** Show the rules of the game. */
@@ -18,7 +20,8 @@ object GameController:
     export GameMap.defaultRoutesLoader
     export model.utils.PlayerColor
     export model.cards.Deck
-    export model.player.{Player, ObjectiveWithCompletion, ObjectivesLoader}
+    export model.player.Player
+    export model.objective.{ObjectiveWithCompletion, ObjectivesLoader}
 
   private object GameControllerImpl extends GameController:
     import ImportHelper.*

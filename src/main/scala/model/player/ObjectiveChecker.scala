@@ -86,8 +86,8 @@ object ObjectiveChecker:
             .map((city1, city2, player) => Edge(city1, city2, player))
             .toSeq
 
-      extension (objective: Objective) def city1: Term = objective.citiesToConnect._1.toLowerCase
-
-      extension (objective: Objective) def city2: Term = objective.citiesToConnect._2.toLowerCase
+      extension (objective: Objective)
+        def city1: Term = objective.citiesToConnect._1.toLowerCase
+        def city2: Term = objective.citiesToConnect._2.toLowerCase
 
       extension (playerId: PlayerId) def toAtom: Term = playerId.toString.toLowerCase

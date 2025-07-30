@@ -47,6 +47,7 @@ config:
     hideEmptyMembersBox: true
 ---
 classDiagram
+    direction RL
     ObjectiveView --|> PlayerView
     ObjectiveViewWithCompletion --|> PlayerView
     PlayerInfoView --|> PlayerView

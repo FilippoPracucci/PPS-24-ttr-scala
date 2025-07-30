@@ -1,9 +1,8 @@
-package model.player
-
-import org.scalatest.flatspec.AnyFlatSpec
-import org.scalatest.matchers.should.Matchers
+package model.objective
 
 import model.SetLoaderTest
+import org.scalatest.flatspec.AnyFlatSpec
+import org.scalatest.matchers.should.Matchers
 
 class ObjectivesLoaderTest extends AnyFlatSpec with SetLoaderTest[ObjectiveWithCompletion]:
   import config.Loader

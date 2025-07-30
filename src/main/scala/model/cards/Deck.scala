@@ -1,6 +1,6 @@
 package model.cards
 
-/** A deck of train cards, which can be shuffled and cards can be drawn from it. */
+/** A deck of train cards, which can be shuffled, cards can be drawn from it and reinserted at the bottom of it. */
 trait Deck extends Cards:
 
   /** Shuffle the deck to reorder it randomly. */
@@ -9,7 +9,7 @@ trait Deck extends Cards:
   /** Draw the given amount of cards from the top of the deck.
     *
     * @param n
-    *   the number of cards to draw.
+    *   the number of cards to draw, which must be less or equal of the cards remaining in the deck.
     * @return
     *   the list of cards drawn.
     */
@@ -24,32 +24,37 @@ trait Deck extends Cards:
 
 /** The factory for [[Deck]] instances. */
 object Deck:
+  /** A [[Generator]] for type [[Deck]]. */
+  abstract class DeckGenerator extends Generator[Deck]:
+    override def generate(): Deck = DeckImpl(generateCards())
+
   /** Create a deck by means of a generator.
     *
     * @param generator
-    *   the [[CardsGenerator]] of type [[Deck]].
+    *   the [[DeckGenerator]].
     * @return
     *   the deck created.
     */
-  def apply()(using generator: CardsGenerator[Deck]): Deck = DeckImpl(generator.generate())
+  def apply()(using generator: DeckGenerator): Deck = generator.generate()
 
-  /** The standard deck generator according to the rules.
+  /** The standard deck generator according to the rules of the game.
     *
     * @return
-    *   the standard [[CardsGenerator]] of type [[Deck]].
+    *   the standard [[DeckGenerator]].
     */
-  given standardDeckGenerator: CardsGenerator[Deck] = () =>
-    import model.utils.Color
+  given DeckGenerator with
+    override def generateCards(): List[Card] =
+      import model.utils.Color
+      import config.GameConfig.NumCardsPerColor
 
-    val NUM_CARDS_PER_COLOR = 12
-    var list: List[Card] = List.empty
-    for
-      color <- Color.values
-      i <- 0 until NUM_CARDS_PER_COLOR
-    yield list = list :+ Card(color)
-    list
+      var list: List[Card] = List.empty
+      for
+        color <- Color.values
+        i <- 0 until NumCardsPerColor
+      yield list = Card(color) +: list
+      list
 
-  private case class DeckImpl(private val cardsList: List[Card]) extends Deck:
+  private class DeckImpl(private val cardsList: List[Card]) extends Deck:
     cards = cardsList
 
     override def shuffle(): Unit =

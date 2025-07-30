@@ -6,7 +6,8 @@ import org.scalatest.matchers.should.Matchers
 
 class TurnManagerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   import model.cards.Deck
-  import model.player.{Player, ObjectiveWithCompletion}
+  import model.objective.ObjectiveWithCompletion
+  import model.player.Player
   import model.utils.PlayerColor
 
   private val deck: Deck = Deck()
@@ -14,7 +15,7 @@ class TurnManagerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   private var playerList: List[Player] = List.empty
   for
     color <- PlayerColor.values
-  yield playerList :+= Player(color, deck, objective = ObjectiveWithCompletion(("Paris", "Berlin"), 8))
+  yield playerList +:= Player(color, deck, objective = ObjectiveWithCompletion(("Paris", "Berlin"), 8))
 
   private var turnManager = TurnManager(playerList)
 
@@ -34,9 +35,10 @@ class TurnManagerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
   it should "return the right game state" in:
     import GameState.*
+    import config.GameConfig.NumberTrainCars
     turnManager.gameState should be(IN_GAME)
     turnManager.switchTurn()
-    turnManager.currentPlayer.trains.placeTrainCars(44)
+    turnManager.currentPlayer.placeTrains(NumberTrainCars - 1)
     turnManager.switchTurn()
     turnManager.gameState should be(START_LAST_ROUND)
     playerList.foreach(_ => turnManager.switchTurn())

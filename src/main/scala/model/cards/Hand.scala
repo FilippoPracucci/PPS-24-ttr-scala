@@ -2,8 +2,7 @@ package model.cards
 
 import model.utils.Color
 
-/** A player's hand of train cards. It's possible to play some cards, add some cards or reorder them grouping by color.
-  */
+/** A player's hand of train cards. It's possible to play and add some cards to it. */
 trait Hand extends Cards:
   /** Checks whether the specified number of cards of the specified color can be played (i.e. are present in the
     * player's hand).
@@ -13,18 +12,18 @@ trait Hand extends Cards:
     * @param n
     *   the number of the cards
     * @return
-    *   true if the cards can be played, false otherwise
+    *   [[true]] if the cards can be played, [[false]] otherwise
     */
   def canPlayCards(color: Color, n: Int): Boolean
 
-  /** Play a number of train cards of the given color from the player's hand.
+  /** Play the specified number of cards of the specified color from the player's hand.
     *
     * @param color
     *   the color of train cards to play.
     * @param n
     *   the number of train cards to play.
     * @return
-    *   the list of train cards that have been played
+    *   the list of train cards that has been played.
     */
   def playCards(color: Color, n: Int): List[Card]
 
@@ -37,30 +36,35 @@ trait Hand extends Cards:
 
 /** The factory for player's [[Hand]] instances. */
 object Hand:
-  private var cardsDeck: Deck = Deck()
+  private var _cardsDeck: Deck = Deck()
+
+  /** A [[Generator]] for type [[Hand]]. */
+  abstract class HandGenerator extends Generator[Hand]:
+    override def generate(): Hand = HandImpl(generateCards())
 
   /** Create a player hand from the deck by means of a generator.
     *
     * @param deck
-    *   the [[Deck]] of train cards.
+    *   the [[Deck]] of train cards, it must be not empty.
     * @param generator
-    *   the [[CardsGenerator]] of type [[Hand]].
+    *   the [[HandGenerator]].
     * @return
     *   the player's hand created.
     */
-  def apply(deck: Deck)(using generator: CardsGenerator[Hand]): Hand =
+  def apply(deck: Deck)(using generator: HandGenerator): Hand =
     require(deck != null && deck.cards.nonEmpty, "The deck has to exist and to not be empty!")
-    cardsDeck = deck
-    HandImpl(generator.generate())
+    _cardsDeck = deck
+    generator.generate()
 
-  /** The standard hand generator according to the rules.
+  /** The standard hand generator according to the rules of the game.
     *
     * @return
-    *   the standard [[CardsGenerator]] of type [[Hand]].
+    *   the standard [[HandGenerator]].
     */
-  given CardsGenerator[Hand] = () =>
-    val HAND_INITIAL_SIZE = 4
-    cardsDeck.draw(HAND_INITIAL_SIZE)
+  given HandGenerator with
+    override def generateCards(): List[Card] =
+      import config.GameConfig.HandInitialSize
+      _cardsDeck.draw(HandInitialSize)
 
   private class HandImpl(private val cardsList: List[Card]) extends Hand:
     cards = cardsList
@@ -77,7 +81,7 @@ object Hand:
       cardsToPlay
 
     override def addCards(cardsToAdd: List[Card]): Unit =
-      cards = cards :++ cardsToAdd
+      cards = cardsToAdd ++: cards
       groupCardsByColor()
 
     private def groupCardsByColor(): Unit =

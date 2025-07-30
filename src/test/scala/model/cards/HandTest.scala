@@ -5,6 +5,7 @@ import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class HandTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
+  import Hand.HandGenerator
   import model.utils.Color
   import Color.*
 
@@ -18,7 +19,8 @@ class HandTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   val HAND_INITIAL_SIZE = 4
 
   "A hand" should "not be created if the deck does not meet the requirements" in:
-    val emptyDeck: CardsGenerator[Deck] = () => List.empty
+    import Deck.DeckGenerator
+    val emptyDeck: DeckGenerator = () => List.empty
     a[IllegalArgumentException] should be thrownBy Hand(null)
     a[IllegalArgumentException] should be thrownBy Hand(Deck()(using emptyDeck))
 
@@ -38,4 +40,4 @@ class HandTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val cardsToAdd: List[Card] = List(Card(ORANGE), Card(WHITE))
     hand.addCards(cardsToAdd)
     hand.cards should contain theSameElementsInOrderAs
-      (fixedList :++ cardsToAdd).groupBy(_.color).flatMap(_._2).toList.sortWith(_.color.toString < _.color.toString)
+      (cardsToAdd ++: fixedList).groupBy(_.color).flatMap(_._2).toList.sortWith(_.color.toString < _.color.toString)

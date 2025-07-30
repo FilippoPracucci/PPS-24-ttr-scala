@@ -4,14 +4,7 @@ import scala.swing.*
 
 /** The representation of a train card. */
 trait CardView:
-  /** The selection state of the card view component.
-    *
-    * @return
-    *   [[true]] if the card view component is selected, [[false]] otherwise
-    */
-  def selected: Boolean
-
-  /** The card view component.
+  /** The [[Component]] of the card view.
     *
     * @return
     *   the card view component.
@@ -33,16 +26,15 @@ object CardView:
     * @return
     *   the card representation created.
     */
-  def apply(name: String)(color: ViewColor, textColor: ViewColor): CardView = CardViewImpl(name)(color, textColor)()
+  def apply(name: String)(color: ViewColor, textColor: ViewColor): CardView = CardViewImpl(name)(color, textColor)
 
-  private case class CardViewImpl(name: String)(color: ViewColor, textColor: ViewColor)(private var _selected: Boolean =
-        false) extends CardView:
-    override def selected: Boolean = _selected
-
+  private case class CardViewImpl(name: String)(color: ViewColor, textColor: ViewColor) extends CardView:
     override def cardComponent: Component =
+      import config.GameViewConfig.BorderConfig.*
+      val BorderWeight = 5
       val cardLabel: Label = new Label(name):
         foreground = textColor
       val component: FlowPanel = new FlowPanel(FlowPanel.Alignment.Center)(cardLabel):
         background = color
-        border = Swing.EmptyBorder(0, 5, 0, 5)
+        border = EmptyBorder(BorderWeight)
       component

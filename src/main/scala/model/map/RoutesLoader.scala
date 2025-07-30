@@ -1,18 +1,21 @@
 package model.map
 
 import config.{LoaderFromFile, JsonReader}
+import config.GameConfig.RoutesPath
 
 /** Class that represents a loader of routes from a JSON file.
+  *
   * @param configFilePath
   *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
   *   routes (default: "routes")
   */
-class RoutesLoader(override val configFilePath: String = "routes") extends LoaderFromFile[Set[Route]]
+class RoutesLoader(override val configFilePath: String = RoutesPath) extends LoaderFromFile[Set[Route]]
     with JsonReader:
   import upickle.default.*
   import ConversionHelper.routeMechanic
 
   /** Class that represents the structure of a route in the JSON file.
+    *
     * @param connectedCities
     *   the pair of cities connected by the route
     * @param length
@@ -23,16 +26,18 @@ class RoutesLoader(override val configFilePath: String = "routes") extends Loade
   protected case class RouteJson(connectedCities: (CityJson, CityJson), length: Int, mechanic: MechanicJson)
 
   /** Class that represents a city in the JSON file.
+    *
     * @param name
     *   the name of the city
     */
   protected case class CityJson(name: String)
 
   /** Class that represents the structure of a route mechanic in the JSON file.
+    *
     * @param mechanicType
-    *   the type of the mechanic expressed as String
+    *   the type of the mechanic expressed as [[String]]
     * @param value
-    *   the value of the specified type of mechanic expressed as String
+    *   the value of the specified type of mechanic expressed as [[String]]
     */
   protected case class MechanicJson(mechanicType: String, value: String)
 

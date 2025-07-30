@@ -16,7 +16,7 @@ trait PlayerScoresView:
   /** Initialize player scores.
     *
     * @param playerScores
-    *   the list of player scores consisting of pairs "player's name; score"
+    *   the list of player scores consisting of pairs [[PlayerName]] and [[Points]].
     */
   def initPlayerScores(playerScores: Seq[(PlayerName, Points)]): Unit
 
@@ -40,16 +40,15 @@ object PlayerScoresView:
     */
   def apply(title: String): PlayerScoresView = PlayerScoresViewImpl(title)
 
-  import view.GameView
-  export GameView.{PlayerName, Points}
+  export view.GameView.{PlayerName, Points}
 
   private case class PlayerScoresViewImpl(title: String) extends PlayerScoresView:
-    import java.awt.Color.*
+    import config.GameViewConfig.ColorConfig.BackgroundColor
 
     private val _component: BoxPanel = new BoxPanel(Orientation.Vertical):
       contents += new BoxPanel(Orientation.Horizontal):
         contents += new Label(title)
-        background = WHITE
+        background = BackgroundColor
       this.initComponent()
     private var scoreLabels: Map[String, Label] = Map()
 
@@ -59,29 +58,28 @@ object PlayerScoresView:
       scoreLabels = playerScores.map((player, score) => (player, new Label(score.toString))).toMap
       scoreLabels.foreach((player, scoreLabel) =>
         _component.contents += new BoxPanel(Orientation.Horizontal):
-          contents += new Label(player + ":")
-          contents += Swing.HGlue
-          contents += scoreLabel
-          background = WHITE
+          contents ++= List(new Label(player + ":"), Swing.HGlue, scoreLabel)
+          background = BackgroundColor
       )
-      _component.contents.foreach(_.updateLabelFont(15f))
+      _component.contents.foreach(_.updateLabelFont())
 
     override def updatePlayerScore(player: PlayerName, score: Points): Unit =
       scoreLabels(player).text = score.toString
 
     extension (component: Component)
       private def initComponent(): Unit =
-        import javax.swing.BorderFactory
+        import config.GameViewConfig.BorderConfig.*
+        val BorderWeight = 10
+        val BorderThickness = 1
         component.focusable = false
-        component.background = WHITE
-        component.border = BorderFactory.createCompoundBorder(
-          BorderFactory.createLineBorder(BLACK, 1, true),
-          Swing.EmptyBorder(10)
-        )
+        component.background = BackgroundColor
+        component.border = CompoundBorder(LineBorder(BorderThickness), EmptyBorder(BorderWeight))
 
-      private def updateLabelFont(size: Float): Unit = component match
-        case panel: Panel => panel.contents.foreach {
-            case label: Label => label.font = label.font.deriveFont(15f)
-            case _ => ()
-          }
-        case _ => ()
+      private def updateLabelFont(): Unit =
+        import config.GameViewConfig.FontConfig.DerivedFont
+        component match
+          case panel: Panel => panel.contents.foreach {
+              case label: Label => label.font = DerivedFont(label.font)
+              case _ => ()
+            }
+          case _ => ()

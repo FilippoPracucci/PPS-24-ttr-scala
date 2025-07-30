@@ -23,9 +23,14 @@ della versione `v1.0.0`.
 | Controllo completamento obiettivi | Integrazione del controllo completamento obiettivi                      | Bedeschi   |       10       |    X     |     X      |
 | Classifica finale                 | Visualizzazione della classifica finale al termine della partita        | Pracucci   |       5        |    X     |     X      |
 | Miglioramento view                | Miglioramento dei pannelli della view e della sua coerenza              | Pracucci   |       5        |    X     |     X      |
-| Refactor                          | Refactor del GameController                                             | Entrambi   |       10       |          |            |
-|                                   | Refactor della GameView                                                 | Entrambi   |       5        |          |            |
-|                                   | Refactor del Player                                                     | Entrambi   |       5        |          |            |
-|                                   | Configurazione di caratteristiche base del gioco (n. carte, punti, ...) | Entrambi   |       5        |          |            |
+| Refactor                          | Refactor del GameController                                             | Entrambi   |       10       |    X     |     X      |
+|                                   | Refactor della GameView                                                 | Entrambi   |       5        |    X     |     X      |
+|                                   | Refactor del Player                                                     | Entrambi   |       5        |    X     |     X      |
+|                                   | Configurazione di caratteristiche base del gioco (n. carte, punti, ...) | Entrambi   |       5        |    X     |     X      |
 
 ## Sprint Review
+
+Tutti i task dello sprint sono stati completati. All'interno dello sprint è stata effettuata la release `v1.0.0` con il
+controllo del completamento degli obiettivi (e assegnazione dei punti), classifica finale, pulsante delle regole e
+alcuni fix.
+Fino alla scadenza finiremo la documentazione, faremo eventuali piccoli refactor ed effettueremo la release finale.

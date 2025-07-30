@@ -1,19 +1,18 @@
-package model.player
+package model.objective
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
-import controller.GameController.{City, Points}
 
-private val cities: (City, City) = ("Paris", "Berlin")
-private val points: Points = 8
+private val Cities: (City, City) = ("Paris", "Berlin")
+private val Points: Points = 8
 
 class BasicObjectiveTest extends AnyFlatSpec with Matchers:
-  private val basicObjective = BasicObjective(cities, points)
+  private val basicObjective = BasicObjective(Cities, Points)
 
   "A basic objective" should "be created correctly" in:
     noException should be thrownBy basicObjective
-    basicObjective should be(Objective(cities, points))
-    basicObjective.unapply() should be(Option(cities, points))
+    basicObjective should be(Objective(Cities, Points))
+    basicObjective.unapply() should be(Option(Cities, Points))
 
   it should "not be created with illegal values" in:
     a[IllegalArgumentException] should be thrownBy allOf(
@@ -24,12 +23,12 @@ class BasicObjectiveTest extends AnyFlatSpec with Matchers:
 
 class ObjectiveWithCompletionTest extends AnyFlatSpec with Matchers:
 
-  private val objectiveWithCompletion: ObjectiveCompletion = ObjectiveWithCompletion(cities, points)
+  private val objectiveWithCompletion: ObjectiveCompletion = ObjectiveWithCompletion(Cities, Points)
 
   "An objective with completion" should "be created correctly" in:
     noException should be thrownBy objectiveWithCompletion
-    objectiveWithCompletion.citiesToConnect should be(cities)
-    objectiveWithCompletion.points should be(points)
+    objectiveWithCompletion.citiesToConnect should be(Cities)
+    objectiveWithCompletion.points should be(Points)
     objectiveWithCompletion.completed should be(false)
 
   it should "not be created with illegal values" in:

@@ -1,90 +1,92 @@
 package model.player
 
+import model.objective.{ObjectiveCompletion, ObjectiveWithCompletion, Points}
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
-  import model.cards.Card
+  import model.cards.{Card, Deck}
+  import Deck.DeckGenerator
   import model.utils.{PlayerColor, Color}
+  import Player.{PlayerId, Trains}
+  import config.GameConfig.{HandInitialSize, NumberTrainCars, InitialScore}
 
-  val id: PlayerColor = PlayerColor.BLUE
-  val objective: ObjectiveCompletion = ObjectiveWithCompletion(("Paris", "Berlin"), 8)
-  var player: Player = Player(id, objective = objective)
-  val NUMBER_TRAIN_CARS = 45
+  private val id: PlayerId = PlayerColor.BLUE
+  private val objective: ObjectiveCompletion = ObjectiveWithCompletion(("Paris", "Berlin"), 8)
+  private var player: Player = Player(id, objective = objective)
+
+  private val FixedDeckInitialSize = 10
+  private val SingleColor = Color.RED
 
   override def beforeEach(): Unit = player = Player(id, objective = objective)
 
   "A player" should "be created correctly in the standard mode" in:
     player.id should be(id)
-    player.hand.cards should not be empty
+    player.hand.size should be(HandInitialSize)
     player.objective should be(objective)
-    player.trains.trainCars should be(NUMBER_TRAIN_CARS)
+    player.trains should be(NumberTrainCars)
+    player.score should be(InitialScore)
 
   it should "be created correctly using a custom deck" in:
     import Color.*
-    import model.cards.{Deck, CardsGenerator}
     val fixedList: List[Card] = List(Card(BLACK), Card(BLUE), Card(RED), Card(RED), Card(YELLOW))
-    val deckFixed: Deck = Deck()(using () => fixedList)
-    val customPlayer: Player = Player(id, deckFixed, objective = objective)
+    val customPlayer: Player = Player(id, Deck()(using () => fixedList), objective = objective)
     customPlayer.id should be(id)
-    customPlayer.hand.cards should be(fixedList.take(4))
+    customPlayer.hand should be(fixedList.take(4))
     customPlayer.objective should be(objective)
-    customPlayer.trains.trainCars should be(NUMBER_TRAIN_CARS)
-
-  it should "be able to place train cars" in:
-    player.trains.placeTrainCars(5)
-    player.trains.trainCars should be(NUMBER_TRAIN_CARS - 5)
-    a[IllegalArgumentException] should be thrownBy player.trains.placeTrainCars(NUMBER_TRAIN_CARS)
+    customPlayer.trains should be(NumberTrainCars)
+    customPlayer.score should be(InitialScore)
 
   it should "be able to draw cards from the deck" in:
-    import model.cards.Deck
-    val initialHandCards = player.hand.cards
-    val numberCardsToDraw = 2
-    player.drawCards(numberCardsToDraw) should be(Right(()))
-    player.hand.cards should be(initialHandCards :++ Deck().cards.take(numberCardsToDraw))
+    import config.GameConfig.StandardNumberOfCardsToDraw
+    val initialHandCards = player.hand
+    player.drawCards(StandardNumberOfCardsToDraw) should be(Right(()))
+    player.hand should be(Deck().cards.take(StandardNumberOfCardsToDraw) ++: initialHandCards)
     player.drawCards(Deck().cards.size + 1) should be(Left(Player.NotEnoughCardsInTheDeck))
 
-  it should "be able to check whether certain cards can be played" in:
-    val color = Color.RED
-    val n = 10
-    player.canPlayCards(color, n) should be(false)
-    player.hand.addCards(List.fill(n)(Card(Color.RED)))
-    player.canPlayCards(color, n) should be(true)
+  it should "be able to check and place trains" in:
+    val NumberTrainsCarsToPlace: Trains = 4
+    player.canPlaceTrains(NumberTrainsCarsToPlace) should be(true)
+    player.placeTrains(NumberTrainsCarsToPlace) should be(Right(()))
+    player.trains should be(NumberTrainCars - NumberTrainsCarsToPlace)
+    player.canPlaceTrains(NumberTrainCars) should be(false)
+    player.placeTrains(NumberTrainCars) should be(Left(Player.NotEnoughTrains))
+    player.trains should be(NumberTrainCars - NumberTrainsCarsToPlace)
 
-  it should "be able to play cards" in:
-    val color = Color.RED
-    val n = 10
-    player.playCards(color, n) should be(Left(Player.NotEnoughCards))
-    player.hand.addCards(List.fill(n)(Card(Color.RED)))
-    player.playCards(color, n) should be(Right(()))
+  private def singleColoredDeck: Deck = Deck()(using () => List.fill(FixedDeckInitialSize)(Card(SingleColor)))
+
+  private def playerWithFixedHand(fixedDeck: Deck): Player = Player(id, fixedDeck, objective)
+
+  it should "be able to check and play cards" in:
+    val playerWithSingleColor = playerWithFixedHand(singleColoredDeck)
+    val nCardsToPlay = HandInitialSize - 1
+    playerWithSingleColor.canPlayCards(SingleColor, nCardsToPlay) should be(true)
+    playerWithSingleColor.playCards(SingleColor, nCardsToPlay) should be(Right(()))
+    playerWithSingleColor.hand.size should be(HandInitialSize - nCardsToPlay)
+    playerWithSingleColor.canPlayCards(SingleColor, nCardsToPlay) should be(false)
+    playerWithSingleColor.playCards(SingleColor, nCardsToPlay) should be(Left(Player.NotEnoughCards))
+    playerWithSingleColor.hand.size should be(HandInitialSize - nCardsToPlay)
 
   it should "correctly play cards and reinsert them into the deck" in:
-    val nTotalCards = 10
-    val color = Color.RED
-    val deckFixed = model.cards.Deck()(using () => List.fill(nTotalCards)(Card(color)))
-    val customPlayer: Player = Player(id, deckFixed, objective = objective)
-    val nCardsToPlay = 2
-    customPlayer.playCards(color, nCardsToPlay)
-    deckFixed.cards.size + customPlayer.hand.cards.size should be(nTotalCards)
-    customPlayer.playCards(color, nCardsToPlay)
-    deckFixed.cards.size + customPlayer.hand.cards.size should be(nTotalCards)
-
-  // TODO check on trains?
-
-  it should "be able to place trains" in: // TODO to review
-    val validN = 3
-    val invalidN = NUMBER_TRAIN_CARS + 1
-    player.placeTrains(validN) should be(Right(()))
-    player.placeTrains(invalidN) should be(Left(Player.NotEnoughTrains))
+    val deckWithSingleColor = singleColoredDeck
+    val playerWithSingleColor = playerWithFixedHand(deckWithSingleColor)
+    val nCardsToPlay: Int = HandInitialSize / 2
+    playerWithSingleColor.playCards(SingleColor, nCardsToPlay) should be(Right(()))
+    deckWithSingleColor.cards.size + playerWithSingleColor.hand.size should be(FixedDeckInitialSize)
+    playerWithSingleColor.playCards(SingleColor, HandInitialSize) should be(Left(Player.NotEnoughCards))
+    deckWithSingleColor.cards.size + playerWithSingleColor.hand.size should be(FixedDeckInitialSize)
 
   it should "correctly update the score" in:
-    val initialScore = 0
-    val pointsToAdd = 5
-    player.score should be(initialScore)
-    player.addPoints(pointsToAdd)
-    player.score should be(initialScore + pointsToAdd)
+    val PointsToAdd: Points = 5
+    player.score should be(InitialScore)
+    player.addPoints(PointsToAdd)
+    player.score should be(InitialScore + PointsToAdd)
 
-  it should "fail to add negative points to the score" in:
-    val pointsToAdd = -5
-    an[IllegalArgumentException] should be thrownBy player.addPoints(pointsToAdd)
+  it should "fail when given negative numbers" in:
+    val IllegalNumber = -5
+    an[IllegalArgumentException] should be thrownBy player.canPlaceTrains(IllegalNumber)
+    an[IllegalArgumentException] should be thrownBy player.placeTrains(IllegalNumber)
+    an[IllegalArgumentException] should be thrownBy player.canPlayCards(SingleColor, IllegalNumber)
+    an[IllegalArgumentException] should be thrownBy player.playCards(SingleColor, IllegalNumber)
+    an[IllegalArgumentException] should be thrownBy player.addPoints(IllegalNumber)

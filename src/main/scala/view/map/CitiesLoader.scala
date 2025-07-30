@@ -1,8 +1,10 @@
 package view.map
 
 import config.{LoaderFromFile, JsonReader}
+import config.GameConfig.CitiesPath
 
-/** Class that represents a loader of cities from a JSON file, loading them into the map view.
+/** Class that represents a loader of cities from a JSON file, loading them into the specified map view.
+  *
   * @param mapWidth
   *   the width (in pixel) of the map
   * @param mapHeight
@@ -10,18 +12,22 @@ import config.{LoaderFromFile, JsonReader}
   * @param configFilePath
   *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing
   *   information on the cities (default = "cities")
+  * @param mapView
+  *   the given [[MapView]] where to load the cities
   */
-class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: String = "cities")
-    extends LoaderFromFile[Unit] with JsonReader:
+class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: String = CitiesPath)(
+    using mapView: MapView
+) extends LoaderFromFile[Unit] with JsonReader:
   require(mapWidth > 0, "mapWidth must be positive")
   require(mapHeight > 0, "mapHeight must be positive")
 
   import upickle.default.*
 
-  private val cityWidth = 0
-  private val cityHeight = 0
+  private val CityWidth = 0
+  private val CityHeight = 0
 
   /** Class that represents the config data contained in the JSON file.
+    *
     * @param scaleWidth
     *   the max value of the width (x coordinates), used for scaling
     * @param scaleHeight
@@ -32,6 +38,7 @@ class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: S
   protected case class ConfigData(scaleWidth: Double, scaleHeight: Double, cities: Set[City])
 
   /** Class that represents a city in the JSON file.
+    *
     * @param name
     *   the name of the city
     * @param x
@@ -49,5 +56,5 @@ class CitiesLoader(mapWidth: Int, mapHeight: Int)(override val configFilePath: S
   override protected def onSuccess(data: Data): Unit = data.cities.foreach(city => addCity(city)(data))
 
   private def addCity(city: City)(data: Data): Unit =
-    MapView().addCity(city.name, city.x / data.scaleWidth * mapWidth, city.y / data.scaleHeight * mapHeight,
-      cityWidth, cityHeight)
+    mapView.addCity(city.name, city.x / data.scaleWidth * mapWidth, city.y / data.scaleHeight * mapHeight,
+      CityWidth, CityHeight)

@@ -4,19 +4,19 @@ package view.player
 trait PlayerInfoView:
   playerView: PlayerView =>
 
-  import controller.GameController
-  export GameController.PlayerId
+  import config.GameViewConfig.PlayerInfoDescription
+  import view.GameView.PlayerName
 
-  /** Update the representation of the player information with new ones, given as [[PlayerId]] and number of train cars
-    * left.
+  /** Update the representation of the player information with new ones, given as [[PlayerName]] and number of train
+    * cars left.
     *
-    * @param playerId
-    *   the new player id to represent.
+    * @param playerName
+    *   the player new name to represent.
     * @param trains
-    *   the new player number of train cars left.
+    *   the player new number of train cars left.
     */
-  def updatePlayerInfo(playerId: PlayerId, trains: Int): Unit =
-    playerView.updateComponentText(f"Player $playerId has $trains train cars left")
+  def updatePlayerInfo(playerName: PlayerName, trains: Int): Unit =
+    playerView.updateComponentText(PlayerInfoDescription(playerName, trains))
 
 /** A basic representation of a player with in addition the player information, so following the [[PlayerInfoView]]
   * trait.

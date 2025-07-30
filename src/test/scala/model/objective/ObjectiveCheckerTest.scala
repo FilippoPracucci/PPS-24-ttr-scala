@@ -1,5 +1,7 @@
-package model.player
+package model.objective
 
+import model.objective.{ObjectiveChecker, ObjectiveWithCompletion}
+import model.player.Player
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
@@ -24,7 +26,7 @@ class ObjectiveCheckerTest extends AnyFlatSpec with Matchers with BeforeAndAfter
     gameMap.claimRoute(("Zurich", "Venezia"), player.id)
     objectiveChecker.check(player.objective, player.id) should be(true)
 
-  "An ObjectiveChecker" should "correctly check whether an objective has been completed via a non-direct path" in:
+  it should "correctly check whether an objective has been completed via a non-direct path" in:
     objectiveChecker.check(player.objective, player.id) should be(false)
     gameMap.claimRoute(("Paris", "Bruxelles"), player.id)
     objectiveChecker.check(player.objective, player.id) should be(false)
@@ -35,7 +37,7 @@ class ObjectiveCheckerTest extends AnyFlatSpec with Matchers with BeforeAndAfter
     gameMap.claimRoute(("Munchen", "Venezia"), player.id)
     objectiveChecker.check(player.objective, player.id) should be(true)
 
-  "An ObjectiveChecker" should "correctly check whether an objective has been completed via a cyclic path" in:
+  it should "correctly check whether an objective has been completed via a cyclic path" in:
     objectiveChecker.check(player.objective, player.id) should be(false)
     gameMap.claimRoute(("Paris", "Bruxelles"), player.id)
     objectiveChecker.check(player.objective, player.id) should be(false)

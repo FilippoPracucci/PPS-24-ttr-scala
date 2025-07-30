@@ -18,31 +18,28 @@ object FinalRankingView:
     * @param title
     *   the title of the final player rankings view.
     * @param playerScores
-    *   the list of player scores consisting of pairs "player's name; score"
+    *   the list of player scores consisting of pairs [[PlayerName]] and [[Points]].
     * @return
+    *   the final player rankings representation.
     */
   def apply(title: String)(playerScores: Seq[(PlayerName, Points)]): FinalRankingView =
     FinalRankingViewImpl(title)(playerScores)
 
-  import view.GameView
-
-  /** Type aliases that represent the player's name and points. */
-  export GameView.{PlayerName, Points}
+  export view.GameView.{PlayerName, Points}
 
   private class FinalRankingViewImpl(title: String)(playerScores: Seq[(PlayerName, Points)]) extends FinalRankingView:
+    import config.GameViewConfig.FontConfig.{FinalRankingFont, DerivedFont}
+    import config.GameViewConfig.BorderConfig.*
+    import config.GameViewConfig.ColorConfig.BackgroundColor
 
-    import java.awt.Color.*
-
-    private val titleFont = Font("Courier", Font.Style.Bold, 18)
-    private val borderWeight = 20
-    private val scoreLabelFontSize = 16f
+    private val BorderWeight = 20
 
     private val _component: BoxPanel = new BoxPanel(Orientation.Vertical):
       contents += new BoxPanel(Orientation.Horizontal):
         contents += new Label(title):
-          font = titleFont
-        background = WHITE
-        border = Swing.EmptyBorder(borderWeight)
+          font = FinalRankingFont
+        background = BackgroundColor
+        border = EmptyBorder(BorderWeight)
     private var scoreLabels: Map[String, Label] = Map()
 
     override def component: Component =
@@ -53,10 +50,8 @@ object FinalRankingView:
       scoreLabels = playerScores.sortBy(-_._2).map((player, score) => (player, new Label(score.toString))).toMap
       scoreLabels.foreach((player, scoreLabel) =>
         _component.contents += new BoxPanel(Orientation.Horizontal):
-          contents += new Label(player + ":")
-          contents += Swing.HGlue
-          contents += scoreLabel
-          background = WHITE
-          border = Swing.EmptyBorder(borderWeight)
-          contents.foreach(c => c.font = c.font.deriveFont(scoreLabelFontSize))
+          contents ++= List(new Label(player + ":"), Swing.HGlue, scoreLabel)
+          background = BackgroundColor
+          border = EmptyBorder(BorderWeight)
+          contents.foreach(c => c.font = DerivedFont(c.font))
       )

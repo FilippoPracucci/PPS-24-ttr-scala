@@ -2,7 +2,7 @@ package view.player
 
 import scala.swing.*
 
-/** The representation of a player. It's possible to update its text. */
+/** The representation of a player. It's possible to add a component to the inner panel and update its text. */
 trait PlayerView:
   /** The [[Component]] of the player view.
     *
@@ -18,7 +18,7 @@ trait PlayerView:
     */
   def addComponentToInnerPanel(component: Component): Unit
 
-  /** Update component text.
+  /** Update the [[Component]] text.
     *
     * @param text
     *   the text to update the component with.
@@ -31,8 +31,7 @@ trait PlayerView:
   *   the title of the component.
   */
 protected class BasicPlayerView(title: String) extends PlayerView:
-  import javax.swing.BorderFactory
-  import java.awt.Color.*
+  import config.GameViewConfig.FontConfig.{PlayerFont, DerivedFont}
 
   private val textComponent: TextPane = new TextPane():
     this.initComponent()
@@ -51,19 +50,20 @@ protected class BasicPlayerView(title: String) extends PlayerView:
 
   extension (component: TextPane)
     private def initComponent(): Unit =
-      import scala.swing.Font.Style
       component.editable = false
       component.focusable = false
-      component.font = Font("Coursier", Style.Plain, 16)
+      component.font = PlayerFont
 
   extension (component: BoxPanel)
     private def initComponent(): Unit =
-      component.contents += new Label(title):
-        xLayoutAlignment = 0.5
-        font = font.deriveFont(15f)
-      component.contents += panel
-      component.background = WHITE
-      component.border = BorderFactory.createCompoundBorder(
-        BorderFactory.createLineBorder(BLACK, 1, true),
-        Swing.EmptyBorder(10)
-      )
+      import config.GameViewConfig.BorderConfig.*
+      import config.GameViewConfig.ColorConfig.BackgroundColor
+      val BorderWeight = 10
+      val BorderThickness = 1
+      val LabelHorizontalAlignment = 0.5
+      val label = new Label(title):
+        xLayoutAlignment = LabelHorizontalAlignment
+        font = DerivedFont(font)
+      component.contents ++= List(label, panel)
+      component.background = BackgroundColor
+      component.border = CompoundBorder(LineBorder(BorderThickness), EmptyBorder(BorderWeight))

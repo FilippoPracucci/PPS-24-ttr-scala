@@ -40,7 +40,7 @@ Gli elementi principali che compongono il sistema sono:
 - **Carta vagone**: carte caratterizzate da un colore, utilizzabili per occupare una tratta.
 - **Mazzo**: insieme delle carte vagone.
 - **Giocatore**: entità che ha un obiettivo da completare e dei vagoni posizionabili per occupare le tratte. Può
-  effettuare due azioni: `pesca` per pescare due carte dal mazzo ed aggiungerle alla propria mano; `piazzaVagoni` per
+  effettuare due azioni: `pesca` per pescare due carte dal mazzo ed aggiungerle alla propria mano; `occupaTratta` per
   occupare la tratta specificata posizionandoci i propri vagoni.
 
 ```mermaid
@@ -52,7 +52,7 @@ config:
 classDiagram
     class Giocatore{
      +pesca()
-     +piazzaVagoni(tratta: Tratta)
+     +occupaTratta(tratta: Tratta)
     }
     Mappa o-- Città
     Mappa o-- Tratta
@@ -81,7 +81,7 @@ in caso di esito positivo aggiornare la mappa di gioco.
 
 ```mermaid
 sequenceDiagram
-    Giocatore->>Sistema: piazzaVagoni(tratta)
+    Giocatore->>Sistema: occupaTratta(tratta)
     Sistema->>Mano: controllaValidità(tratta)
     opt valido 
         Mano-)Mano: scartaCarte()

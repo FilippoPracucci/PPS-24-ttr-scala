@@ -1,8 +1,8 @@
 ---
 
-title: Design Player
+title: Player
 nav_order: 2
-parent: Pracucci Design
+parent: Design Pracucci Filippo
 
 ---
 
@@ -41,8 +41,8 @@ config:
     hideEmptyMembersBox: true
 ---
 classDiagram
-    Player "1" --o "*" TrainCars
-    Player "0..1" --o "1" ObjectiveCompletion
+    TrainCars "*" --* "1" Player
+    ObjectiveCompletion "1" --* "1" Player
     ObjectiveCompletion --|> Objective
     class Player {
         <<trait>>

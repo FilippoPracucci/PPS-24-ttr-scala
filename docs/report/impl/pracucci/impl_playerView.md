@@ -2,7 +2,7 @@
 
 title: Player View
 nav_order: 3
-parent: Pracucci Impl
+parent: Implementazione Pracucci Filippo
 
 ---
 
@@ -48,6 +48,7 @@ config:
     hideEmptyMembersBox: true
 ---
 classDiagram
+    direction RL
     ObjectiveView --|> PlayerView
     ObjectiveViewWithCompletion --|> PlayerView
     PlayerInfoView --|> PlayerView

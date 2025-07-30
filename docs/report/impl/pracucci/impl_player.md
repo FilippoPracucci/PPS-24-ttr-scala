@@ -2,7 +2,7 @@
 
 title: Player
 nav_order: 2
-parent: Pracucci Impl
+parent: Implementazione Pracucci Filippo
 
 ---
 
@@ -37,9 +37,9 @@ config:
     hideEmptyMembersBox: true
 ---
 classDiagram
-    Player "1" --o "*" TrainCars
-    Player "1" --o "1" PlayerColor: identifica
-    Player "0..1" --o "1" ObjectiveCompletion
+    TrainCars "*" --* "1"  Player
+    PlayerColor "1" --* "1" Player: identifica
+    ObjectiveCompletion "1" --* "1" Player
     ObjectiveCompletion --|> Objective
     BasicObjective ..|> Objective
     ObjectiveWithCompletion --|> BasicObjective

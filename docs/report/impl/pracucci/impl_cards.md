@@ -2,7 +2,7 @@
 
 title: Cards
 nav_order: 1
-parent: Pracucci Impl
+parent: Implementazione Pracucci Filippo
 
 ---
 

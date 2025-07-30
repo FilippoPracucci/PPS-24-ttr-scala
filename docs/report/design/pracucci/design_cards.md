@@ -1,8 +1,8 @@
 ---
 
-title: Design Cards
+title: Cards
 nav_order: 1
-parent: Pracucci Design
+parent: Design Pracucci Filippo
 
 ---
 
@@ -57,7 +57,7 @@ config:
 ---
 classDiagram
     Hand "1" --|> "1" Cards
-    Color "1" --o "*" Card
+    Color "1..*" --o "*" Card
     Card "1..*" --o "0..1" Cards
     Deck "1" --|> "1" Cards
     Hand "*" ..> "1" HandGenerator: usa

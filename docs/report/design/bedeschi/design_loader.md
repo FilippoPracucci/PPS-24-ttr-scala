@@ -2,7 +2,7 @@
 
 title: Loader
 nav_order: 2
-parent: Bedeschi Design
+parent: Design Bedeschi Federica
 
 ---
 

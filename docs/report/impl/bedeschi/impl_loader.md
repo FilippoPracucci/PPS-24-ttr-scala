@@ -2,7 +2,7 @@
 
 title: LoaderImpl
 nav_order: 2
-parent: Bedeschi Impl
+parent: Implementazione Bedeschi Federica
 
 ---
 

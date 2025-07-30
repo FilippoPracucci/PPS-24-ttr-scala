@@ -1,8 +1,8 @@
 ---
 
-title: Design Cards View
+title: Cards View
 nav_order: 3
-parent: Pracucci Design
+parent: Design Pracucci Filippo
 
 ---
 

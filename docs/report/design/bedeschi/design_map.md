@@ -2,7 +2,7 @@
 
 title: Map
 nav_order: 1
-parent: Bedeschi Design
+parent: Design Bedeschi Federica
 
 ---
 

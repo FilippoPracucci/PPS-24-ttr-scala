@@ -1,8 +1,8 @@
 ---
 
-title: Design Player View
+title: Player View
 nav_order: 4
-parent: Pracucci Design
+parent: Design Pracucci Filippo
 
 ---
 

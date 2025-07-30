@@ -48,7 +48,7 @@ object GameController:
       yield
         objToAssign = Option(objectives.toList(Random.nextInt(objectives.size)))
         objectives = objectives.excl(objToAssign.get)
-        playerList :+= Player(color, deck, objective = objToAssign.get)
+        playerList +:= Player(color, deck, objective = objToAssign.get)
       playerList
 
     export drawCardsController.drawCards

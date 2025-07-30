@@ -1,12 +1,12 @@
 package model.player
 
-import model.cards.Deck
 import org.scalatest.BeforeAndAfterEach
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.should.Matchers
 
 class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
-  import model.cards.Card
+  import model.cards.{Card, Deck}
+  import Deck.DeckGenerator
   import model.utils.{PlayerColor, Color}
   import Player.{PlayerId, Trains}
   import config.GameConfig.{HandInitialSize, NumberTrainCars, InitialScore}
@@ -29,10 +29,8 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
   it should "be created correctly using a custom deck" in:
     import Color.*
-    import model.cards.{Deck, CardsGenerator}
     val fixedList: List[Card] = List(Card(BLACK), Card(BLUE), Card(RED), Card(RED), Card(YELLOW))
-    val deckFixed: Deck = Deck()(using () => fixedList)
-    val customPlayer: Player = Player(id, deckFixed, objective = objective)
+    val customPlayer: Player = Player(id, Deck()(using () => fixedList), objective = objective)
     customPlayer.id should be(id)
     customPlayer.hand should be(fixedList.take(4))
     customPlayer.objective should be(objective)
@@ -40,11 +38,10 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     customPlayer.score should be(InitialScore)
 
   it should "be able to draw cards from the deck" in:
-    import model.cards.Deck
     import config.GameConfig.StandardNumberOfCardsToDraw
     val initialHandCards = player.hand
     player.drawCards(StandardNumberOfCardsToDraw) should be(Right(()))
-    player.hand should be(initialHandCards :++ Deck().cards.take(StandardNumberOfCardsToDraw))
+    player.hand should be(Deck().cards.take(StandardNumberOfCardsToDraw) ++: initialHandCards)
     player.drawCards(Deck().cards.size + 1) should be(Left(Player.NotEnoughCardsInTheDeck))
 
   it should "be able to check and place trains" in:

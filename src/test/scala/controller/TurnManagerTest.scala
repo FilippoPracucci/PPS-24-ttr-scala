@@ -14,7 +14,7 @@ class TurnManagerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   private var playerList: List[Player] = List.empty
   for
     color <- PlayerColor.values
-  yield playerList :+= Player(color, deck, objective = ObjectiveWithCompletion(("Paris", "Berlin"), 8))
+  yield playerList +:= Player(color, deck, objective = ObjectiveWithCompletion(("Paris", "Berlin"), 8))
 
   private var turnManager = TurnManager(playerList)
 

@@ -8,7 +8,8 @@ import view.ViewTest
 object HandViewTest extends App with ViewTest:
   import model.utils.Color
   import Color.*
-  import model.cards.{Card, CardsGenerator, Deck, Hand}
+  import model.cards.{Card, Deck, Hand}
+  import Deck.DeckGenerator
   import controller.CardControllerColor.*
   import config.GameViewConfig.DrawButtonText
 

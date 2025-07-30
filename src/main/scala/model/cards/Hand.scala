@@ -36,30 +36,35 @@ trait Hand extends Cards:
 
 /** The factory for player's [[Hand]] instances. */
 object Hand:
-  private var cardsDeck: Deck = Deck()
+  private var _cardsDeck: Deck = Deck()
+
+  /** A [[Generator]] for type [[Hand]]. */
+  abstract class HandGenerator extends Generator[Hand]:
+    override def generate(): Hand = HandImpl(generateCards())
 
   /** Create a player hand from the deck by means of a generator.
     *
     * @param deck
-    *   the [[Deck]] of train cards.
+    *   the [[Deck]] of train cards, it must be not empty.
     * @param generator
-    *   the [[CardsGenerator]] for type [[Hand]].
+    *   the [[HandGenerator]].
     * @return
     *   the player's hand created.
     */
-  def apply(deck: Deck)(using generator: CardsGenerator[Hand]): Hand =
+  def apply(deck: Deck)(using generator: HandGenerator): Hand =
     require(deck != null && deck.cards.nonEmpty, "The deck has to exist and to not be empty!")
-    cardsDeck = deck
-    HandImpl(generator.generate())
+    _cardsDeck = deck
+    generator.generate()
 
   /** The standard hand generator according to the rules of the game.
     *
     * @return
-    *   the standard [[CardsGenerator]] for type [[Hand]].
+    *   the standard [[HandGenerator]].
     */
-  given CardsGenerator[Hand] = () =>
-    import config.GameConfig.HandInitialSize
-    cardsDeck.draw(HandInitialSize)
+  given HandGenerator with
+    override def generateCards(): List[Card] =
+      import config.GameConfig.HandInitialSize
+      _cardsDeck.draw(HandInitialSize)
 
   private class HandImpl(private val cardsList: List[Card]) extends Hand:
     cards = cardsList
@@ -76,7 +81,7 @@ object Hand:
       cardsToPlay
 
     override def addCards(cardsToAdd: List[Card]): Unit =
-      cards = cards :++ cardsToAdd
+      cards = cardsToAdd ++: cards
       groupCardsByColor()
 
     private def groupCardsByColor(): Unit =

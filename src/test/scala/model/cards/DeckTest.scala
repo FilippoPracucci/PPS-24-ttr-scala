@@ -6,6 +6,7 @@ import org.scalatest.matchers.should.Matchers
 
 class DeckTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
+  import Deck.DeckGenerator
   import model.utils.Color
   import Color.*
 
@@ -16,10 +17,10 @@ class DeckTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     standardDeck.cards.filter(_.color == RED) should have size NumCardsPerColor
 
   val fixedList: List[Card] = List(Card(RED), Card(YELLOW), Card(RED), Card(BLACK), Card(BLUE))
-  val fixedDeckGenerator: CardsGenerator[Deck] = () => fixedList
-  var deckFixed: Deck = Deck()(using fixedDeckGenerator)
+  val fixedDeckGenerator: DeckGenerator = () => fixedList
+  var deckFixed: Deck = fixedDeckGenerator.generate()
 
-  override def beforeEach(): Unit = deckFixed = Deck()(using fixedDeckGenerator)
+  override def beforeEach(): Unit = deckFixed = fixedDeckGenerator.generate()
 
   it should "be created correctly with specific generator" in:
     deckFixed.cards should have size fixedList.size

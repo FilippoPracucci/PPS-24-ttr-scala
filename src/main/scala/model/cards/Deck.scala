@@ -24,32 +24,37 @@ trait Deck extends Cards:
 
 /** The factory for [[Deck]] instances. */
 object Deck:
+  /** A [[Generator]] for type [[Deck]]. */
+  abstract class DeckGenerator extends Generator[Deck]:
+    override def generate(): Deck = DeckImpl(generateCards())
+
   /** Create a deck by means of a generator.
     *
     * @param generator
-    *   the [[CardsGenerator]] for type [[Deck]].
+    *   the [[DeckGenerator]].
     * @return
     *   the deck created.
     */
-  def apply()(using generator: CardsGenerator[Deck]): Deck = DeckImpl(generator.generate())
+  def apply()(using generator: DeckGenerator): Deck = generator.generate()
 
   /** The standard deck generator according to the rules of the game.
     *
     * @return
-    *   the standard [[CardsGenerator]] for type [[Deck]].
+    *   the standard [[DeckGenerator]].
     */
-  given standardDeckGenerator: CardsGenerator[Deck] = () =>
-    import model.utils.Color
-    import config.GameConfig.NumCardsPerColor
+  given DeckGenerator with
+    override def generateCards(): List[Card] =
+      import model.utils.Color
+      import config.GameConfig.NumCardsPerColor
 
-    var list: List[Card] = List.empty
-    for
-      color <- Color.values
-      i <- 0 until NumCardsPerColor
-    yield list = list :+ Card(color)
-    list
+      var list: List[Card] = List.empty
+      for
+        color <- Color.values
+        i <- 0 until NumCardsPerColor
+      yield list = Card(color) +: list
+      list
 
-  private case class DeckImpl(private val cardsList: List[Card]) extends Deck:
+  private class DeckImpl(private val cardsList: List[Card]) extends Deck:
     cards = cardsList
 
     override def shuffle(): Unit =

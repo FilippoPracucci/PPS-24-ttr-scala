@@ -1,8 +1,8 @@
 ---
 
 title: Map
-nav_order: 2
-parent: Design di dettaglio
+nav_order: 1
+parent: Bedeschi Design
 
 ---
 

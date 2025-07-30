@@ -2,7 +2,7 @@
 
 title: MapView
 nav_order: 5
-parent: Implementazione
+parent: Bedeschi Impl
 
 ---
 

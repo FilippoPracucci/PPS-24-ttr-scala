@@ -2,7 +2,7 @@
 
 title: Design Player
 nav_order: 2
-parent: Design di dettaglio
+parent: Pracucci Design
 
 ---
 

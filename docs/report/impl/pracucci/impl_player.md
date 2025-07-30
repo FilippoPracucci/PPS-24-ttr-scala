@@ -2,7 +2,7 @@
 
 title: Player
 nav_order: 2
-parent: Implementazione
+parent: Pracucci Impl
 
 ---
 

@@ -1,8 +1,8 @@
 ---
 
 title: LoaderImpl
-nav_order: 1
-parent: Implementazione
+nav_order: 2
+parent: Bedeschi Impl
 
 ---
 
@@ -135,6 +135,6 @@ aggiungere le città così aggiornate all'interno di `mapView`.
 
 ### Conclusione
 
-`ObjectivesLoader`, `RoutesLoader` e `CitiesLoader` incapsulano e nascondono quindi ogni dettaglio rigurdante la lettura
-da file, lasciando esposto il solo metodo `load` che restituisce tipi di dati non dipendenti da rappresentazioni
+`ObjectivesLoader`, `RoutesLoader` e `CitiesLoader` incapsulano e nascondono quindi ogni dettaglio riguardante la
+lettura da file, lasciando esposto il solo metodo `load` che restituisce tipi di dati non dipendenti da rappresentazioni
 collegate ai file JSON.

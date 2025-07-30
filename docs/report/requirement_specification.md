@@ -119,7 +119,7 @@ I sopracitati requisiti utente vengono validati tramite User Acceptance Tests.
     1. un numero predefinito (4) di carte vagone casuali;
     2. un numero predefinito (45) di vagoni posizionabili per controllare le tratte;
     3. una carta obiettivo casuale;
-2. il sistema deve decidere casualmente il giocatore di partenza;
+2. il sistema deve gestire ciclicamente i turni dei giocatori;
 3. il sistema deve assegnare al giocatore che occupa una tratta i punti corrispondenti, a seconda della lunghezza della tratta,
 e quando termina l'obiettivo;
 4. il sistema deve poter accedere alle decisioni di configurazione, come la mappa di gioco e le carte obiettivo.
@@ -129,11 +129,12 @@ I sopracitati requisiti di sistema vengono validati tramite test automatizzati.
 ## Requisiti non funzionali
 
 [Questi requisiti sono in fase di draft, da essere revisionati]: #
-1. **Performance**: il tempo di risposta di un'azione dell'utente non deve superare i X ms, su una determinata architettura.
-2. **Portabilità**: il gioco deve funzionare su diverse piattaforme (Windows, Linux e MacOS). 
+1. **Performance**: il tempo di risposta di un'azione dell'utente non deve superare i 100 ms, su un'architettura Intel
+i5 con 16 GB di RAM;
+2. **Portabilità**: il gioco deve funzionare su diverse piattaforme (Windows, Linux e MacOS);
 3. **Usabilità**: il gioco deve essere intuitivo.
 
-I sopracitati requisiti non funzionali vengono validati tramite User Acceptance Tests e Stress Tests.
+I sopracitati requisiti non funzionali vengono validati tramite User Acceptance Tests e Performance Tests.
 
 ## Requisiti di implementazione
 

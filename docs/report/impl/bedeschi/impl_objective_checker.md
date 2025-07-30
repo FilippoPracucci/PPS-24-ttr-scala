@@ -2,7 +2,7 @@
 
 title: ObjectiveChecker
 nav_order: 4
-parent: Implementazione
+parent: Bedeschi Impl
 
 ---
 

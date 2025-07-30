@@ -26,10 +26,9 @@ viene realizzata una revisione e si imposta quello successivo.
 
 ## Definition of done
 
-[Inserire % di coverage]: #
-Dichiariamo una feature riguardante il model conclusa quando ha un % di coverage e tutti i test hanno successo, mentre
-per le feature della view esse devono risultare utilizzabili e non ambigue. In entrambi i casi deve inoltre essere
-presente anche la Scaladoc dove necessaria.
+Dichiariamo una feature riguardante il model conclusa quando ha almeno il 90% di coverage e tutti i test hanno successo,
+mentre per le feature della view esse devono risultare utilizzabili e non ambigue. In entrambi i casi deve inoltre
+essere presente anche la Scaladoc dove necessaria.
 
 ## Documentazione
 

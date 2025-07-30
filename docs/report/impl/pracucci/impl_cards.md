@@ -2,7 +2,7 @@
 
 title: Cards
 nav_order: 1
-parent: Implementazione
+parent: Pracucci Impl
 
 ---
 

@@ -1,8 +1,8 @@
 ---
 
 title: Loader
-nav_order: 3
-parent: Design di dettaglio
+nav_order: 2
+parent: Bedeschi Design
 
 ---
 

@@ -2,7 +2,7 @@
 
 title: Design Cards
 nav_order: 1
-parent: Design di dettaglio
+parent: Pracucci Design
 
 ---
 

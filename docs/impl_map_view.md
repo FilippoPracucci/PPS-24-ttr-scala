@@ -34,7 +34,8 @@ classDiagram
         +load() Unit
     }
     MapView <|.. MapViewImpl
-    MapViewImpl ..> GraphStyleManager: «use»
+    GraphStyleManager <|.. MapStyleManager
+    MapViewImpl ..> MapStyleManager: «use»
     CitiesLoader ..> MapView: «use»
 ```
 
@@ -81,10 +82,23 @@ un giocatore di occupare una determinata route al `GameController`.
 
 ### Note sulla libreria JGraphX
 
-Nel corso dell'utilizzo della libreria JGraphX sono emerse alcune strenezze nella sua gestione dei tipi. E' emerso che
+Nel corso dell'utilizzo della libreria JGraphX sono emerse alcune stranezze nella sua gestione dei tipi. E' emerso che
 la libreria lavora con i vertici e con gli archi trattandoli come oggetti di tipo `Object` (`java.lang.Object`) nei
 parametri di input dei suoi metodi, così come nei tipi di ritorno. Si è però scoperto che internamente sia i vertici
 che gli archi sono di tipo `mxCell`. Si è quindi deciso, per mantenere un minimo livello di type checking, di
 effettuarne il cast a `mxCell` (in quanto safe). Da segnalare inoltre che nell'inserire un nuovo arco è necessario
 passare una stringa `null` per segnalare l'assegnamento automatico degli ID. Nel tentativo di rendere più trasparente e
 chiaro tale significato, nel metodo `addRoute` è stata introdotta una `val AutomaticId: String = null`.
+
+## GraphStyleManager e MapStyleManager
+
+`GraphStyleManager` è un trait che rappresenta un gestore dello stile per un `mxGraphComponent` della libreria JGraphX.
+Presenta due metodi, `setDefaultStyle`, che è un **extension method**, per impostare lo stile di default del grafo, ed
+`edgeStyle` per ottenere lo stile di un arco, dati in input i parametri di colore e linea tratteggiata/continua.
+
+`MapStyleManager` è l'implementazione di `GraphStyleManager` fornita dall'`apply` contenuto nel companion object di
+`GraphStyleManager`. Per implementare il metodo `setDefaultStyle` utilizza tre metodi d'appoggio `setGraphStyle`,
+`setVertexStyle` e `setEdgeStyle` per impostare rispettivamente, lo stile del componente del grafo, lo stile dei vertici
+del grafo e lo stile degli archi del grafo. Per implementare il metodo `edgeStyle` utilizza un **extension method** di
+supporto per la rappresentazione esadecimale di un colore, e costruire poi la stringa rappresentante lo stile di un arco
+con tale colore e linea tratteggiata/continua come fornito in input.

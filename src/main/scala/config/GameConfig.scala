@@ -38,13 +38,17 @@ case object GameConfig:
       |train cars, which are placed to claim routes and when a player remains with less than 3 train cars starts the
       |last round. At the end of the game the player with the most points wins.
       |
-      |Route scoring table (route length -> points gained):
-      |1 -> ${PointsPerRouteLength(1)}
-      |2 -> ${PointsPerRouteLength(2)}
-      |3 -> ${PointsPerRouteLength(3)}
-      |4 -> ${PointsPerRouteLength(4)}
-      |6 -> ${PointsPerRouteLength(6)}
-      |8 -> ${PointsPerRouteLength(8)}
+      |Map legend:
+      |- Dashed line of color C => unclaimed route, with C = color of the route
+      |- Solid line of color C => claimed route, with C = color of the player claiming the route
+      |
+      |Route scoring table (route length => points gained):
+      |1 => ${PointsPerRouteLength(1)}
+      |2 => ${PointsPerRouteLength(2)}
+      |3 => ${PointsPerRouteLength(3)}
+      |4 => ${PointsPerRouteLength(4)}
+      |6 => ${PointsPerRouteLength(6)}
+      |8 => ${PointsPerRouteLength(8)}
       |""".stripMargin
 
 /** Object that contains constant values used in the game view. */

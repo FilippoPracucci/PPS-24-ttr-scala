@@ -17,5 +17,6 @@ object ObjectiveViewTest extends App with ViewTest:
 
   Thread.sleep(2000)
 
+  val startTime = System.currentTimeMillis()
   objectiveView.updateObjective(("Roma", "Venezia"), 5)
-  super.updateView()
+  super.updateView(startTime)

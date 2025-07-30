@@ -26,8 +26,9 @@ object HandViewTest extends App with ViewTest:
   button.listenTo(button.mouse.clicks)
   button.reactions += {
     case _: ButtonClicked =>
+      val startTime = System.currentTimeMillis()
       updateHandView()
-      super.updateView()
+      super.updateView(startTime)
     case _ => ()
   }
 

@@ -17,5 +17,6 @@ object PlayerScoresViewTest extends App with ViewTest:
 
   Thread.sleep(2000)
 
+  val startTime = System.currentTimeMillis()
   playerScoresView.updatePlayerScore("Red", 20)
-  super.updateView()
+  super.updateView(startTime)

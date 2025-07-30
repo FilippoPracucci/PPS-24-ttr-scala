@@ -18,5 +18,6 @@ object PlayerInfoViewTest extends App with ViewTest:
 
   Thread.sleep(2000)
 
+  val startTime = System.currentTimeMillis()
   playerView.updatePlayerInfo("Yellow", 30)
-  super.updateView()
+  super.updateView(startTime)

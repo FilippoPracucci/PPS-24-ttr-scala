@@ -20,6 +20,7 @@ trait ViewTest:
   def setFrameContents(component: Component): Unit = frame.contents = component
 
   /** Update the view, so the frame. */
-  def updateView(): Unit =
+  def updateView(startTime: Long): Unit =
     frame.validate()
     frame.pack()
+    println(f"Reaction time: ${System.currentTimeMillis() - startTime}")

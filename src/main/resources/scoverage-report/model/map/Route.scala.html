@@ -1,0 +1,291 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\map\Route.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.map
+</span>2 <span style=''>
+</span>3 <span style=''>/** Trait that represents a city.
+</span>4 <span style=''>  */
+</span>5 <span style=''>trait City:
+</span>6 <span style=''>  /** Gets the name of the city.
+</span>7 <span style=''>    *
+</span>8 <span style=''>    * @return
+</span>9 <span style=''>    *   the name of the city
+</span>10 <span style=''>    */
+</span>11 <span style=''>  def name: String
+</span>12 <span style=''>
+</span>13 <span style=''>object City:
+</span>14 <span style=''>  /** Creates a [[City]].
+</span>15 <span style=''>    *
+</span>16 <span style=''>    * @param name
+</span>17 <span style=''>    *   the name of the city
+</span>18 <span style=''>    * @return
+</span>19 <span style=''>    *   the created [[City]]
+</span>20 <span style=''>    */
+</span>21 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(name: String): City = CityImpl(name)
+</span>22 <span style=''>
+</span>23 <span style=''>  private case class CityImpl(override val name: String) extends City
+</span>24 <span style=''>
+</span>25 <span style=''>/** Trait that represents a route between two cities.
+</span>26 <span style=''>  */
+</span>27 <span style=''>trait Route:
+</span>28 <span style=''>  import Route.Mechanic
+</span>29 <span style=''>
+</span>30 <span style=''>  /** Gets the pair of cities connected by the route.
+</span>31 <span style=''>    *
+</span>32 <span style=''>    * @return
+</span>33 <span style=''>    *   the pair of cities connected by the route
+</span>34 <span style=''>    */
+</span>35 <span style=''>  def connectedCities: (City, City)
+</span>36 <span style=''>
+</span>37 <span style=''>  /** Gets the length of the route.
+</span>38 <span style=''>    *
+</span>39 <span style=''>    * @return
+</span>40 <span style=''>    *   the integer number representing the length of the route
+</span>41 <span style=''>    */
+</span>42 <span style=''>  def length: Int
+</span>43 <span style=''>
+</span>44 <span style=''>  /** Gets the [[Mechanic]] followed by the route.
+</span>45 <span style=''>    *
+</span>46 <span style=''>    * @return
+</span>47 <span style=''>    *   the [[Mechanic]] followed by the route
+</span>48 <span style=''>    */
+</span>49 <span style=''>  def mechanic: Mechanic
+</span>50 <span style=''>
+</span>51 <span style=''>object Route:
+</span>52 <span style=''>  import model.utils.Color
+</span>53 <span style=''>
+</span>54 <span style=''>  /** Trait that represents the mechanic of a route.
+</span>55 <span style=''>    */
+</span>56 <span style=''>  trait Mechanic
+</span>57 <span style=''>
+</span>58 <span style=''>  /** Trait that represents the mechanic in which a route has a specific color.
+</span>59 <span style=''>    */
+</span>60 <span style=''>  trait SpecificColor extends Mechanic:
+</span>61 <span style=''>    /** Returns the color of the route.
+</span>62 <span style=''>      *
+</span>63 <span style=''>      * @return
+</span>64 <span style=''>      *   the color of the route
+</span>65 <span style=''>      */
+</span>66 <span style=''>    def color: Color
+</span>67 <span style=''>
+</span>68 <span style=''>  object SpecificColor:
+</span>69 <span style=''>    /** Creates a [[SpecificColor]] mechanic.
+</span>70 <span style=''>      *
+</span>71 <span style=''>      * @param color
+</span>72 <span style=''>      *   the color of the route
+</span>73 <span style=''>      * @return
+</span>74 <span style=''>      *   the created [[SpecificColor]]
+</span>75 <span style=''>      */
+</span>76 <span style=''>    </span><span style='background: #AEF1AE'>def apply</span><span style=''>(color: Color): SpecificColor = SpecificColorImpl(color)
+</span>77 <span style=''>
+</span>78 <span style=''>    /** Allows instances of the type [[SpecificColor]] to be matched and deconstructed using pattern matching.
+</span>79 <span style=''>      *
+</span>80 <span style=''>      * @param specificColor
+</span>81 <span style=''>      *   the instance to be matched and deconstructed
+</span>82 <span style=''>      * @return
+</span>83 <span style=''>      *   an [[Option]] containing the extracted color if the instance matches, [[None]] otherwise
+</span>84 <span style=''>      */
+</span>85 <span style=''>    </span><span style='background: #AEF1AE'>def unapply</span><span style=''>(specificColor: SpecificColor): Option[Color] = Some(</span><span style='background: #AEF1AE'>specificColor.color</span><span style=''>)
+</span>86 <span style=''>
+</span>87 <span style=''>    private case class SpecificColorImpl(override val color: Color) extends SpecificColor
+</span>88 <span style=''>
+</span>89 <span style=''>  /** Creates a [[Route]].
+</span>90 <span style=''>    *
+</span>91 <span style=''>    * @param connectedCities
+</span>92 <span style=''>    *   the pair of cities the route connects
+</span>93 <span style=''>    * @param length
+</span>94 <span style=''>    *   the length of the route
+</span>95 <span style=''>    * @param mechanic
+</span>96 <span style=''>    *   the mechanic of the route
+</span>97 <span style=''>    * @return
+</span>98 <span style=''>    *   the created [[Route]]
+</span>99 <span style=''>    */
+</span>100 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(connectedCities: (City, City), length: Int, mechanic: Mechanic): Route =
+</span>101 <span style=''>    RouteImpl(connectedCities, length, mechanic)
+</span>102 <span style=''>
+</span>103 <span style=''>  private case class RouteImpl(override val connectedCities: (City, City), override val length: Int,
+</span>104 <span style=''>      override val mechanic: Mechanic) extends Route:
+</span>105 <span style=''>    </span><span style='background: #AEF1AE'>require(length &gt; 0, &quot;length must be positive&quot;)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          21
+        </td>
+        <td>
+          570
+        </td>
+        <td>
+          323
+          -
+          332
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          571
+        </td>
+        <td>
+          1580
+          -
+          1589
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          573
+        </td>
+        <td>
+          1978
+          -
+          1989
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          unapply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def unapply
+        </td>
+      </tr><tr>
+        <td>
+          85
+        </td>
+        <td>
+          572
+        </td>
+        <td>
+          2042
+          -
+          2061
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          color
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          specificColor.color
+        </td>
+      </tr><tr>
+        <td>
+          100
+        </td>
+        <td>
+          574
+        </td>
+        <td>
+          2424
+          -
+          2433
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          105
+        </td>
+        <td>
+          575
+        </td>
+        <td>
+          2716
+          -
+          2762
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          require
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          require(length &gt; 0, &quot;length must be positive&quot;)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

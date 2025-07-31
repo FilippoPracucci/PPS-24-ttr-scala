@@ -1,0 +1,2558 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\objective\ObjectivesLoader.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.objective
+</span>2 <span style=''>
+</span>3 <span style=''>import config.GameConfig.ObjectivesPath
+</span>4 <span style=''>import config.{JsonReader, LoaderFromFile}
+</span>5 <span style=''>
+</span>6 <span style=''>/** Class that represents a loader of objectives from a JSON file.
+</span>7 <span style=''>  *
+</span>8 <span style=''>  * @param configFilePath
+</span>9 <span style=''>  *   the path of the JSON config file (starting from 'src/main/resources/', without file extension) containing the
+</span>10 <span style=''>  *   objectives (default = &quot;objectives&quot;)
+</span>11 <span style=''>  */
+</span>12 <span style=''>class ObjectivesLoader(override val configFilePath: String = ObjectivesPath)
+</span>13 <span style=''>    extends LoaderFromFi</span><span style='background: #AEF1AE'>le[Set[Obj</span><span style=''>ectiveWithCompletion]] with JsonRead</span><span style='background: #F0ADAD'>er:
+</span>14 <span style=''></span><span style='background: #F0ADAD'>  impo</span><span style=''>rt upickle.default.*
+</span>15 <span style=''>
+</span>16 <span style=''>  /** Class that represents the </span><span style='background: #F0ADAD'>structure of an obj</span><span style=''>ective in the JSON file.
+</span>17 <span style=''>    *
+</span>18 <span style=''>    * @param citiesToConnect
+</span>19 <span style=''>    *   the pair of cities to connect to complete the objective
+</span>20 <span style=''>    * @param points
+</span>21 <span style=''>    *   the points the objective gives after it is completed
+</span>22 <span style=''>    */
+</span>23 <span style=''>  protected case class ObjectiveJson(citiesToConnect: (CityJson, CityJson), points: Int)
+</span>24 <span style=''>
+</span>25 <span style=''>  /** Class that represents a city in the JSON file.
+</span>26 <span style=''>   </span><span style='background: #F0ADAD'> *
+</span>27 <span style=''></span><span style='background: #F0ADAD'>    * @param n</span><span style=''>ame
+</span>28 <span style=''>    *   the name of the city
+</span>29 <span style=''>    */
+</span>30 <span style=''>  protected case class CityJson(name: String)
+</span>31 <span style=''>
+</span>32 <span style=''>  override protected type Data = Set[ObjectiveJson]
+</span>33 <span style=''>
+</span>34 <span style=''>  protected given ReadWriter[ObjectiveJson] = </span><span style='background: #F0ADAD'>macroRW</span><span style=''>
+</span>35 <span style=''>  protected given ReadWriter[CityJson] = </span><span style='background: #F0ADAD'>macroRW</span><span style=''>
+</span>36 <span style=''>  override protected given readWriter: ReadWriter[Data] = </span><span style='background: #AEF1AE'>readwriter[Seq[ObjectiveJson]].bimap[Data](</span><span style='background: #F0ADAD'>_.toSeq</span><span style='background: #AEF1AE'>, _.toSet)</span><span style=''>
+</span>37 <span style=''>
+</span>38 <span style=''>  </span><span style='background: #AEF1AE'>override protected def onSuccess</span><span style=''>(objectivesJson: Data): Set[ObjectiveWithCompletion] =
+</span>39 <span style=''>    </span><span style='background: #AEF1AE'>objectivesJson.map(objectiveJson =&gt;
+</span>40 <span style=''></span><span style='background: #AEF1AE'>      ObjectiveWithCompletion(
+</span>41 <span style=''></span><span style='background: #AEF1AE'>        (objectiveJson.citiesToConnect._1.name, objectiveJson.citiesToConnect._2.name),
+</span>42 <span style=''></span><span style='background: #AEF1AE'>        objectiveJson.points
+</span>43 <span style=''></span><span style='background: #AEF1AE'>      )
+</span>44 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          12
+        </td>
+        <td>
+          927
+        </td>
+        <td>
+          430
+          -
+          430
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          916
+        </td>
+        <td>
+          470
+          -
+          480
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          writer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          le[Set[Obj
+        </td>
+      </tr><tr>
+        <td>
+          13
+        </td>
+        <td>
+          874
+        </td>
+        <td>
+          470
+          -
+          480
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          writer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          le[Set[Obj
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          902
+        </td>
+        <td>
+          516
+          -
+          526
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          length
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          er:\n  impo
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          854
+        </td>
+        <td>
+          516
+          -
+          526
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          length
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          er:\n  impo
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          866
+        </td>
+        <td>
+          580
+          -
+          599
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          write0
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          structure of an obj
+        </td>
+      </tr><tr>
+        <td>
+          16
+        </td>
+        <td>
+          911
+        </td>
+        <td>
+          580
+          -
+          599
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          write0
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          structure of an obj
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          872
+        </td>
+        <td>
+          957
+          -
+          974
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          writeToObject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+           *\n    * @param n
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          914
+        </td>
+        <td>
+          957
+          -
+          974
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          writeToObject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+           *\n    * @param n
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          864
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          visitEnd
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          855
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          visitNull
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          828
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          If
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          837
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toArray
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          873
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          831
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          863
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          objectAttributeKeyWriteMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          857
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          visitObject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          830
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          int2long
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          848
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          839
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          List
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          875
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          writer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          860
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          objectAttributeKeyWriteMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          869
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          Tuple2Writer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          833
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          headOption
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          836
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          845
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          827
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          862
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          writeSnippetMappedName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          871
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          objectAttributeKeyWriteMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          853
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          844
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          826
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          835
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          829
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          int2long
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          838
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          847
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toArray
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          856
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          visitNull
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          865
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          859
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          writeSnippetMappedName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          850
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          868
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          objectAttributeKeyWriteMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          841
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          832
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          Nil
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          867
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          writeSnippetMappedName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          858
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          length
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          849
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          List
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          840
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          Tuple2Reader
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          825
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          join
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          861
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          Tuple2Writer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          834
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          allowUnknownKeys
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          843
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          870
+        </td>
+        <td>
+          1160
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          writeSnippetMappedName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          882
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          908
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          objectAttributeKeyWriteMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          881
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          int2long
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          890
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          917
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          writer
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          893
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          884
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          headOption
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          896
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          905
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          visitObject
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          878
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          -
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          887
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toArray
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          904
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          visitNull
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          913
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          objectAttributeKeyWriteMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          886
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          895
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toArray
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          877
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          889
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          List
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          898
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          907
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          writeSnippetMappedName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          880
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          int2long
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          901
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          910
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          883
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          Nil
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          892
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Literal
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          909
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          visitEnd
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          903
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          visitNull
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          885
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          allowUnknownKeys
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          876
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          join
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          912
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          writeSnippetMappedName
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          906
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          length
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          888
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          897
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          List
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          915
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          879
+        </td>
+        <td>
+          1209
+          -
+          1216
+        </td>
+        <td>
+          If
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          macroRW
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          920
+        </td>
+        <td>
+          1318
+          -
+          1325
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toSeq
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          _.toSeq
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          919
+        </td>
+        <td>
+          1275
+          -
+          1305
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          readwriter
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          readwriter[Seq[ObjectiveJson]]
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          918
+        </td>
+        <td>
+          1275
+          -
+          1335
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          bimap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          readwriter[Seq[ObjectiveJson]].bimap[Data](_.toSeq, _.toSet)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          921
+        </td>
+        <td>
+          1327
+          -
+          1334
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toSet
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          _.toSet
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          926
+        </td>
+        <td>
+          1339
+          -
+          1371
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          onSuccess
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override protected def onSuccess
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          922
+        </td>
+        <td>
+          1430
+          -
+          1627
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objectivesJson.map(objectiveJson =&gt;\n      ObjectiveWithCompletion(\n        (objectiveJson.citiesToConnect._1.name, objectiveJson.citiesToConnect._2.name),\n        objectiveJson.points\n      )\n    )
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          923
+        </td>
+        <td>
+          1472
+          -
+          1621
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ObjectiveWithCompletion(\n        (objectiveJson.citiesToConnect._1.name, objectiveJson.citiesToConnect._2.name),\n        objectiveJson.points\n      )
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          925
+        </td>
+        <td>
+          1545
+          -
+          1577
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objectiveJson.citiesToConnect._2
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          924
+        </td>
+        <td>
+          1506
+          -
+          1538
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objectiveJson.citiesToConnect._1
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          891
+        </td>
+        <td>
+          4323
+          -
+          4345
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          visitors0
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          846
+        </td>
+        <td>
+          4385
+          -
+          4408
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          keyToIndex
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          899
+        </td>
+        <td>
+          4459
+          -
+          4484
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          allKeysArray
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          851
+        </td>
+        <td>
+          4459
+          -
+          4484
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          allKeysArray
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          842
+        </td>
+        <td>
+          4323
+          -
+          4345
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          visitors0
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          900
+        </td>
+        <td>
+          4533
+          -
+          4559
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          storeDefaults
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          894
+        </td>
+        <td>
+          4385
+          -
+          4408
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          keyToIndex
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          45
+        </td>
+        <td>
+          852
+        </td>
+        <td>
+          4533
+          -
+          4559
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          storeDefaults
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

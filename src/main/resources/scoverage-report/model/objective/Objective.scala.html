@@ -1,0 +1,362 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\objective\Objective.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.objective
+</span>2 <span style=''>
+</span>3 <span style=''>export model.map.GameMap.CityName as City
+</span>4 <span style=''>
+</span>5 <span style=''>/** Type alias that represents the points as Int. */
+</span>6 <span style=''>type Points = Int
+</span>7 <span style=''>
+</span>8 <span style=''>/** An objective that has a pair of cities to connect and a number of points it assigns if completed. */
+</span>9 <span style=''>trait Objective:
+</span>10 <span style=''>  /** The pair of cities to connect in order to complete the objective.
+</span>11 <span style=''>    *
+</span>12 <span style=''>    * @return
+</span>13 <span style=''>    *   the pair of cities to connect.
+</span>14 <span style=''>    */
+</span>15 <span style=''>  def citiesToConnect: (City, City)
+</span>16 <span style=''>
+</span>17 <span style=''>  /** The points assigned to the player's score if the objective is completed.
+</span>18 <span style=''>    *
+</span>19 <span style=''>    * @return
+</span>20 <span style=''>    *   the points corresponding to the objective.
+</span>21 <span style=''>    */
+</span>22 <span style=''>  def points: Points
+</span>23 <span style=''>
+</span>24 <span style=''>/** The factory for [[Objective]] instances. */
+</span>25 <span style=''>object Objective:
+</span>26 <span style=''>  /** Create an [[Objective]] by its cities to connect and its value in terms of points.
+</span>27 <span style=''>    *
+</span>28 <span style=''>    * @param cities
+</span>29 <span style=''>    *   the cities to connect.
+</span>30 <span style=''>    * @param points
+</span>31 <span style=''>    *   the value in terms of points.
+</span>32 <span style=''>    * @return
+</span>33 <span style=''>    *   the objective created.
+</span>34 <span style=''>    */
+</span>35 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(cities: (City, City), points: Points): Objective = BasicObjective(cities, points)
+</span>36 <span style=''>
+</span>37 <span style=''>  extension (objective: Objective)
+</span>38 <span style=''>    /** Allow instances of type [[Objective]] to be matched and deconstructed using pattern matching.
+</span>39 <span style=''>      *
+</span>40 <span style=''>      * @return
+</span>41 <span style=''>      *   an [[Option]] containing the cities to connect and the points assigned to the objective if the instance match,
+</span>42 <span style=''>      *   [[None]] otherwise.
+</span>43 <span style=''>      */
+</span>44 <span style=''>    </span><span style='background: #AEF1AE'>def unapply</span><span style=''>(): Option[((City, City), Points)] = Some(</span><span style='background: #AEF1AE'>objective.citiesToConnect</span><span style=''>, </span><span style='background: #AEF1AE'>objective.points</span><span style=''>)
+</span>45 <span style=''>
+</span>46 <span style=''>/** A basic objective following the [[Objective]] trait.
+</span>47 <span style=''>  *
+</span>48 <span style=''>  * @param citiesToConnect
+</span>49 <span style=''>  *   the cities to connect, which cannot be the same.
+</span>50 <span style=''>  * @param points
+</span>51 <span style=''>  *   the points corresponding to the objective, which must be a positive value.
+</span>52 <span style=''>  */
+</span>53 <span style=''>case class BasicObjective(override val citiesToConnect: (City, City), override val points: Points) extends Objective:
+</span>54 <span style=''>  </span><span style='background: #AEF1AE'>require(citiesToConnect._1 != citiesToConnect._2, &quot;The cities to connect cannot be the same!&quot;)</span><span style=''>
+</span>55 <span style=''>  </span><span style='background: #AEF1AE'>require(points &gt; 0, &quot;The points of an objective must be positive!&quot;)</span><span style=''>
+</span>56 <span style=''>
+</span>57 <span style=''>/** An objective that has in addition the state of its completion and can also be marked as completed. */
+</span>58 <span style=''>trait ObjectiveCompletion extends Objective:
+</span>59 <span style=''>  private var _completed = false
+</span>60 <span style=''>
+</span>61 <span style=''>  /** Objective completion state.
+</span>62 <span style=''>    *
+</span>63 <span style=''>    * @return
+</span>64 <span style=''>    *   [[true]] if the objective is completed, [[false]] otherwise.
+</span>65 <span style=''>    */
+</span>66 <span style=''>  </span><span style='background: #AEF1AE'>def completed</span><span style=''>: Boolean = _completed
+</span>67 <span style=''>
+</span>68 <span style=''>  /** Mark the objective as completed. */
+</span>69 <span style=''>  </span><span style='background: #AEF1AE'>def markAsComplete</span><span style=''>(): Unit = _completed = true
+</span>70 <span style=''>
+</span>71 <span style=''>/** A basic objective with in addition the completion feature, so following the [[ObjectiveCompletion]] trait.
+</span>72 <span style=''>  *
+</span>73 <span style=''>  * @param cities
+</span>74 <span style=''>  *   the cities to connect, which cannot be the same.
+</span>75 <span style=''>  * @param points
+</span>76 <span style=''>  *   the points corresponding to the objective, which must be a positive value.
+</span>77 <span style=''>  */
+</span>78 <span style=''>class ObjectiveWithCompletion(cities: (City, City), points: Points)
+</span>79 <span style=''>    extends BasicObjective(cities, points)
+</span>80 <span style=''>    with ObjectiveCompletion
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          35
+        </td>
+        <td>
+          765
+        </td>
+        <td>
+          940
+          -
+          949
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          768
+        </td>
+        <td>
+          1358
+          -
+          1369
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          unapply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def unapply
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          767
+        </td>
+        <td>
+          1438
+          -
+          1454
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          points
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.points
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          766
+        </td>
+        <td>
+          1411
+          -
+          1436
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          citiesToConnect
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          771
+        </td>
+        <td>
+          1854
+          -
+          1872
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          citiesToConnect._2
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          770
+        </td>
+        <td>
+          1832
+          -
+          1850
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          citiesToConnect._1
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          769
+        </td>
+        <td>
+          1824
+          -
+          1918
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          require
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          require(citiesToConnect._1 != citiesToConnect._2, &quot;The cities to connect cannot be the same!&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          772
+        </td>
+        <td>
+          1921
+          -
+          1988
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          require
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          require(points &gt; 0, &quot;The points of an objective must be positive!&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          773
+        </td>
+        <td>
+          2307
+          -
+          2320
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          completed
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def completed
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          774
+        </td>
+        <td>
+          2388
+          -
+          2406
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          markAsComplete
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def markAsComplete
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

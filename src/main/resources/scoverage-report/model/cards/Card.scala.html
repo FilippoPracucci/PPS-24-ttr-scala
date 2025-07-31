@@ -1,0 +1,367 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\cards\Card.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.cards
+</span>2 <span style=''>
+</span>3 <span style=''>import model.utils.Color
+</span>4 <span style=''>
+</span>5 <span style=''>/** A train card characterized by a color. */
+</span>6 <span style=''>trait Card:
+</span>7 <span style=''>  /** The color of the card.
+</span>8 <span style=''>    *
+</span>9 <span style=''>    * @return
+</span>10 <span style=''>    *   the color of the card.
+</span>11 <span style=''>    */
+</span>12 <span style=''>  def color: Color
+</span>13 <span style=''>
+</span>14 <span style=''>/** Factory for [[Card]] instances. */
+</span>15 <span style=''>object Card:
+</span>16 <span style=''>  /** Create a card of the given color.
+</span>17 <span style=''>    *
+</span>18 <span style=''>    * @param color
+</span>19 <span style=''>    *   the color of the card.
+</span>20 <span style=''>    * @return
+</span>21 <span style=''>    *   the card created.
+</span>22 <span style=''>    */
+</span>23 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(color: Color): Card = CardImpl(color)
+</span>24 <span style=''>  private case class CardImpl(override val color: Color) extends Card
+</span>25 <span style=''>
+</span>26 <span style=''>/** A generic generator with [[Cards]] as upperbound. It's also able to generate a list of train cards.
+</span>27 <span style=''>  *
+</span>28 <span style=''>  * @tparam T
+</span>29 <span style=''>  *   the type generated, with [[Cards]] as upperbound.
+</span>30 <span style=''>  */
+</span>31 <span style=''>trait Generator[T &lt;: Cards]:
+</span>32 <span style=''>  /** Generate a list of train cards.
+</span>33 <span style=''>    *
+</span>34 <span style=''>    * @return
+</span>35 <span style=''>    *   the list of train cards created.
+</span>36 <span style=''>    */
+</span>37 <span style=''>  def generateCards(): List[Card]
+</span>38 <span style=''>
+</span>39 <span style=''>  /** Generate an instance of [[T]].
+</span>40 <span style=''>    *
+</span>41 <span style=''>    * @return
+</span>42 <span style=''>    *   the generated [[T]] instance.
+</span>43 <span style=''>    */
+</span>44 <span style=''>  def generate(): T
+</span>45 <span style=''>
+</span>46 <span style=''>/** A [[Generator]] for type [[Cards]]. */
+</span>47 <span style=''>abstract class CardsGenerator extends Generator[Cards]:
+</span>48 <span style=''>  </span><span style='background: #AEF1AE'>override def generate</span><span style=''>(): Cards = </span><span style='background: #AEF1AE'>Cards(generateCards())</span><span style=''>
+</span>49 <span style=''>
+</span>50 <span style=''>/** The default [[CardsGenerator]]. It generates an empty list of train cards. */
+</span>51 <span style=''>given CardsGenerator with
+</span>52 <span style=''>  </span><span style='background: #AEF1AE'>override def generateCards</span><span style=''>(): List[Card] = </span><span style='background: #AEF1AE'>List.empty</span><span style=''>
+</span>53 <span style=''>
+</span>54 <span style=''>/** A list of train cards created by means of a generator.
+</span>55 <span style=''>  *
+</span>56 <span style=''>  * @param _cards
+</span>57 <span style=''>  *   the list of cards for the initialization.
+</span>58 <span style=''>  */
+</span>59 <span style=''>class Cards(private var _cards: List[Card] = </span><span style='background: #AEF1AE'>summon[CardsGenerator].generateCards()</span><span style=''>):
+</span>60 <span style=''>  </span><span style='background: #AEF1AE'>def cards</span><span style=''>: List[Card] = _cards
+</span>61 <span style=''>  </span><span style='background: #AEF1AE'>protected def cards_=</span><span style=''>(cards: List[Card]): Unit = _cards = cards
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          442
+        </td>
+        <td>
+          409
+          -
+          418
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          445
+        </td>
+        <td>
+          1105
+          -
+          1126
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          generate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def generate
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          444
+        </td>
+        <td>
+          1144
+          -
+          1159
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          generateCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          generateCards()
+        </td>
+      </tr><tr>
+        <td>
+          48
+        </td>
+        <td>
+          443
+        </td>
+        <td>
+          1138
+          -
+          1160
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Cards(generateCards())
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          451
+        </td>
+        <td>
+          1315
+          -
+          1325
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          List.empty
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          450
+        </td>
+        <td>
+          1315
+          -
+          1319
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          List
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          List
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          452
+        </td>
+        <td>
+          1272
+          -
+          1298
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          generateCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def generateCards
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          448
+        </td>
+        <td>
+          1506
+          -
+          1544
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          generateCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          summon[CardsGenerator].generateCards()
+        </td>
+      </tr><tr>
+        <td>
+          59
+        </td>
+        <td>
+          449
+        </td>
+        <td>
+          1506
+          -
+          1506
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          446
+        </td>
+        <td>
+          1549
+          -
+          1558
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          cards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def cards
+        </td>
+      </tr><tr>
+        <td>
+          61
+        </td>
+        <td>
+          447
+        </td>
+        <td>
+          1582
+          -
+          1603
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          cards_=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          protected def cards_=
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

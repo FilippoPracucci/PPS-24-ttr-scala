@@ -6,7 +6,7 @@ parent: Implementazione
 
 ---
 
-# Design View
+# Implementazione View
 
 ```mermaid
 ---

@@ -1,0 +1,1335 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\objective\ObjectiveChecker.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.objective
+</span>2 <span style=''>
+</span>3 <span style=''>import model.map.GameMap
+</span>4 <span style=''>import model.player.Player.PlayerId
+</span>5 <span style=''>
+</span>6 <span style=''>/** Trait that represents an objective checker that tells whether a certain objective has been completed or not by a
+</span>7 <span style=''>  * certain player.
+</span>8 <span style=''>  */
+</span>9 <span style=''>trait ObjectiveChecker:
+</span>10 <span style=''>  /** Checks whether the specified objective has been completed by the specified player.
+</span>11 <span style=''>    *
+</span>12 <span style=''>    * @param objective
+</span>13 <span style=''>    *   the objective to check
+</span>14 <span style=''>    * @param playerId
+</span>15 <span style=''>    *   the id of the player
+</span>16 <span style=''>    * @return
+</span>17 <span style=''>    *   true if the objective has been completed, false otherwise
+</span>18 <span style=''>    */
+</span>19 <span style=''>  def check(objective: Objective, playerId: PlayerId): Boolean
+</span>20 <span style=''>
+</span>21 <span style=''>object ObjectiveChecker:
+</span>22 <span style=''>  /** Creates an [[ObjectiveChecker]] that performs checks based on the specified game map.
+</span>23 <span style=''>    *
+</span>24 <span style=''>    * @param gameMap
+</span>25 <span style=''>    *   the [[GameMap]] to use to check the objectives
+</span>26 <span style=''>    * @return
+</span>27 <span style=''>    *   the created [[ObjectiveChecker]]
+</span>28 <span style=''>    */
+</span>29 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(gameMap: GameMap): ObjectiveChecker = </span><span style='background: #AEF1AE'>ObjectiveCheckerImpl(gameMap)</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>  private class ObjectiveCheckerImpl(gameMap: GameMap) extends ObjectiveChecker:
+</span>32 <span style=''>    import ConversionHelper.*
+</span>33 <span style=''>    import alice.tuprolog.*
+</span>34 <span style=''>    import model.utils.Scala2P.{*, given}
+</span>35 <span style=''>    import scala.language.implicitConversions
+</span>36 <span style=''>
+</span>37 <span style=''>    private val AnyPathPredicate = &quot;any_path&quot;
+</span>38 <span style=''>    private val NoPlayer = &quot;none&quot;
+</span>39 <span style=''>    private val Edge: (Term, Term, Term) =&gt; Term = (city1, city2, player) =&gt; </span><span style='background: #AEF1AE'>s&quot;e($city1, $city2, $player)&quot;.toLowerCase</span><span style=''>
+</span>40 <span style=''>    private val Goal: (Term, Term, Term, Term) =&gt; Term = (graph, city1, city2, player) =&gt;
+</span>41 <span style=''>      </span><span style='background: #AEF1AE'>s&quot;$AnyPathPredicate($graph, $city1, $city2, $player, _).&quot;</span><span style=''>
+</span>42 <span style=''>
+</span>43 <span style=''>    private val engine = </span><span style='background: #AEF1AE'>mkPrologEngine(
+</span>44 <span style=''></span><span style='background: #AEF1AE'>      raw&quot;&quot;&quot;
+</span>45 <span style=''></span><span style='background: #AEF1AE'>        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, ?ListEdges)
+</span>46 <span style=''></span><span style='background: #AEF1AE'>        % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by
+</span>47 <span style=''></span><span style='background: #AEF1AE'>        % Player
+</span>48 <span style=''></span><span style='background: #AEF1AE'>        $AnyPathPredicate(G1, N1, N2, P, L) :- $AnyPathPredicate(G1, N1, N2, P, [N1], L).
+</span>49 <span style=''></span><span style='background: #AEF1AE'>
+</span>50 <span style=''></span><span style='background: #AEF1AE'>        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, @ListVisitedNodes, ?ListEdges)
+</span>51 <span style=''></span><span style='background: #AEF1AE'>        % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by
+</span>52 <span style=''></span><span style='background: #AEF1AE'>        % Player, and without having duplicated nodes. ListVisitedNodes represents the list of visited nodes.
+</span>53 <span style=''></span><span style='background: #AEF1AE'>        $AnyPathPredicate(G, N1, N2, P, _, [e(N1, N2)]) :- connected(G, N1, N2, P).
+</span>54 <span style=''></span><span style='background: #AEF1AE'>        $AnyPathPredicate(G, N1, N2, P, V, [e(N1, N3) | L]) :- connected(G, N1, N3, P), not_member(N3, V),
+</span>55 <span style=''></span><span style='background: #AEF1AE'>          $AnyPathPredicate(G, N3, N2, P, [N3 | V], L).
+</span>56 <span style=''></span><span style='background: #AEF1AE'>
+</span>57 <span style=''></span><span style='background: #AEF1AE'>        % connected(@Graph, ?Node1, ?Node2, ?Player)
+</span>58 <span style=''></span><span style='background: #AEF1AE'>        % It's satisfied if an edge between Node1 and Node2 controlled by Player exists in Graph.
+</span>59 <span style=''></span><span style='background: #AEF1AE'>        connected(G, N1, N2, P) :- member(e(N1, N2, P), G).
+</span>60 <span style=''></span><span style='background: #AEF1AE'>        connected(G, N1, N2, P) :- member(e(N2, N1, P), G).
+</span>61 <span style=''></span><span style='background: #AEF1AE'>
+</span>62 <span style=''></span><span style='background: #AEF1AE'>        % not_member(@Element, @List)
+</span>63 <span style=''></span><span style='background: #AEF1AE'>        % It's satisfied if Element is not a member of List.
+</span>64 <span style=''></span><span style='background: #AEF1AE'>        not_member(_, []).
+</span>65 <span style=''></span><span style='background: #AEF1AE'>        not_member(E, [H | T]) :- E \= H, not_member(E, T).
+</span>66 <span style=''></span><span style='background: #AEF1AE'>      &quot;&quot;&quot;
+</span>67 <span style=''></span><span style='background: #AEF1AE'>    )</span><span style=''>
+</span>68 <span style=''>
+</span>69 <span style=''>    </span><span style='background: #AEF1AE'>override def check</span><span style=''>(objective: Objective, playerId: PlayerId): Boolean =
+</span>70 <span style=''>      </span><span style='background: #AEF1AE'>solveWithSuccess(engine, Goal(gameMap.graph, objective.city1, objective.city2, playerId.toAtom))</span><span style=''>
+</span>71 <span style=''>
+</span>72 <span style=''>    private object ConversionHelper:
+</span>73 <span style=''>
+</span>74 <span style=''>      extension (gameMap: GameMap)
+</span>75 <span style=''>        </span><span style='background: #AEF1AE'>def graph</span><span style=''>: Term =
+</span>76 <span style=''>          </span><span style='background: #AEF1AE'>gameMap.routes
+</span>77 <span style=''></span><span style='background: #AEF1AE'>            .map(_.connectedCities)
+</span>78 <span style=''></span><span style='background: #AEF1AE'>            .map(connectedCities =&gt; (connectedCities._1.name, connectedCities._2.name))
+</span>79 <span style=''></span><span style='background: #AEF1AE'>            .map((city1, city2) =&gt;
+</span>80 <span style=''></span><span style='background: #AEF1AE'>              (city1, city2,
+</span>81 <span style=''></span><span style='background: #AEF1AE'>                gameMap.getPlayerClaimingRoute((city1, city2)) match
+</span>82 <span style=''></span><span style='background: #AEF1AE'>                  case Right(Some(player)) =&gt; player.toString
+</span>83 <span style=''></span><span style='background: #AEF1AE'>                  case _ =&gt; NoPlayer
+</span>84 <span style=''></span><span style='background: #AEF1AE'>              )
+</span>85 <span style=''></span><span style='background: #AEF1AE'>            )
+</span>86 <span style=''></span><span style='background: #AEF1AE'>            .map((city1, city2, player) =&gt; Edge(city1, city2, player))
+</span>87 <span style=''></span><span style='background: #AEF1AE'>            .toSeq</span><span style=''>
+</span>88 <span style=''>
+</span>89 <span style=''>      extension (objective: Objective)
+</span>90 <span style=''>        </span><span style='background: #AEF1AE'>def city1</span><span style=''>: Term = </span><span style='background: #AEF1AE'>objective.citiesToConnect._1.toLowerCase</span><span style=''>
+</span>91 <span style=''>        </span><span style='background: #AEF1AE'>def city2</span><span style=''>: Term = </span><span style='background: #AEF1AE'>objective.citiesToConnect._2.toLowerCase</span><span style=''>
+</span>92 <span style=''>
+</span>93 <span style=''>      extension (playerId: PlayerId) </span><span style='background: #AEF1AE'>def toAtom</span><span style=''>: Term = </span><span style='background: #AEF1AE'>playerId.toString.toLowerCase</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          776
+        </td>
+        <td>
+          867
+          -
+          876
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          775
+        </td>
+        <td>
+          915
+          -
+          944
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          ObjectiveCheckerImpl(gameMap)
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          777
+        </td>
+        <td>
+          1331
+          -
+          1372
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s&quot;e($city1, $city2, $player)&quot;.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          779
+        </td>
+        <td>
+          1331
+          -
+          1360
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s&quot;e($city1, $city2, $player)&quot;
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          778
+        </td>
+        <td>
+          1331
+          -
+          1372
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toLowerCase
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s&quot;e($city1, $city2, $player)&quot;.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          781
+        </td>
+        <td>
+          1469
+          -
+          1526
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          s
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s&quot;$AnyPathPredicate($graph, $city1, $city2, $player, _).&quot;
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          780
+        </td>
+        <td>
+          1469
+          -
+          1526
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          s&quot;$AnyPathPredicate($graph, $city1, $city2, $player, _).&quot;
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          782
+        </td>
+        <td>
+          1553
+          -
+          2954
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          mkPrologEngine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          mkPrologEngine(\n      raw&quot;&quot;&quot;\n        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, ?ListEdges)\n        % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by\n        % Player\n        $AnyPathPredicate(G1, N1, N2, P, L) :- $AnyPathPredicate(G1, N1, N2, P, [N1], L).\n\n        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, @ListVisitedNodes, ?ListEdges)\n        % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by\n        % Player, and without having duplicated nodes. ListVisitedNodes represents the list of visited nodes.\n        $AnyPathPredicate(G, N1, N2, P, _, [e(N1, N2)]) :- connected(G, N1, N2, P).\n        $AnyPathPredicate(G, N1, N2, P, V, [e(N1, N3) | L]) :- connected(G, N1, N3, P), not_member(N3, V),\n          $AnyPathPredicate(G, N3, N2, P, [N3 | V], L).\n\n        % connected(@Graph, ?Node1, ?Node2, ?Player)\n        % It's satisfied if an edge between Node1 and Node2 controlled by Player exists in Graph.\n        connected(G, N1, N2, P) :- member(e(N1, N2, P), G).\n        connected(G, N1, N2, P) :- member(e(N2, N1, P), G).\n\n        % not_member(@Element, @List)\n        % It's satisfied if Element is not a member of List.\n        not_member(_, []).\n        not_member(E, [H | T]) :- E \\= H, not_member(E, T).\n      &quot;&quot;&quot;\n    )
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          783
+        </td>
+        <td>
+          1575
+          -
+          2948
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          raw&quot;&quot;&quot;\n        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, ?ListEdges)\n        % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by\n        % Player\n        $AnyPathPredicate(G1, N1, N2, P, L) :- $AnyPathPredicate(G1, N1, N2, P, [N1], L).\n\n        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, @ListVisitedNodes, ?ListEdges)\n        % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by\n        % Player, and without having duplicated nodes. ListVisitedNodes represents the list of visited nodes.\n        $AnyPathPredicate(G, N1, N2, P, _, [e(N1, N2)]) :- connected(G, N1, N2, P).\n        $AnyPathPredicate(G, N1, N2, P, V, [e(N1, N3) | L]) :- connected(G, N1, N3, P), not_member(N3, V),\n          $AnyPathPredicate(G, N3, N2, P, [N3 | V], L).\n\n        % connected(@Graph, ?Node1, ?Node2, ?Player)\n        % It's satisfied if an edge between Node1 and Node2 controlled by Player exists in Graph.\n        connected(G, N1, N2, P) :- member(e(N1, N2, P), G).\n        connected(G, N1, N2, P) :- member(e(N2, N1, P), G).\n\n        % not_member(@Element, @List)\n        % It's satisfied if Element is not a member of List.\n        not_member(_, []).\n        not_member(E, [H | T]) :- E \\= H, not_member(E, T).\n      &quot;&quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          44
+        </td>
+        <td>
+          784
+        </td>
+        <td>
+          1575
+          -
+          2948
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          raw
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          raw&quot;&quot;&quot;\n        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, ?ListEdges)\n        % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by\n        % Player\n        $AnyPathPredicate(G1, N1, N2, P, L) :- $AnyPathPredicate(G1, N1, N2, P, [N1], L).\n\n        % $AnyPathPredicate(@Graph, ?SourceNode, ?DestinationNode, ?Player, @ListVisitedNodes, ?ListEdges)\n        % ListEdges represents the path between SourceNode and DestinationNode in Graph, with only edges controlled by\n        % Player, and without having duplicated nodes. ListVisitedNodes represents the list of visited nodes.\n        $AnyPathPredicate(G, N1, N2, P, _, [e(N1, N2)]) :- connected(G, N1, N2, P).\n        $AnyPathPredicate(G, N1, N2, P, V, [e(N1, N3) | L]) :- connected(G, N1, N3, P), not_member(N3, V),\n          $AnyPathPredicate(G, N3, N2, P, [N3 | V], L).\n\n        % connected(@Graph, ?Node1, ?Node2, ?Player)\n        % It's satisfied if an edge between Node1 and Node2 controlled by Player exists in Graph.\n        connected(G, N1, N2, P) :- member(e(N1, N2, P), G).\n        connected(G, N1, N2, P) :- member(e(N2, N1, P), G).\n\n        % not_member(@Element, @List)\n        % It's satisfied if Element is not a member of List.\n        not_member(_, []).\n        not_member(E, [H | T]) :- E \\= H, not_member(E, T).\n      &quot;&quot;&quot;
+        </td>
+      </tr><tr>
+        <td>
+          69
+        </td>
+        <td>
+          791
+        </td>
+        <td>
+          2960
+          -
+          2978
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          check
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def check
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          786
+        </td>
+        <td>
+          3063
+          -
+          3133
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Goal(gameMap.graph, objective.city1, objective.city2, playerId.toAtom)
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          788
+        </td>
+        <td>
+          3083
+          -
+          3098
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          city1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.city1
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          785
+        </td>
+        <td>
+          3038
+          -
+          3134
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          solveWithSuccess
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solveWithSuccess(engine, Goal(gameMap.graph, objective.city1, objective.city2, playerId.toAtom))
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          787
+        </td>
+        <td>
+          3068
+          -
+          3081
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          graph
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.graph
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          790
+        </td>
+        <td>
+          3117
+          -
+          3132
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerId.toAtom
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          789
+        </td>
+        <td>
+          3100
+          -
+          3115
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          city2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.city2
+        </td>
+      </tr><tr>
+        <td>
+          75
+        </td>
+        <td>
+          811
+        </td>
+        <td>
+          3217
+          -
+          3226
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          graph
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def graph
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          792
+        </td>
+        <td>
+          3245
+          -
+          3735
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.routes\n            .map(_.connectedCities)\n            .map(connectedCities =&gt; (connectedCities._1.name, connectedCities._2.name))\n            .map((city1, city2) =&gt;\n              (city1, city2,\n                gameMap.getPlayerClaimingRoute((city1, city2)) match\n                  case Right(Some(player)) =&gt; player.toString\n                  case _ =&gt; NoPlayer\n              )\n            )\n            .map((city1, city2, player) =&gt; Edge(city1, city2, player))\n            .toSeq
+        </td>
+      </tr><tr>
+        <td>
+          76
+        </td>
+        <td>
+          797
+        </td>
+        <td>
+          3245
+          -
+          3259
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          routes
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.routes
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          796
+        </td>
+        <td>
+          3245
+          -
+          3295
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.routes\n            .map(_.connectedCities)
+        </td>
+      </tr><tr>
+        <td>
+          77
+        </td>
+        <td>
+          798
+        </td>
+        <td>
+          3277
+          -
+          3294
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          connectedCities
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          _.connectedCities
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          801
+        </td>
+        <td>
+          3358
+          -
+          3376
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          connectedCities._2
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          795
+        </td>
+        <td>
+          3245
+          -
+          3383
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.routes\n            .map(_.connectedCities)\n            .map(connectedCities =&gt; (connectedCities._1.name, connectedCities._2.name))
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          800
+        </td>
+        <td>
+          3333
+          -
+          3356
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          connectedCities._1.name
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          802
+        </td>
+        <td>
+          3358
+          -
+          3381
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          connectedCities._2.name
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          799
+        </td>
+        <td>
+          3333
+          -
+          3351
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          connectedCities._1
+        </td>
+      </tr><tr>
+        <td>
+          79
+        </td>
+        <td>
+          794
+        </td>
+        <td>
+          3245
+          -
+          3645
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.routes\n            .map(_.connectedCities)\n            .map(connectedCities =&gt; (connectedCities._1.name, connectedCities._2.name))\n            .map((city1, city2) =&gt;\n              (city1, city2,\n                gameMap.getPlayerClaimingRoute((city1, city2)) match\n                  case Right(Some(player)) =&gt; player.toString\n                  case _ =&gt; NoPlayer\n              )\n            )
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          803
+        </td>
+        <td>
+          3464
+          -
+          3510
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getPlayerClaimingRoute
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.getPlayerClaimingRoute((city1, city2))
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          804
+        </td>
+        <td>
+          3560
+          -
+          3578
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          =&gt; player.toString
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          805
+        </td>
+        <td>
+          3604
+          -
+          3615
+        </td>
+        <td>
+          Block
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          =&gt; NoPlayer
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          806
+        </td>
+        <td>
+          3689
+          -
+          3715
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Edge(city1, city2, player)
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          809
+        </td>
+        <td>
+          3708
+          -
+          3714
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          player
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          793
+        </td>
+        <td>
+          3245
+          -
+          3716
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.routes\n            .map(_.connectedCities)\n            .map(connectedCities =&gt; (connectedCities._1.name, connectedCities._2.name))\n            .map((city1, city2) =&gt;\n              (city1, city2,\n                gameMap.getPlayerClaimingRoute((city1, city2)) match\n                  case Right(Some(player)) =&gt; player.toString\n                  case _ =&gt; NoPlayer\n              )\n            )\n            .map((city1, city2, player) =&gt; Edge(city1, city2, player))
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          808
+        </td>
+        <td>
+          3701
+          -
+          3706
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          city2
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          807
+        </td>
+        <td>
+          3694
+          -
+          3699
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          city1
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          810
+        </td>
+        <td>
+          3245
+          -
+          3735
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toSeq
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          gameMap.routes\n            .map(_.connectedCities)\n            .map(connectedCities =&gt; (connectedCities._1.name, connectedCities._2.name))\n            .map((city1, city2) =&gt;\n              (city1, city2,\n                gameMap.getPlayerClaimingRoute((city1, city2)) match\n                  case Right(Some(player)) =&gt; player.toString\n                  case _ =&gt; NoPlayer\n              )\n            )\n            .map((city1, city2, player) =&gt; Edge(city1, city2, player))\n            .toSeq
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          813
+        </td>
+        <td>
+          3802
+          -
+          3842
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toLowerCase
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect._1.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          812
+        </td>
+        <td>
+          3802
+          -
+          3842
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect._1.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          815
+        </td>
+        <td>
+          3802
+          -
+          3830
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect._1
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          814
+        </td>
+        <td>
+          3802
+          -
+          3827
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          citiesToConnect
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          816
+        </td>
+        <td>
+          3784
+          -
+          3793
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          city1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def city1
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          819
+        </td>
+        <td>
+          3869
+          -
+          3894
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          citiesToConnect
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          821
+        </td>
+        <td>
+          3851
+          -
+          3860
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          city2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def city2
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          818
+        </td>
+        <td>
+          3869
+          -
+          3909
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toLowerCase
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect._2.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          817
+        </td>
+        <td>
+          3869
+          -
+          3909
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect._2.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          91
+        </td>
+        <td>
+          820
+        </td>
+        <td>
+          3869
+          -
+          3897
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          objective.citiesToConnect._2
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          822
+        </td>
+        <td>
+          3967
+          -
+          3996
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerId.toString.toLowerCase
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          824
+        </td>
+        <td>
+          3948
+          -
+          3958
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          toAtom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def toAtom
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          823
+        </td>
+        <td>
+          3967
+          -
+          3996
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toLowerCase
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerId.toString.toLowerCase
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

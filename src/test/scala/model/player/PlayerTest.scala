@@ -9,7 +9,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
   import model.cards.{Card, Deck}
   import Deck.DeckGenerator
   import model.utils.{PlayerColor, Color}
-  import Player.{PlayerId, Trains}
+  import Player.*
   import config.GameConfig.{HandInitialSize, NumberTrainCars, InitialScore}
 
   private val id: PlayerId = PlayerColor.BLUE
@@ -43,7 +43,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val initialHandCards = player.hand
     player.drawCards(StandardNumberOfCardsToDraw) should be(Right(()))
     player.hand should be(Deck().cards.take(StandardNumberOfCardsToDraw) ++: initialHandCards)
-    player.drawCards(Deck().cards.size + 1) should be(Left(Player.NotEnoughCardsInTheDeck))
+    player.drawCards(Deck().cards.size + 1) should be(Left(NotEnoughCardsInTheDeck))
 
   it should "be able to check and place trains" in:
     val NumberTrainsCarsToPlace: Trains = 4
@@ -51,7 +51,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     player.placeTrains(NumberTrainsCarsToPlace) should be(Right(()))
     player.trains should be(NumberTrainCars - NumberTrainsCarsToPlace)
     player.canPlaceTrains(NumberTrainCars) should be(false)
-    player.placeTrains(NumberTrainCars) should be(Left(Player.NotEnoughTrains))
+    player.placeTrains(NumberTrainCars) should be(Left(NotEnoughTrains))
     player.trains should be(NumberTrainCars - NumberTrainsCarsToPlace)
 
   private def singleColoredDeck: Deck = Deck()(using () => List.fill(FixedDeckInitialSize)(Card(SingleColor)))
@@ -65,7 +65,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     playerWithSingleColor.playCards(SingleColor, nCardsToPlay) should be(Right(()))
     playerWithSingleColor.hand.size should be(HandInitialSize - nCardsToPlay)
     playerWithSingleColor.canPlayCards(SingleColor, nCardsToPlay) should be(false)
-    playerWithSingleColor.playCards(SingleColor, nCardsToPlay) should be(Left(Player.NotEnoughCards))
+    playerWithSingleColor.playCards(SingleColor, nCardsToPlay) should be(Left(NotEnoughCards))
     playerWithSingleColor.hand.size should be(HandInitialSize - nCardsToPlay)
 
   it should "correctly play cards and reinsert them into the deck" in:
@@ -74,7 +74,7 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
     val nCardsToPlay: Int = HandInitialSize / 2
     playerWithSingleColor.playCards(SingleColor, nCardsToPlay) should be(Right(()))
     deckWithSingleColor.cards.size + playerWithSingleColor.hand.size should be(FixedDeckInitialSize)
-    playerWithSingleColor.playCards(SingleColor, HandInitialSize) should be(Left(Player.NotEnoughCards))
+    playerWithSingleColor.playCards(SingleColor, HandInitialSize) should be(Left(NotEnoughCards))
     deckWithSingleColor.cards.size + playerWithSingleColor.hand.size should be(FixedDeckInitialSize)
 
   it should "correctly update the score" in:
@@ -85,8 +85,10 @@ class PlayerTest extends AnyFlatSpec with Matchers with BeforeAndAfterEach:
 
   it should "fail when given negative numbers" in:
     val IllegalNumber = -5
-    an[IllegalArgumentException] should be thrownBy player.canPlaceTrains(IllegalNumber)
-    an[IllegalArgumentException] should be thrownBy player.placeTrains(IllegalNumber)
-    an[IllegalArgumentException] should be thrownBy player.canPlayCards(SingleColor, IllegalNumber)
-    an[IllegalArgumentException] should be thrownBy player.playCards(SingleColor, IllegalNumber)
-    an[IllegalArgumentException] should be thrownBy player.addPoints(IllegalNumber)
+    an[IllegalArgumentException] should be thrownBy allOf(
+      player.canPlaceTrains(IllegalNumber),
+      player.placeTrains(IllegalNumber),
+      player.canPlayCards(SingleColor, IllegalNumber),
+      player.playCards(SingleColor, IllegalNumber),
+      player.addPoints(IllegalNumber)
+    )

@@ -1,0 +1,889 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\utils\Scala2P.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.utils
+</span>2 <span style=''>
+</span>3 <span style=''>/** Object that provides utility methods to set theories and resolve Prolog goals in Scala. Adapted from
+</span>4 <span style=''>  * https://github.com/unibo-pps/pps-lab12/blob/master/src/main/scala/it/unibo/u12lab/code/Scala2P.scala
+</span>5 <span style=''>  */
+</span>6 <span style=''>object Scala2P:
+</span>7 <span style=''>  import alice.tuprolog.*
+</span>8 <span style=''>  import scala.language.implicitConversions
+</span>9 <span style=''>
+</span>10 <span style=''>  /** Implicit conversion from [[String]] to [[Term]]. */
+</span>11 <span style=''>  given Conversion[String, Term] = </span><span style='background: #AEF1AE'>Term.createTerm(_)</span><span style=''>
+</span>12 <span style=''>
+</span>13 <span style=''>  /** Implicit conversion from [[Seq]] to [[Term]]. */
+</span>14 <span style=''>  given Conversion[Seq[_], Term] = </span><span style='background: #AEF1AE'>_.mkString(&quot;[&quot;, &quot;,&quot;, &quot;]&quot;)</span><span style=''>
+</span>15 <span style=''>
+</span>16 <span style=''>  /** Implicit conversion from [[String]] to [[Theory]]. */
+</span>17 <span style=''>  given Conversion[String, Theory] = </span><span style='background: #AEF1AE'>Theory.parseWithStandardOperators(_)</span><span style=''>
+</span>18 <span style=''>
+</span>19 <span style=''>  /** Creates a Prolog engine from the specified theory.
+</span>20 <span style=''>    *
+</span>21 <span style=''>    * @param theory
+</span>22 <span style=''>    *   the Prolog theory
+</span>23 <span style=''>    * @return
+</span>24 <span style=''>    *   the created Prolog engine
+</span>25 <span style=''>    */
+</span>26 <span style=''>  </span><span style='background: #AEF1AE'>def mkPrologEngine</span><span style=''>(theory: Theory): Term =&gt; LazyList[SolveInfo] =
+</span>27 <span style=''>    val engine = </span><span style='background: #AEF1AE'>Prolog()</span><span style=''>
+</span>28 <span style=''>    </span><span style='background: #AEF1AE'>engine.setTheory(theory)</span><span style=''>
+</span>29 <span style=''>
+</span>30 <span style=''>    goal =&gt;
+</span>31 <span style=''>      </span><span style='background: #AEF1AE'>new Iterable[SolveInfo] {
+</span>32 <span style=''></span><span style='background: #AEF1AE'>
+</span>33 <span style=''></span><span style='background: #AEF1AE'>        override def iterator: Iterator[SolveInfo] = new Iterator[SolveInfo] {
+</span>34 <span style=''></span><span style='background: #AEF1AE'>          var solution: Option[SolveInfo] = Some(engine.solve(goal))
+</span>35 <span style=''></span><span style='background: #AEF1AE'>
+</span>36 <span style=''></span><span style='background: #AEF1AE'>          override def hasNext: Boolean = solution.isDefined &amp;&amp;
+</span>37 <span style=''></span><span style='background: #AEF1AE'>            (solution.get.isSuccess || solution.get.hasOpenAlternatives)
+</span>38 <span style=''></span><span style='background: #AEF1AE'>
+</span>39 <span style=''></span><span style='background: #AEF1AE'>          override def next(): SolveInfo =
+</span>40 <span style=''></span><span style='background: #AEF1AE'>            try solution.get
+</span>41 <span style=''></span><span style='background: #AEF1AE'>            finally solution = if (solution.get.hasOpenAlternatives) Some(engine.solveNext()) else </span><span style='background: #F0ADAD'>None</span><span style='background: #AEF1AE'>
+</span>42 <span style=''></span><span style='background: #AEF1AE'>        }
+</span>43 <span style=''></span><span style='background: #AEF1AE'>      }.to(LazyList)</span><span style=''>
+</span>44 <span style=''>
+</span>45 <span style=''>  /** Solves the specified goal using the specified Prolog engine.
+</span>46 <span style=''>    *
+</span>47 <span style=''>    * @param engine
+</span>48 <span style=''>    *   the Prolog engine to use
+</span>49 <span style=''>    * @param goal
+</span>50 <span style=''>    *   the goal to solve
+</span>51 <span style=''>    * @return
+</span>52 <span style=''>    *   true if the goal can be resolved successfully, false otherwise
+</span>53 <span style=''>    */
+</span>54 <span style=''>  </span><span style='background: #AEF1AE'>def solveWithSuccess</span><span style=''>(engine: Term =&gt; LazyList[SolveInfo], goal: Term): Boolean =
+</span>55 <span style=''>    </span><span style='background: #AEF1AE'>engine(goal).map(_.isSuccess).headOption.contains(true)</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          11
+        </td>
+        <td>
+          983
+        </td>
+        <td>
+          416
+          -
+          434
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          createTerm
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Term.createTerm(_)
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          985
+        </td>
+        <td>
+          526
+          -
+          551
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          mkString
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          _.mkString(&quot;[&quot;, &quot;,&quot;, &quot;]&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          14
+        </td>
+        <td>
+          984
+        </td>
+        <td>
+          526
+          -
+          551
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          _.mkString(&quot;[&quot;, &quot;,&quot;, &quot;]&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          17
+        </td>
+        <td>
+          986
+        </td>
+        <td>
+          650
+          -
+          686
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          parseWithStandardOperators
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Theory.parseWithStandardOperators(_)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          1009
+        </td>
+        <td>
+          854
+          -
+          872
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          mkPrologEngine
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def mkPrologEngine
+        </td>
+      </tr><tr>
+        <td>
+          27
+        </td>
+        <td>
+          987
+        </td>
+        <td>
+          937
+          -
+          945
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Prolog()
+        </td>
+      </tr><tr>
+        <td>
+          28
+        </td>
+        <td>
+          988
+        </td>
+        <td>
+          950
+          -
+          974
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          setTheory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          engine.setTheory(theory)
+        </td>
+      </tr><tr>
+        <td>
+          33
+        </td>
+        <td>
+          1006
+        </td>
+        <td>
+          1029
+          -
+          1050
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          iterator
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def iterator
+        </td>
+      </tr><tr>
+        <td>
+          34
+        </td>
+        <td>
+          990
+        </td>
+        <td>
+          1149
+          -
+          1167
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          solve
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          engine.solve(goal)
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          991
+        </td>
+        <td>
+          1212
+          -
+          1230
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isDefined
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.isDefined
+        </td>
+      </tr><tr>
+        <td>
+          36
+        </td>
+        <td>
+          996
+        </td>
+        <td>
+          1180
+          -
+          1200
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          hasNext
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def hasNext
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          992
+        </td>
+        <td>
+          1247
+          -
+          1269
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          isSuccess
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.get.isSuccess
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          995
+        </td>
+        <td>
+          1273
+          -
+          1285
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.get
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          994
+        </td>
+        <td>
+          1273
+          -
+          1305
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          hasOpenAlternatives
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.get.hasOpenAlternatives
+        </td>
+      </tr><tr>
+        <td>
+          37
+        </td>
+        <td>
+          993
+        </td>
+        <td>
+          1247
+          -
+          1259
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.get
+        </td>
+      </tr><tr>
+        <td>
+          39
+        </td>
+        <td>
+          1005
+        </td>
+        <td>
+          1318
+          -
+          1335
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          next
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def next
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          998
+        </td>
+        <td>
+          1367
+          -
+          1379
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.get
+        </td>
+      </tr><tr>
+        <td>
+          40
+        </td>
+        <td>
+          997
+        </td>
+        <td>
+          1367
+          -
+          1379
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.get
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1001
+        </td>
+        <td>
+          1454
+          -
+          1472
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          solveNext
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          engine.solveNext()
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1004
+        </td>
+        <td>
+          1400
+          -
+          1483
+        </td>
+        <td>
+          Assign
+        </td>
+        <td>
+          &lt;none&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution = if (solution.get.hasOpenAlternatives) Some(engine.solveNext()) else None
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1000
+        </td>
+        <td>
+          1415
+          -
+          1427
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          get
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.get
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1003
+        </td>
+        <td>
+          1479
+          -
+          1483
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          None
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #F0ADAD">
+          None
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          999
+        </td>
+        <td>
+          1415
+          -
+          1447
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          hasOpenAlternatives
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          solution.get.hasOpenAlternatives
+        </td>
+      </tr><tr>
+        <td>
+          41
+        </td>
+        <td>
+          1002
+        </td>
+        <td>
+          1449
+          -
+          1473
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Some(engine.solveNext())
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          989
+        </td>
+        <td>
+          994
+          -
+          1514
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          to
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          new Iterable[SolveInfo] {\n\n        override def iterator: Iterator[SolveInfo] = new Iterator[SolveInfo] {\n          var solution: Option[SolveInfo] = Some(engine.solve(goal))\n\n          override def hasNext: Boolean = solution.isDefined &amp;&amp;\n            (solution.get.isSuccess || solution.get.hasOpenAlternatives)\n\n          override def next(): SolveInfo =\n            try solution.get\n            finally solution = if (solution.get.hasOpenAlternatives) Some(engine.solveNext()) else None\n        }\n      }.to(LazyList)
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          1007
+        </td>
+        <td>
+          1505
+          -
+          1513
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toFactory
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          LazyList
+        </td>
+      </tr><tr>
+        <td>
+          43
+        </td>
+        <td>
+          1008
+        </td>
+        <td>
+          1505
+          -
+          1513
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          LazyList
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          LazyList
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          1015
+        </td>
+        <td>
+          1780
+          -
+          1800
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          solveWithSuccess
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def solveWithSuccess
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1010
+        </td>
+        <td>
+          1865
+          -
+          1920
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          contains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          engine(goal).map(_.isSuccess).headOption.contains(true)
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1013
+        </td>
+        <td>
+          1882
+          -
+          1893
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          isSuccess
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          _.isSuccess
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1012
+        </td>
+        <td>
+          1865
+          -
+          1877
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          engine(goal)
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1014
+        </td>
+        <td>
+          1865
+          -
+          1905
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          headOption
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          engine(goal).map(_.isSuccess).headOption
+        </td>
+      </tr><tr>
+        <td>
+          55
+        </td>
+        <td>
+          1011
+        </td>
+        <td>
+          1865
+          -
+          1894
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          engine(goal).map(_.isSuccess)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

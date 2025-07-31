@@ -1,0 +1,1416 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\player\Player.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.player
+</span>2 <span style=''>
+</span>3 <span style=''>import model.objective.{ObjectiveCompletion, Points}
+</span>4 <span style=''>import model.utils.{Color, GameError, PlayerColor}
+</span>5 <span style=''>
+</span>6 <span style=''>/** A player, that has an id, an objective, a hand of train cards, a number of train cars and his score. The player can
+</span>7 <span style=''>  * draw cards, play cards, place train cars, add points to his actual score and check the possibility to play an amount
+</span>8 <span style=''>  * of cards of a given color or place an amount of train cars.
+</span>9 <span style=''>  */
+</span>10 <span style=''>trait Player:
+</span>11 <span style=''>  import Player.{PlayerId, Hand, Trains}
+</span>12 <span style=''>
+</span>13 <span style=''>  /** The player's identifier.
+</span>14 <span style=''>    *
+</span>15 <span style=''>    * @return
+</span>16 <span style=''>    *   the player's identifier.
+</span>17 <span style=''>    */
+</span>18 <span style=''>  def id: PlayerId
+</span>19 <span style=''>
+</span>20 <span style=''>  /** The player's objective with completion features.
+</span>21 <span style=''>    *
+</span>22 <span style=''>    * @return
+</span>23 <span style=''>    *   the player's objective.
+</span>24 <span style=''>    */
+</span>25 <span style=''>  def objective: ObjectiveCompletion
+</span>26 <span style=''>
+</span>27 <span style=''>  /** The player's train cards hand.
+</span>28 <span style=''>    *
+</span>29 <span style=''>    * @return
+</span>30 <span style=''>    *   the player's hand.
+</span>31 <span style=''>    */
+</span>32 <span style=''>  def hand: Hand
+</span>33 <span style=''>
+</span>34 <span style=''>  /** The player's number of train cars.
+</span>35 <span style=''>    *
+</span>36 <span style=''>    * @return
+</span>37 <span style=''>    *   the player's train cars.
+</span>38 <span style=''>    */
+</span>39 <span style=''>  def trains: Trains
+</span>40 <span style=''>
+</span>41 <span style=''>  /** The player's score as amount of points.
+</span>42 <span style=''>    *
+</span>43 <span style=''>    * @return
+</span>44 <span style=''>    *   the player's score
+</span>45 <span style=''>    */
+</span>46 <span style=''>  def score: Points
+</span>47 <span style=''>
+</span>48 <span style=''>  /** Draw the given amount of cards from the deck and put them in the player's hand if it's possible, otherwise return
+</span>49 <span style=''>    * a [[GameError]].
+</span>50 <span style=''>    *
+</span>51 <span style=''>    * @param n
+</span>52 <span style=''>    *   the number of cards to draw.
+</span>53 <span style=''>    * @return
+</span>54 <span style=''>    *   `Right(())` if the action succeeds, `Left(NotEnoughCardsInTheDeck)` if there are not enough cards in the deck.
+</span>55 <span style=''>    */
+</span>56 <span style=''>  def drawCards(n: Int): Either[GameError, Unit]
+</span>57 <span style=''>
+</span>58 <span style=''>  /** Checks whether the specified number of cards of the specified color can be played (i.e. are present in the
+</span>59 <span style=''>    * player's hand).
+</span>60 <span style=''>    *
+</span>61 <span style=''>    * @param color
+</span>62 <span style=''>    *   the color of the cards
+</span>63 <span style=''>    * @param n
+</span>64 <span style=''>    *   the number of the cards
+</span>65 <span style=''>    * @return
+</span>66 <span style=''>    *   true if the cards can be played, false otherwise
+</span>67 <span style=''>    */
+</span>68 <span style=''>  def canPlayCards(color: Color, n: Int): Boolean
+</span>69 <span style=''>
+</span>70 <span style=''>  /** Plays the specified number of cards of the specified color.
+</span>71 <span style=''>    *
+</span>72 <span style=''>    * @param color
+</span>73 <span style=''>    *   the color of the cards to play
+</span>74 <span style=''>    * @param n
+</span>75 <span style=''>    *   the number of the cards to play
+</span>76 <span style=''>    * @return
+</span>77 <span style=''>    *   `Right(())` if the action succeeds, `Left(NotEnoughCards)` if the player doesn't have enough cards
+</span>78 <span style=''>    */
+</span>79 <span style=''>  def playCards(color: Color, n: Int): Either[GameError, Unit]
+</span>80 <span style=''>
+</span>81 <span style=''>  /** Checks whether the specified number of trains can be placed.
+</span>82 <span style=''>    *
+</span>83 <span style=''>    * @param n
+</span>84 <span style=''>    *   the number of trains to place
+</span>85 <span style=''>    * @return
+</span>86 <span style=''>    *   true if the trains can be placed, false otherwise
+</span>87 <span style=''>    */
+</span>88 <span style=''>  def canPlaceTrains(n: Trains): Boolean
+</span>89 <span style=''>
+</span>90 <span style=''>  /** Places the specified number of trains.
+</span>91 <span style=''>    *
+</span>92 <span style=''>    * @param n
+</span>93 <span style=''>    *   the number of trains to place
+</span>94 <span style=''>    * @return
+</span>95 <span style=''>    *   `Right(())` if the action succeeds, `Left(NotEnoughTrains)` if the player doesn't have enough trains
+</span>96 <span style=''>    */
+</span>97 <span style=''>  def placeTrains(n: Trains): Either[GameError, Unit]
+</span>98 <span style=''>
+</span>99 <span style=''>  /** Adds the specified number of points to the player's score.
+</span>100 <span style=''>    *
+</span>101 <span style=''>    * @param points
+</span>102 <span style=''>    *   the number of points to add
+</span>103 <span style=''>    */
+</span>104 <span style=''>  def addPoints(points: Points): Unit
+</span>105 <span style=''>
+</span>106 <span style=''>/** The factory for [[Player]] instances. */
+</span>107 <span style=''>object Player:
+</span>108 <span style=''>  import model.cards.{Card, Deck}
+</span>109 <span style=''>
+</span>110 <span style=''>  export PlayerGameErrors.*
+</span>111 <span style=''>
+</span>112 <span style=''>  /** Type alias that represents a player id as PlayerColor. */
+</span>113 <span style=''>  type PlayerId = PlayerColor
+</span>114 <span style=''>
+</span>115 <span style=''>  /** Type alias that represents the hand of a player as a list of cards. */
+</span>116 <span style=''>  type Hand = List[Card]
+</span>117 <span style=''>
+</span>118 <span style=''>  /** Type alias that represents the trains as Int. */
+</span>119 <span style=''>  type Trains = Int
+</span>120 <span style=''>
+</span>121 <span style=''>  /** Create a player, with the given identifier and objective.
+</span>122 <span style=''>    *
+</span>123 <span style=''>    * @param playerId
+</span>124 <span style=''>    *   the player's id.
+</span>125 <span style=''>    * @param deck
+</span>126 <span style=''>    *   the reference to the deck, otherwise it creates a new standard Deck.
+</span>127 <span style=''>    * @param objective
+</span>128 <span style=''>    *   the player's objective.
+</span>129 <span style=''>    * @return
+</span>130 <span style=''>    *   the player created.
+</span>131 <span style=''>    */
+</span>132 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(playerId: PlayerId, deck: Deck = </span><span style='background: #AEF1AE'>Deck()</span><span style=''>, objective: ObjectiveCompletion): Player =
+</span>133 <span style=''>    PlayerImpl(playerId, deck, objective)
+</span>134 <span style=''>
+</span>135 <span style=''>  private case class PlayerImpl(override val id: PlayerId, deck: Deck, override val objective: ObjectiveCompletion)
+</span>136 <span style=''>      extends Player:
+</span>137 <span style=''>
+</span>138 <span style=''>    import scala.util.*
+</span>139 <span style=''>    import model.cards.Hand as PlayerHand
+</span>140 <span style=''>    import config.GameConfig.{NumberTrainCars, InitialScore}
+</span>141 <span style=''>
+</span>142 <span style=''>    private val trainCars: TrainCars = </span><span style='background: #AEF1AE'>TrainCars(NumberTrainCars)</span><span style=''>
+</span>143 <span style=''>    private val playerHand: PlayerHand = </span><span style='background: #AEF1AE'>PlayerHand(deck)</span><span style=''>
+</span>144 <span style=''>    private var _score: Points = InitialScore
+</span>145 <span style=''>
+</span>146 <span style=''>    </span><span style='background: #AEF1AE'>override def hand</span><span style=''>: Hand = </span><span style='background: #AEF1AE'>playerHand.cards</span><span style=''>
+</span>147 <span style=''>    </span><span style='background: #AEF1AE'>override def trains</span><span style=''>: Trains = </span><span style='background: #AEF1AE'>trainCars.trainCars</span><span style=''>
+</span>148 <span style=''>
+</span>149 <span style=''>    </span><span style='background: #AEF1AE'>override def drawCards</span><span style=''>(n: Int): Either[GameError, Unit] =
+</span>150 <span style=''>      </span><span style='background: #AEF1AE'>Try(deck.draw(n)).toEither.left.map(_ =&gt; NotEnoughCardsInTheDeck).map(playerHand.addCards)</span><span style=''>
+</span>151 <span style=''>
+</span>152 <span style=''>    export </span><span style='background: #AEF1AE'>playerHand</span><span style=''>.canPlayCards
+</span>153 <span style=''>
+</span>154 <span style=''>    </span><span style='background: #AEF1AE'>private def requirePositiveNumber</span><span style=''>(n: Int): Unit = </span><span style='background: #AEF1AE'>require(n &gt; 0, &quot;the number must be positive&quot;)</span><span style=''>
+</span>155 <span style=''>
+</span>156 <span style=''>    </span><span style='background: #AEF1AE'>override def playCards</span><span style=''>(color: Color, n: Int): Either[GameError, Unit] =
+</span>157 <span style=''>      </span><span style='background: #AEF1AE'>requirePositiveNumber(n)</span><span style=''>
+</span>158 <span style=''>      </span><span style='background: #AEF1AE'>Try(playerHand.playCards(color, n)).toEither.left.map(_ =&gt; NotEnoughCards).map(
+</span>159 <span style=''></span><span style='background: #AEF1AE'>        _.foreach(deck.reinsertAtTheBottom)
+</span>160 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>161 <span style=''>
+</span>162 <span style=''>    </span><span style='background: #AEF1AE'>override def canPlaceTrains</span><span style=''>(n: Trains): Boolean =
+</span>163 <span style=''>      </span><span style='background: #AEF1AE'>requirePositiveNumber(n)</span><span style=''>
+</span>164 <span style=''>      </span><span style='background: #AEF1AE'>trains</span><span style=''> &gt;= n
+</span>165 <span style=''>
+</span>166 <span style=''>    </span><span style='background: #AEF1AE'>override def placeTrains</span><span style=''>(n: Trains): Either[GameError, Unit] =
+</span>167 <span style=''>      </span><span style='background: #AEF1AE'>requirePositiveNumber(n)</span><span style=''>
+</span>168 <span style=''>      </span><span style='background: #AEF1AE'>Try(trainCars.placeTrainCars(n)).toEither.left.map(_ =&gt; NotEnoughTrains)</span><span style=''>
+</span>169 <span style=''>
+</span>170 <span style=''>    </span><span style='background: #AEF1AE'>override def score</span><span style=''>: Points = _score
+</span>171 <span style=''>
+</span>172 <span style=''>    </span><span style='background: #AEF1AE'>override def addPoints</span><span style=''>(points: Points): Unit =
+</span>173 <span style=''>      </span><span style='background: #AEF1AE'>requirePositiveNumber(points)</span><span style=''>
+</span>174 <span style=''>      _score += points
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          929
+        </td>
+        <td>
+          3074
+          -
+          3074
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          NotEnoughTrains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          928
+        </td>
+        <td>
+          3074
+          -
+          3074
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          NotEnoughCardsInTheDeck
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          110
+        </td>
+        <td>
+          930
+        </td>
+        <td>
+          3074
+          -
+          3074
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          NotEnoughCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          932
+        </td>
+        <td>
+          3712
+          -
+          3718
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Deck()
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          931
+        </td>
+        <td>
+          3669
+          -
+          3678
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          132
+        </td>
+        <td>
+          933
+        </td>
+        <td>
+          3712
+          -
+          3712
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply$default$2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          142
+        </td>
+        <td>
+          934
+        </td>
+        <td>
+          4111
+          -
+          4137
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          TrainCars(NumberTrainCars)
+        </td>
+      </tr><tr>
+        <td>
+          143
+        </td>
+        <td>
+          935
+        </td>
+        <td>
+          4179
+          -
+          4195
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          PlayerHand(deck)
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          937
+        </td>
+        <td>
+          4247
+          -
+          4264
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          hand
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def hand
+        </td>
+      </tr><tr>
+        <td>
+          146
+        </td>
+        <td>
+          936
+        </td>
+        <td>
+          4273
+          -
+          4289
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerHand.cards
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          938
+        </td>
+        <td>
+          4324
+          -
+          4343
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          trainCars
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          trainCars.trainCars
+        </td>
+      </tr><tr>
+        <td>
+          147
+        </td>
+        <td>
+          939
+        </td>
+        <td>
+          4294
+          -
+          4313
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          trains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def trains
+        </td>
+      </tr><tr>
+        <td>
+          149
+        </td>
+        <td>
+          948
+        </td>
+        <td>
+          4349
+          -
+          4371
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          drawCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def drawCards
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          941
+        </td>
+        <td>
+          4413
+          -
+          4478
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(deck.draw(n)).toEither.left.map(_ =&gt; NotEnoughCardsInTheDeck)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          944
+        </td>
+        <td>
+          4413
+          -
+          4439
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toEither
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(deck.draw(n)).toEither
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          947
+        </td>
+        <td>
+          4483
+          -
+          4502
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          addCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerHand.addCards
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          946
+        </td>
+        <td>
+          4454
+          -
+          4477
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          NotEnoughCardsInTheDeck
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          NotEnoughCardsInTheDeck
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          940
+        </td>
+        <td>
+          4413
+          -
+          4503
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(deck.draw(n)).toEither.left.map(_ =&gt; NotEnoughCardsInTheDeck).map(playerHand.addCards)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          943
+        </td>
+        <td>
+          4417
+          -
+          4429
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          draw
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          deck.draw(n)
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          945
+        </td>
+        <td>
+          4413
+          -
+          4444
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          left
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(deck.draw(n)).toEither.left
+        </td>
+      </tr><tr>
+        <td>
+          150
+        </td>
+        <td>
+          942
+        </td>
+        <td>
+          4413
+          -
+          4430
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(deck.draw(n))
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          950
+        </td>
+        <td>
+          4527
+          -
+          4527
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          canPlayCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          
+        </td>
+      </tr><tr>
+        <td>
+          152
+        </td>
+        <td>
+          949
+        </td>
+        <td>
+          4516
+          -
+          4526
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          canPlayCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerHand
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          952
+        </td>
+        <td>
+          4545
+          -
+          4578
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          requirePositiveNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          private def requirePositiveNumber
+        </td>
+      </tr><tr>
+        <td>
+          154
+        </td>
+        <td>
+          951
+        </td>
+        <td>
+          4595
+          -
+          4640
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          require
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          require(n &gt; 0, &quot;the number must be positive&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          156
+        </td>
+        <td>
+          963
+        </td>
+        <td>
+          4646
+          -
+          4668
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          playCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def playCards
+        </td>
+      </tr><tr>
+        <td>
+          157
+        </td>
+        <td>
+          953
+        </td>
+        <td>
+          4724
+          -
+          4748
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          requirePositiveNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          requirePositiveNumber(n)
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          959
+        </td>
+        <td>
+          4755
+          -
+          4804
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          left
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(playerHand.playCards(color, n)).toEither.left
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          956
+        </td>
+        <td>
+          4755
+          -
+          4790
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(playerHand.playCards(color, n))
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          955
+        </td>
+        <td>
+          4755
+          -
+          4829
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(playerHand.playCards(color, n)).toEither.left.map(_ =&gt; NotEnoughCards)
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          958
+        </td>
+        <td>
+          4755
+          -
+          4799
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toEither
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(playerHand.playCards(color, n)).toEither
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          960
+        </td>
+        <td>
+          4814
+          -
+          4828
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          NotEnoughCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          NotEnoughCards
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          954
+        </td>
+        <td>
+          4755
+          -
+          4886
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(playerHand.playCards(color, n)).toEither.left.map(_ =&gt; NotEnoughCards).map(\n        _.foreach(deck.reinsertAtTheBottom)\n      )
+        </td>
+      </tr><tr>
+        <td>
+          158
+        </td>
+        <td>
+          957
+        </td>
+        <td>
+          4759
+          -
+          4789
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          playCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          playerHand.playCards(color, n)
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          962
+        </td>
+        <td>
+          4853
+          -
+          4877
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          reinsertAtTheBottom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          deck.reinsertAtTheBottom
+        </td>
+      </tr><tr>
+        <td>
+          159
+        </td>
+        <td>
+          961
+        </td>
+        <td>
+          4843
+          -
+          4878
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          foreach
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          _.foreach(deck.reinsertAtTheBottom)
+        </td>
+      </tr><tr>
+        <td>
+          162
+        </td>
+        <td>
+          966
+        </td>
+        <td>
+          4892
+          -
+          4919
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          canPlaceTrains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def canPlaceTrains
+        </td>
+      </tr><tr>
+        <td>
+          163
+        </td>
+        <td>
+          964
+        </td>
+        <td>
+          4948
+          -
+          4972
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          requirePositiveNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          requirePositiveNumber(n)
+        </td>
+      </tr><tr>
+        <td>
+          164
+        </td>
+        <td>
+          965
+        </td>
+        <td>
+          4979
+          -
+          4985
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          trains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          trains
+        </td>
+      </tr><tr>
+        <td>
+          166
+        </td>
+        <td>
+          974
+        </td>
+        <td>
+          4996
+          -
+          5020
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          placeTrains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def placeTrains
+        </td>
+      </tr><tr>
+        <td>
+          167
+        </td>
+        <td>
+          967
+        </td>
+        <td>
+          5065
+          -
+          5089
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          requirePositiveNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          requirePositiveNumber(n)
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          968
+        </td>
+        <td>
+          5096
+          -
+          5168
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(trainCars.placeTrainCars(n)).toEither.left.map(_ =&gt; NotEnoughTrains)
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          971
+        </td>
+        <td>
+          5096
+          -
+          5137
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          toEither
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(trainCars.placeTrainCars(n)).toEither
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          973
+        </td>
+        <td>
+          5152
+          -
+          5167
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          NotEnoughTrains
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          NotEnoughTrains
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          970
+        </td>
+        <td>
+          5100
+          -
+          5127
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          placeTrainCars
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          trainCars.placeTrainCars(n)
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          969
+        </td>
+        <td>
+          5096
+          -
+          5128
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(trainCars.placeTrainCars(n))
+        </td>
+      </tr><tr>
+        <td>
+          168
+        </td>
+        <td>
+          972
+        </td>
+        <td>
+          5096
+          -
+          5142
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          left
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Try(trainCars.placeTrainCars(n)).toEither.left
+        </td>
+      </tr><tr>
+        <td>
+          170
+        </td>
+        <td>
+          975
+        </td>
+        <td>
+          5174
+          -
+          5192
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          score
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def score
+        </td>
+      </tr><tr>
+        <td>
+          172
+        </td>
+        <td>
+          977
+        </td>
+        <td>
+          5215
+          -
+          5237
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          addPoints
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def addPoints
+        </td>
+      </tr><tr>
+        <td>
+          173
+        </td>
+        <td>
+          976
+        </td>
+        <td>
+          5268
+          -
+          5297
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          requirePositiveNumber
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          requirePositiveNumber(points)
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

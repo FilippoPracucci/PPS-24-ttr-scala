@@ -1,0 +1,905 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\cards\Deck.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.cards
+</span>2 <span style=''>
+</span>3 <span style=''>/** A deck of train cards, which can be shuffled, cards can be drawn from it and reinserted at the bottom of it. */
+</span>4 <span style=''>trait Deck extends Cards:
+</span>5 <span style=''>
+</span>6 <span style=''>  /** Shuffle the deck to reorder it randomly. */
+</span>7 <span style=''>  def shuffle(): Unit
+</span>8 <span style=''>
+</span>9 <span style=''>  /** Draw the given amount of cards from the top of the deck.
+</span>10 <span style=''>    *
+</span>11 <span style=''>    * @param n
+</span>12 <span style=''>    *   the number of cards to draw, which must be less or equal of the cards remaining in the deck.
+</span>13 <span style=''>    * @return
+</span>14 <span style=''>    *   the list of cards drawn.
+</span>15 <span style=''>    */
+</span>16 <span style=''>  def draw(n: Int): List[Card]
+</span>17 <span style=''>
+</span>18 <span style=''>  /** Reinsert the given card at the bottom of the deck.
+</span>19 <span style=''>    *
+</span>20 <span style=''>    * @param card
+</span>21 <span style=''>    *   the card to reinsert at the bottom of the deck.
+</span>22 <span style=''>    */
+</span>23 <span style=''>  def reinsertAtTheBottom(card: Card): Unit
+</span>24 <span style=''>
+</span>25 <span style=''>/** The factory for [[Deck]] instances. */
+</span>26 <span style=''>object Deck:
+</span>27 <span style=''>  /** A [[Generator]] for type [[Deck]]. */
+</span>28 <span style=''>  abstract class DeckGenerator extends Generator[Deck]:
+</span>29 <span style=''>    </span><span style='background: #AEF1AE'>override def generate</span><span style=''>(): Deck = </span><span style='background: #AEF1AE'>DeckImpl(generateCards())</span><span style=''>
+</span>30 <span style=''>
+</span>31 <span style=''>  /** Create a deck by means of a generator.
+</span>32 <span style=''>    *
+</span>33 <span style=''>    * @param generator
+</span>34 <span style=''>    *   the [[DeckGenerator]].
+</span>35 <span style=''>    * @return
+</span>36 <span style=''>    *   the deck created.
+</span>37 <span style=''>    */
+</span>38 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>()(using generator: DeckGenerator): Deck = </span><span style='background: #AEF1AE'>generator.generate()</span><span style=''>
+</span>39 <span style=''>
+</span>40 <span style=''>  /** The standard deck generator according to the rules of the game.
+</span>41 <span style=''>    *
+</span>42 <span style=''>    * @return
+</span>43 <span style=''>    *   the standard [[DeckGenerator]].
+</span>44 <span style=''>    */
+</span>45 <span style=''>  given DeckGenerator with
+</span>46 <span style=''>    </span><span style='background: #AEF1AE'>override def generateCards</span><span style=''>(): List[Card] =
+</span>47 <span style=''>      import model.utils.Color
+</span>48 <span style=''>      import config.GameConfig.NumCardsPerColor
+</span>49 <span style=''>
+</span>50 <span style=''>      var list: List[Card] = </span><span style='background: #AEF1AE'>List.empty</span><span style=''>
+</span>51 <span style=''>      </span><span style='background: #AEF1AE'>for
+</span>52 <span style=''></span><span style='background: #AEF1AE'>        color &lt;- Color.values
+</span>53 <span style=''></span><span style='background: #AEF1AE'>        i &lt;- 0 until NumCardsPerColor
+</span>54 <span style=''></span><span style='background: #AEF1AE'>      yield list = Card(color) +: list</span><span style=''>
+</span>55 <span style=''>      list
+</span>56 <span style=''>
+</span>57 <span style=''>  private class DeckImpl(private val cardsList: List[Card]) extends Deck:
+</span>58 <span style=''>    </span><span style='background: #AEF1AE'>cards = cardsList</span><span style=''>
+</span>59 <span style=''>
+</span>60 <span style=''>    </span><span style='background: #AEF1AE'>override def shuffle</span><span style=''>(): Unit =
+</span>61 <span style=''>      import scala.util.Random
+</span>62 <span style=''>      </span><span style='background: #AEF1AE'>cards = Random.shuffle(cards)</span><span style=''>
+</span>63 <span style=''>
+</span>64 <span style=''>    </span><span style='background: #AEF1AE'>override def draw</span><span style=''>(n: Int): List[Card] =
+</span>65 <span style=''>      </span><span style='background: #AEF1AE'>require(cards.size &gt;= n, &quot;Not enough cards in the deck to draw the amount given!&quot;)</span><span style=''>
+</span>66 <span style=''>      val result = </span><span style='background: #AEF1AE'>cards.splitAt(n)</span><span style=''>
+</span>67 <span style=''>      </span><span style='background: #AEF1AE'>cards = result._2</span><span style=''>
+</span>68 <span style=''>      </span><span style='background: #AEF1AE'>result._1</span><span style=''>
+</span>69 <span style=''>
+</span>70 <span style=''>    </span><span style='background: #AEF1AE'>override def reinsertAtTheBottom</span><span style=''>(card: Card): Unit =
+</span>71 <span style=''>      </span><span style='background: #AEF1AE'>cards = cards :+ card</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          454
+        </td>
+        <td>
+          898
+          -
+          913
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          generateCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          generateCards()
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          453
+        </td>
+        <td>
+          889
+          -
+          914
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          DeckImpl(generateCards())
+        </td>
+      </tr><tr>
+        <td>
+          29
+        </td>
+        <td>
+          455
+        </td>
+        <td>
+          857
+          -
+          878
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          generate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def generate
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          457
+        </td>
+        <td>
+          1070
+          -
+          1079
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          38
+        </td>
+        <td>
+          456
+        </td>
+        <td>
+          1122
+          -
+          1142
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          generate
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          generator.generate()
+        </td>
+      </tr><tr>
+        <td>
+          46
+        </td>
+        <td>
+          467
+        </td>
+        <td>
+          1312
+          -
+          1338
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          generateCards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def generateCards
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          459
+        </td>
+        <td>
+          1464
+          -
+          1474
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          empty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          List.empty
+        </td>
+      </tr><tr>
+        <td>
+          50
+        </td>
+        <td>
+          458
+        </td>
+        <td>
+          1464
+          -
+          1468
+        </td>
+        <td>
+          Ident
+        </td>
+        <td>
+          List
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          List
+        </td>
+      </tr><tr>
+        <td>
+          51
+        </td>
+        <td>
+          460
+        </td>
+        <td>
+          1481
+          -
+          1591
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          flatMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          for\n        color &lt;- Color.values\n        i &lt;- 0 until NumCardsPerColor\n      yield list = Card(color) +: list
+        </td>
+      </tr><tr>
+        <td>
+          52
+        </td>
+        <td>
+          461
+        </td>
+        <td>
+          1502
+          -
+          1514
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          refArrayOps
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Color.values
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          463
+        </td>
+        <td>
+          1528
+          -
+          1552
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          until
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          0 until NumCardsPerColor
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          462
+        </td>
+        <td>
+          1523
+          -
+          1591
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          i &lt;- 0 until NumCardsPerColor\n      yield list = Card(color) +: list
+        </td>
+      </tr><tr>
+        <td>
+          53
+        </td>
+        <td>
+          464
+        </td>
+        <td>
+          1528
+          -
+          1529
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          intWrapper
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          0
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          465
+        </td>
+        <td>
+          1572
+          -
+          1583
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Card(color)
+        </td>
+      </tr><tr>
+        <td>
+          54
+        </td>
+        <td>
+          466
+        </td>
+        <td>
+          1572
+          -
+          1591
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          +:
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Card(color) +: list
+        </td>
+      </tr><tr>
+        <td>
+          58
+        </td>
+        <td>
+          468
+        </td>
+        <td>
+          1682
+          -
+          1699
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          cards_=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards = cardsList
+        </td>
+      </tr><tr>
+        <td>
+          60
+        </td>
+        <td>
+          472
+        </td>
+        <td>
+          1705
+          -
+          1725
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          shuffle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def shuffle
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          469
+        </td>
+        <td>
+          1773
+          -
+          1802
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          cards_=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards = Random.shuffle(cards)
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          471
+        </td>
+        <td>
+          1796
+          -
+          1801
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards
+        </td>
+      </tr><tr>
+        <td>
+          62
+        </td>
+        <td>
+          470
+        </td>
+        <td>
+          1781
+          -
+          1802
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          shuffle
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          Random.shuffle(cards)
+        </td>
+      </tr><tr>
+        <td>
+          64
+        </td>
+        <td>
+          481
+        </td>
+        <td>
+          1808
+          -
+          1825
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          draw
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def draw
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          474
+        </td>
+        <td>
+          1862
+          -
+          1867
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          473
+        </td>
+        <td>
+          1854
+          -
+          1936
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          require
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          require(cards.size &gt;= n, &quot;Not enough cards in the deck to draw the amount given!&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          475
+        </td>
+        <td>
+          1862
+          -
+          1872
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          size
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards.size
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          477
+        </td>
+        <td>
+          1956
+          -
+          1961
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards
+        </td>
+      </tr><tr>
+        <td>
+          66
+        </td>
+        <td>
+          476
+        </td>
+        <td>
+          1956
+          -
+          1972
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          splitAt
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards.splitAt(n)
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          478
+        </td>
+        <td>
+          1979
+          -
+          1996
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          cards_=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards = result._2
+        </td>
+      </tr><tr>
+        <td>
+          67
+        </td>
+        <td>
+          479
+        </td>
+        <td>
+          1987
+          -
+          1996
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          result._2
+        </td>
+      </tr><tr>
+        <td>
+          68
+        </td>
+        <td>
+          480
+        </td>
+        <td>
+          2003
+          -
+          2012
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          result._1
+        </td>
+      </tr><tr>
+        <td>
+          70
+        </td>
+        <td>
+          485
+        </td>
+        <td>
+          2018
+          -
+          2050
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          reinsertAtTheBottom
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def reinsertAtTheBottom
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          483
+        </td>
+        <td>
+          2085
+          -
+          2098
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          :+
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards :+ card
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          482
+        </td>
+        <td>
+          2077
+          -
+          2098
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          cards_=
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards = cards :+ card
+        </td>
+      </tr><tr>
+        <td>
+          71
+        </td>
+        <td>
+          484
+        </td>
+        <td>
+          2085
+          -
+          2090
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          cards
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          cards
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

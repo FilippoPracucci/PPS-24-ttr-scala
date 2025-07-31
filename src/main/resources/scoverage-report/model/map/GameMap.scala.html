@@ -1,0 +1,1002 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\map\GameMap.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.map
+</span>2 <span style=''>
+</span>3 <span style=''>import config.Loader
+</span>4 <span style=''>import model.utils.GameError
+</span>5 <span style=''>import model.player.Player.PlayerId
+</span>6 <span style=''>
+</span>7 <span style=''>/** Trait that represents the game map, composed of a set of routes. */
+</span>8 <span style=''>trait GameMap:
+</span>9 <span style=''>  import GameMap.CityName
+</span>10 <span style=''>
+</span>11 <span style=''>  /** Returns the set of routes of the [[GameMap]]
+</span>12 <span style=''>    *
+</span>13 <span style=''>    * @return
+</span>14 <span style=''>    *   the set of routes of the [[GameMap]]
+</span>15 <span style=''>    */
+</span>16 <span style=''>  def routes: Set[Route]
+</span>17 <span style=''>
+</span>18 <span style=''>  /** Gets the player that claims the route connecting the specified cities.
+</span>19 <span style=''>    *
+</span>20 <span style=''>    * @param connectedCities
+</span>21 <span style=''>    *   the pair of cities connected by the route, specifying their names as String
+</span>22 <span style=''>    * @return
+</span>23 <span style=''>    *   a [[Right]] of an [[Option]] containing the player claiming the route or [[None]] if no player claims it,
+</span>24 <span style=''>    *   [[Left]] containing the error [[GameMap.NonExistentRoute]] if the route doesn't exist
+</span>25 <span style=''>    */
+</span>26 <span style=''>  def getPlayerClaimingRoute(connectedCities: (CityName, CityName)): Either[GameError, Option[PlayerId]]
+</span>27 <span style=''>
+</span>28 <span style=''>  /** Gets the route connecting the specified cities.
+</span>29 <span style=''>    *
+</span>30 <span style=''>    * @param connectedCities
+</span>31 <span style=''>    *   the pair of cities connected by the route, specifying their names as String
+</span>32 <span style=''>    * @return
+</span>33 <span style=''>    *   an [[Option]] containing the requested [[Route]], [[None]] if the route doesn't exist
+</span>34 <span style=''>    */
+</span>35 <span style=''>  def getRoute(connectedCities: (CityName, CityName)): Option[Route]
+</span>36 <span style=''>
+</span>37 <span style=''>  /** Makes the player claim the route connecting the specified cities.
+</span>38 <span style=''>    *
+</span>39 <span style=''>    * @param connectedCities
+</span>40 <span style=''>    *   the pair of cities connected by the route, specifying their names as [[String]]
+</span>41 <span style=''>    * @param playerId
+</span>42 <span style=''>    *   the [[PlayerId]] of the player
+</span>43 <span style=''>    * @return
+</span>44 <span style=''>    *   an empty [[Right]] if the action succeeds, [[Left]] containing the error [[NonExistentRoute]] if the route
+</span>45 <span style=''>    *   doesn't exist, [[Left]] containing [[AlreadyClaimedRoute]] if the route has already been claimed
+</span>46 <span style=''>    */
+</span>47 <span style=''>  def claimRoute(connectedCities: (CityName, CityName), playerId: PlayerId): Either[GameError, Unit]
+</span>48 <span style=''>
+</span>49 <span style=''>object GameMap:
+</span>50 <span style=''>  /** Type alias that represents the name of a city as [[String]]. */
+</span>51 <span style=''>  type CityName = String
+</span>52 <span style=''>
+</span>53 <span style=''>  /** Error that represents the case in which a route doesn't exist. */
+</span>54 <span style=''>  case object NonExistentRoute extends GameError
+</span>55 <span style=''>
+</span>56 <span style=''>  /** Error that represents the case in which a route is already claimed. */
+</span>57 <span style=''>  case object AlreadyClaimedRoute extends GameError
+</span>58 <span style=''>
+</span>59 <span style=''>  /** The given instance of the default routes loader, which loads from the JSON file 'routes.json' located in
+</span>60 <span style=''>    * 'src/main/resources/'.
+</span>61 <span style=''>    *
+</span>62 <span style=''>    * @return
+</span>63 <span style=''>    *   the default routes loader
+</span>64 <span style=''>    */
+</span>65 <span style=''>  given defaultRoutesLoader: Loader[Set[Route]] = </span><span style='background: #AEF1AE'>RoutesLoader()</span><span style=''>
+</span>66 <span style=''>
+</span>67 <span style=''>  /** Creates a [[GameMap]] composed of the set of routes loaded by the specified loader.
+</span>68 <span style=''>    *
+</span>69 <span style=''>    * @param loader
+</span>70 <span style=''>    *   the loader of the routes
+</span>71 <span style=''>    * @return
+</span>72 <span style=''>    *   the created [[GameMap]]
+</span>73 <span style=''>    */
+</span>74 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>()(using loader: Loader[Set[Route]]): GameMap = </span><span style='background: #AEF1AE'>GameMapImpl(loader.load())</span><span style=''>
+</span>75 <span style=''>
+</span>76 <span style=''>  private class GameMapImpl(override val routes: Set[Route]) extends GameMap:
+</span>77 <span style=''>    private type ClaimedRoute = (Route, Option[PlayerId])
+</span>78 <span style=''>    private var claimedRoutes = </span><span style='background: #AEF1AE'>routes.map(r =&gt; (r, None): ClaimedRoute).toMap</span><span style=''>
+</span>79 <span style=''>
+</span>80 <span style=''>    </span><span style='background: #AEF1AE'>private def getClaimedRoute</span><span style=''>(connectedCities: (CityName, CityName)): Option[ClaimedRoute] =
+</span>81 <span style=''>      </span><span style='background: #AEF1AE'>claimedRoutes.find((r, _) =&gt;
+</span>82 <span style=''></span><span style='background: #AEF1AE'>        (r.connectedCities._1.name, r.connectedCities._2.name) == connectedCities
+</span>83 <span style=''></span><span style='background: #AEF1AE'>          || (r.connectedCities._2.name, r.connectedCities._1.name) == connectedCities
+</span>84 <span style=''></span><span style='background: #AEF1AE'>      )</span><span style=''>
+</span>85 <span style=''>
+</span>86 <span style=''>    </span><span style='background: #AEF1AE'>override def getPlayerClaimingRoute</span><span style=''>(connectedCities: (CityName, CityName)): Either[GameError, Option[PlayerId]] =
+</span>87 <span style=''>      </span><span style='background: #AEF1AE'>getClaimedRoute(connectedCities).toRight(NonExistentRoute).map(_._2)</span><span style=''>
+</span>88 <span style=''>
+</span>89 <span style=''>    </span><span style='background: #AEF1AE'>override def getRoute</span><span style=''>(connectedCities: (CityName, CityName)): Option[Route] =
+</span>90 <span style=''>      </span><span style='background: #AEF1AE'>getClaimedRoute(connectedCities).map((r, _) =&gt; r)</span><span style=''>
+</span>91 <span style=''>
+</span>92 <span style=''>    </span><span style='background: #AEF1AE'>override def claimRoute</span><span style=''>(connectedCities: (CityName, CityName), playerId: PlayerId): Either[GameError, Unit] =
+</span>93 <span style=''>      </span><span style='background: #AEF1AE'>getClaimedRoute(connectedCities)
+</span>94 <span style=''></span><span style='background: #AEF1AE'>        .toRight(NonExistentRoute)
+</span>95 <span style=''></span><span style='background: #AEF1AE'>        .filterOrElse((_, p) =&gt; p.isEmpty, AlreadyClaimedRoute)
+</span>96 <span style=''></span><span style='background: #AEF1AE'>        .map((route, _) =&gt; claimedRoutes = claimedRoutes.updated(route, Some(playerId)))</span><span style=''>
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          534
+        </td>
+        <td>
+          2472
+          -
+          2486
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoutesLoader()
+        </td>
+      </tr><tr>
+        <td>
+          65
+        </td>
+        <td>
+          535
+        </td>
+        <td>
+          2472
+          -
+          2484
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          $lessinit$greater$default$1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          RoutesLoader
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          537
+        </td>
+        <td>
+          2761
+          -
+          2774
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          load
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          loader.load()
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          536
+        </td>
+        <td>
+          2749
+          -
+          2775
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          &lt;init&gt;
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          GameMapImpl(loader.load())
+        </td>
+      </tr><tr>
+        <td>
+          74
+        </td>
+        <td>
+          538
+        </td>
+        <td>
+          2692
+          -
+          2701
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          540
+        </td>
+        <td>
+          2945
+          -
+          2985
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          routes.map(r =&gt; (r, None): ClaimedRoute)
+        </td>
+      </tr><tr>
+        <td>
+          78
+        </td>
+        <td>
+          539
+        </td>
+        <td>
+          2945
+          -
+          2991
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toMap
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          routes.map(r =&gt; (r, None): ClaimedRoute).toMap
+        </td>
+      </tr><tr>
+        <td>
+          80
+        </td>
+        <td>
+          554
+        </td>
+        <td>
+          2997
+          -
+          3024
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          getClaimedRoute
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          private def getClaimedRoute
+        </td>
+      </tr><tr>
+        <td>
+          81
+        </td>
+        <td>
+          541
+        </td>
+        <td>
+          3094
+          -
+          3299
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          find
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          claimedRoutes.find((r, _) =&gt;\n        (r.connectedCities._1.name, r.connectedCities._2.name) == connectedCities\n          || (r.connectedCities._2.name, r.connectedCities._1.name) == connectedCities\n      )
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          543
+        </td>
+        <td>
+          3132
+          -
+          3152
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities._1
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          546
+        </td>
+        <td>
+          3159
+          -
+          3179
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities._2
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          542
+        </td>
+        <td>
+          3132
+          -
+          3149
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          connectedCities
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          545
+        </td>
+        <td>
+          3159
+          -
+          3176
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          connectedCities
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          544
+        </td>
+        <td>
+          3132
+          -
+          3157
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities._1.name
+        </td>
+      </tr><tr>
+        <td>
+          82
+        </td>
+        <td>
+          547
+        </td>
+        <td>
+          3159
+          -
+          3184
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities._2.name
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          550
+        </td>
+        <td>
+          3219
+          -
+          3244
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities._2.name
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          549
+        </td>
+        <td>
+          3219
+          -
+          3239
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities._2
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          552
+        </td>
+        <td>
+          3246
+          -
+          3266
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _1
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities._1
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          548
+        </td>
+        <td>
+          3219
+          -
+          3236
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          connectedCities
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          551
+        </td>
+        <td>
+          3246
+          -
+          3263
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          connectedCities
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities
+        </td>
+      </tr><tr>
+        <td>
+          83
+        </td>
+        <td>
+          553
+        </td>
+        <td>
+          3246
+          -
+          3271
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          name
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          r.connectedCities._1.name
+        </td>
+      </tr><tr>
+        <td>
+          86
+        </td>
+        <td>
+          559
+        </td>
+        <td>
+          3305
+          -
+          3340
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          getPlayerClaimingRoute
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def getPlayerClaimingRoute
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          558
+        </td>
+        <td>
+          3488
+          -
+          3492
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          _2
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          _._2
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          555
+        </td>
+        <td>
+          3425
+          -
+          3493
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities).toRight(NonExistentRoute).map(_._2)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          557
+        </td>
+        <td>
+          3425
+          -
+          3457
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getClaimedRoute
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities)
+        </td>
+      </tr><tr>
+        <td>
+          87
+        </td>
+        <td>
+          556
+        </td>
+        <td>
+          3425
+          -
+          3483
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toRight
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities).toRight(NonExistentRoute)
+        </td>
+      </tr><tr>
+        <td>
+          89
+        </td>
+        <td>
+          562
+        </td>
+        <td>
+          3499
+          -
+          3520
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          getRoute
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def getRoute
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          561
+        </td>
+        <td>
+          3583
+          -
+          3615
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getClaimedRoute
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities)
+        </td>
+      </tr><tr>
+        <td>
+          90
+        </td>
+        <td>
+          560
+        </td>
+        <td>
+          3583
+          -
+          3632
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities).map((r, _) =&gt; r)
+        </td>
+      </tr><tr>
+        <td>
+          92
+        </td>
+        <td>
+          569
+        </td>
+        <td>
+          3638
+          -
+          3661
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          claimRoute
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def claimRoute
+        </td>
+      </tr><tr>
+        <td>
+          93
+        </td>
+        <td>
+          566
+        </td>
+        <td>
+          3754
+          -
+          3786
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          getClaimedRoute
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities)
+        </td>
+      </tr><tr>
+        <td>
+          94
+        </td>
+        <td>
+          565
+        </td>
+        <td>
+          3754
+          -
+          3821
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          toRight
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities)\n        .toRight(NonExistentRoute)
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          567
+        </td>
+        <td>
+          3854
+          -
+          3863
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          isEmpty
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          p.isEmpty
+        </td>
+      </tr><tr>
+        <td>
+          95
+        </td>
+        <td>
+          564
+        </td>
+        <td>
+          3754
+          -
+          3885
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          filterOrElse
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities)\n        .toRight(NonExistentRoute)\n        .filterOrElse((_, p) =&gt; p.isEmpty, AlreadyClaimedRoute)
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          568
+        </td>
+        <td>
+          3929
+          -
+          3973
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          updated
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          claimedRoutes.updated(route, Some(playerId))
+        </td>
+      </tr><tr>
+        <td>
+          96
+        </td>
+        <td>
+          563
+        </td>
+        <td>
+          3754
+          -
+          3974
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          map
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          getClaimedRoute(connectedCities)\n        .toRight(NonExistentRoute)\n        .filterOrElse((_, p) =&gt; p.isEmpty, AlreadyClaimedRoute)\n        .map((route, _) =&gt; claimedRoutes = claimedRoutes.updated(route, Some(playerId)))
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

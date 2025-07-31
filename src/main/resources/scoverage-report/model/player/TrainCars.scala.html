@@ -1,0 +1,189 @@
+<html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <title id="title">
+          model\player\TrainCars.scala.html
+        </title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/css/theme.default.min.css" type="text/css"/><script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.20.1/js/jquery.tablesorter.min.js"></script><link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/css/bootstrap.min.css" type="text/css"/><script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script><script type="text/javascript">
+        $(document).ready(function() {$(".tablesorter").tablesorter();});
+      </script>
+        <style>
+          table.codegrid { font-family: monospace; font-size: 12px; width: auto!important; }table.statementlist { width: auto!important; font-size: 13px; } table.codegrid td { padding: 0!important; border: 0!important } table td.linenumber { width: 40px!important; } 
+        </style>
+      </head>
+      <body style="font-family: monospace;">
+        <ul class="nav nav-tabs">
+          <li>
+            <a href="#codegrid" data-toggle="tab">Codegrid</a>
+          </li>
+          <li>
+            <a href="#statementlist" data-toggle="tab">Statement List</a>
+          </li>
+        </ul>
+        <div class="tab-content">
+          <div class="tab-pane active" id="codegrid">
+            <pre style='font-size: 12pt; font-family: courier, monospace;'>1 <span style=''>package model.player
+</span>2 <span style=''>
+</span>3 <span style=''>/** The train cars, which are the number owned by the player with the possibility to place some of them. */
+</span>4 <span style=''>trait TrainCars:
+</span>5 <span style=''>  /** Number of player train cars left.
+</span>6 <span style=''>    *
+</span>7 <span style=''>    * @return
+</span>8 <span style=''>    *   the number of train cars left.
+</span>9 <span style=''>    */
+</span>10 <span style=''>  def trainCars: Int
+</span>11 <span style=''>
+</span>12 <span style=''>  /** Place the given amount of player train cars, if they are sufficient.
+</span>13 <span style=''>    *
+</span>14 <span style=''>    * @param n
+</span>15 <span style=''>    *   the number of train cars to place.
+</span>16 <span style=''>    */
+</span>17 <span style=''>  def placeTrainCars(n: Int): Unit
+</span>18 <span style=''>
+</span>19 <span style=''>object TrainCars:
+</span>20 <span style=''>  </span><span style='background: #AEF1AE'>def apply</span><span style=''>(numberTrainCars: Int): TrainCars = TrainCarsImpl(numberTrainCars)
+</span>21 <span style=''>
+</span>22 <span style=''>  private case class TrainCarsImpl(private var _trainCars: Int) extends TrainCars:
+</span>23 <span style=''>    </span><span style='background: #AEF1AE'>override def trainCars</span><span style=''>: Int = _trainCars
+</span>24 <span style=''>
+</span>25 <span style=''>    </span><span style='background: #AEF1AE'>override def placeTrainCars</span><span style=''>(n: Int): Unit =
+</span>26 <span style=''>      </span><span style='background: #AEF1AE'>require(trainCars &gt;= n, &quot;Not enough train cars to place the amount given.&quot;)</span><span style=''>
+</span>27 <span style=''>      _trainCars -= n
+</span></pre>
+          </div>
+          <div class="tab-pane" id="statementlist">
+            <table cellspacing="0" cellpadding="0" class="table statementlist">
+      <tr>
+        <th>Line</th>
+        <th>Stmt Id</th>
+        <th>Pos</th>
+        <th>Tree</th>
+        <th>Symbol</th>
+        <th>Tests</th>
+        <th>Code</th>
+      </tr><tr>
+        <td>
+          20
+        </td>
+        <td>
+          978
+        </td>
+        <td>
+          477
+          -
+          486
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          apply
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          def apply
+        </td>
+      </tr><tr>
+        <td>
+          23
+        </td>
+        <td>
+          979
+        </td>
+        <td>
+          641
+          -
+          663
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          trainCars
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def trainCars
+        </td>
+      </tr><tr>
+        <td>
+          25
+        </td>
+        <td>
+          982
+        </td>
+        <td>
+          687
+          -
+          714
+        </td>
+        <td>
+          DefDef
+        </td>
+        <td>
+          placeTrainCars
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          override def placeTrainCars
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          980
+        </td>
+        <td>
+          737
+          -
+          812
+        </td>
+        <td>
+          Apply
+        </td>
+        <td>
+          require
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          require(trainCars &gt;= n, &quot;Not enough train cars to place the amount given.&quot;)
+        </td>
+      </tr><tr>
+        <td>
+          26
+        </td>
+        <td>
+          981
+        </td>
+        <td>
+          745
+          -
+          754
+        </td>
+        <td>
+          Select
+        </td>
+        <td>
+          trainCars
+        </td>
+        <td>
+          
+        </td>
+        <td style="background: #AEF1AE">
+          trainCars
+        </td>
+      </tr>
+    </table>
+          </div>
+        </div>
+      </body>
+    </html>

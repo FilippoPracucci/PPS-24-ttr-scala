@@ -39,6 +39,7 @@ case object GameConfig:
       |last round. At the end of the game the player with the most points wins.
       |
       |Map legend:
+      |- Line's number => route's length, corresponding to the number of trains to place
       |- Dashed line of color C => unclaimed route, with C = color of the route
       |- Solid line of color C => claimed route, with C = color of the player claiming the route
       |

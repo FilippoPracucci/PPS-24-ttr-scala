@@ -55,7 +55,7 @@ val PointsPerRouteLength: Int => Int =
 
 `GameViewConfig` è un oggetto creato per contenere valori costanti per la *view*. Come `GameConfig` contiene valori
 costanti di tipi primitivi e **functions**. Un esempio di **function** è:
-```scala 3
+```scala
 val ObjectiveDescription = (city1: String, city2: String, points: Int) => f"Connect the cities $city1 and $city2\n\nPoints: $points"
 ```
 Innestati in `GameViewConfig` sono presenti gli oggetti `BorderConfig`, `ColorConfig` e `FontConfig`, che contengono

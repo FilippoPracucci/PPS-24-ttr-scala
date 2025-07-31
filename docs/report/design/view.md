@@ -63,15 +63,17 @@ Estende il trait `PlayerGameView` per esporre anche i metodi relativi alle infor
 di treni rimasti, punteggi...), in questo modo il _controller_ può interagire esclusivamente con `GameView`. La _view_
 si compone di:
 - `PlayerInfoView`: è un'estensione di `PlayerView`, che viene utilizzato per mostrare il nome ed il numero di treni
-rimasti del giocatore di turno.
+rimasti del giocatore di turno (come da [requisito utente 7](../requirement_specification.md#requisiti-utente));
 - `ObjectiveView`: è un'estensione di `PlayerView`, che viene utilizzato per mostrare l'obiettivo del giocatore di
-turno.
-- `PlayerScoresView`: viene utilizzato per mostrare il punteggio di tutti i giocatori durante la partita.
+turno (come da [requisito utente 5](../requirement_specification.md#requisiti-utente));
+- `PlayerScoresView`: viene utilizzato per mostrare il punteggio di tutti i giocatori durante la partita (come da
+[requisito utente 8](../requirement_specification.md#requisiti-utente));
 - `MapView`: viene utilizzato per mostrare la mappa di gioco. 
 
 Inoltre sono presenti i pulsanti per permettere al giocatore di turno di pescare dal mazzo e per visualizzare le regole.
-Infine `GameView` sfrutta `HandView` per mostrare la mano del giocatore di turno e `FinalRankingView` per visualizzare
-la classifica finale al termine della partita.
+Infine `GameView` sfrutta `HandView` per mostrare la mano del giocatore di turno (come da
+[requisito utente 6](../requirement_specification.md#requisiti-utente)) e `FinalRankingView` per visualizzare la
+classifica finale al termine della partita.
 
 `GameView` espone metodi per:
 - `open`: visualizzare la _view_;

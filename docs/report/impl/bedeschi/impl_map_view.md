@@ -17,12 +17,12 @@ config:
 classDiagram
     class MapView {
         <<trait>>
-    }
-    class MapViewImpl {
         +component: Component
         +addCity(city: City, x: Double, y: Double, width: Double, height: Double) Unit
         +addRoute(connectedCities: (City, City), length: Int, color: Color) Unit
         +updateRoute(connectedCities: (City, City), color: Color) Unit
+    }
+    class MapViewImpl {
         -changeGraph(change: => Unit) Unit
     }
     class GraphStyleManager {
@@ -52,7 +52,8 @@ di `MapView`. E' un object, inteso come **singleton**, in quanto nel gioco deve 
 `MapView`. Considerando che la scelta implementativa per la *view* è quella di utilizzare la libreria **Scala Swing**
 (wrapper di **Java Swing**), anche in questa implementazione la si utilizza. Inoltre, per rappresentare la mappa di
 gioco, che è composta da città collegate da tratte ferroviarie, e quindi è un grafo, si utilizza la libreria
-**JGraphX**, che è basata su **Java Swing** e permette di rappresentare grafi.
+**JGraphX**, che è basata su **Java Swing** e permette di rappresentare grafi (come da
+[requisito utente 1](../../requirement_specification.md#requisiti-utente)).
 
 `MapViewImpl` contiene quindi il grafo (di tipo `mxGraph`), il relativo componente Swing, e una `Map` da nomi di città
 a vertici per poter recuperare un arco dati due nomi di città. Utilizza inoltre un `GraphStyleManager` per impostare lo
@@ -63,7 +64,8 @@ grafo). `updateRoute`, invece, aggiorna una route (ovvero un arco) esistente nel
 città collegate, grazie alla `Map` prima citata), modificandone lo stile; viene invocato durante il corso del gioco e
 serve per marcare una route (ovvero un arco) come "occupata". Si è scelto di rappresentare una route non ancora occupata
 tramite una linea tratteggiata del colore della route, e una route occupata tramite una linea continua del colore del
-player che la occupa.
+player che la occupa (come da [requisito utente 2](../../requirement_specification.md#requisiti-utente)). Ogni route
+presenta inoltre un'etichetta che ne rappresenta la lunghezza, ovvero il numero di treni da piazzare per occuparla.
 
 Nella libreria JGraphX le modifiche al grafo vanno effettuate con attenzione, segnalandone l'inizio e la fine tramite
 metodi appositi. Per facilitare questa operazione ed evitare ripetizioni di codice, è stato introdotto un metodo privato
@@ -77,8 +79,9 @@ La mappa, così come rappresentata da `MapViewImpl`, dal punto di vista dell'ute
 ovvero con nodi e archi in posizione fissa, ed etichette fisse (l'etichetta di un nodo è il nome della città,
 l'etichetta di un arco è la lunghezza della route). Per questa ragione qualunque interazione col grafo viene
 disabilitata. L'unica azione che l'utente, ovvero un giocatore, può effettuare, è cliccare su un arco, ovvero una route,
-nel tentativo di occuparla. Per tale motivo viene quindi inserito un **listener**, in grado di segnalare l'intenzione di
-un giocatore di occupare una determinata route al `GameController`.
+nel tentativo di occuparla (come da [requisito utente 1](../../requirement_specification.md#requisiti-utente)). Per tale
+motivo viene quindi inserito un **listener**, in grado di segnalare l'intenzione di un giocatore di occupare una
+determinata route al `GameController`.
 
 ### Note sulla libreria JGraphX
 

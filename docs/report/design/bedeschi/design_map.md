@@ -71,7 +71,8 @@ comportamenti.
 
 `Route` è un trait che descrive una tratta ferroviaria. Non fornendo metodi per modificarne lo stato, è pensato per
 modellare una `Route` **immutabile**. Una `Route` è identificabile tramite la coppia di `City` che collega (in cui
-l'ordine non rilevante), e possiede due caratteristiche: la lunghezza della tratta e la meccanica che segue.
+l'ordine non rilevante), e possiede due caratteristiche: la lunghezza della tratta e la meccanica che segue (come da
+[requisito utente 1](../../requirement_specification.md#requisiti-utente)).
 
 La meccanica è modellata tramite il trait `Mechanic`, che può essere esteso per creare un insieme di meccaniche
 differenti. `SpecificColor` ne è un esempio: estende `Mechanic` e definisce la meccanica per cui una `Route` è di un
@@ -81,15 +82,16 @@ presenta anche il fatto per cui una `Route` è di un certo colore).
 
 ## GameMap e uso di Loader
 
-`GameMap` è un trait che descrive la mappa di gioco, composta da un insieme di `Route`. La `GameMap` permette di:
-ottenere l'insieme delle `Route` di cui è composta, ottenere una determinata `Route`, occupare una determinata `Route` o
-sapere quale player la occupa. In particolare i metodi `getPlayerClaimingRoute` e `claimRoute` hanno come tipo di
-ritorno un `Either`, volendo indicare l'impossibilità di effettuare l'azione richiesta. Il metodo
-`getPlayerClaimingRoute` può infatti fallire se riceve una coppia di città che non corrisponde a una `Route` esistente,
-mentre il metodo `claimRoute` può fallire per lo stesso motivo ma anche nel caso in cui una `Route` sia già occupata
-(perciò non occupabile nuovamente). Questi due casi distinti vanno gestiti tramite due errori differenti. Questi errori,
-inoltre, potrebbero essere recuperabili nella gestione del gioco, e gestiti di conseguenza, come meglio spiegato
-nell'apposita sezione.
+`GameMap` è un trait che descrive la mappa di gioco, composta da un insieme di `Route` (come da
+[requisito utente 1](../../requirement_specification.md#requisiti-utente)). La `GameMap` permette di: ottenere l'insieme
+delle `Route` di cui è composta, ottenere una determinata `Route`, occupare una determinata `Route` o sapere quale
+player la occupa (come da [requisiti utente 1 e 2](../../requirement_specification.md#requisiti-utente)). In particolare
+i metodi `getPlayerClaimingRoute` e `claimRoute` hanno come tipo di ritorno un `Either`, volendo indicare
+l'impossibilità di effettuare l'azione richiesta. Il metodo `getPlayerClaimingRoute` può infatti fallire se riceve una
+coppia di città che non corrisponde a una `Route` esistente, mentre il metodo `claimRoute` può fallire per lo stesso
+motivo ma anche nel caso in cui una `Route` sia già occupata (perciò non occupabile nuovamente). Questi due casi
+distinti vanno gestiti tramite due errori differenti. Questi errori, inoltre, potrebbero essere recuperabili nella
+gestione del gioco, e gestiti di conseguenza, come meglio spiegato nell'apposita sezione.
 
 Il companion object di `GameMap` deve permettere la creazione della mappa utilizzando un `Loader` di `Set[Route]`, il
 cui scopo è quello di caricare l'insieme delle `Route` di cui si comporrà la mappa (maggiori dettagli sui `Loader` sono

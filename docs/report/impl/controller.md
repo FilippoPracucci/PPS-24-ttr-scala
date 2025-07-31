@@ -50,8 +50,10 @@ classDiagram
 - `claimRouteController`: rappresenta l'istanza del `ClaimRouteController`.
 
 Utilizza il metodo privato `initPlayers` per creare la lista dei giocatori. Per fare ciò utilizza prima un'istanza di
-`ObjectivesLoader` per caricare gli obiettivi, e poi tramite un **for-yield** li distribuisce ai giocatori, che
-vengono istanziati passando loro il `deck`, il proprio colore e il proprio obiettivo.
+`ObjectivesLoader` per caricare gli obiettivi, e poi tramite un **for-yield** li distribuisce casualmente ai giocatori
+(come da [requisito di sistema 1.3](../requirement_specification.md#requisiti-di-sistema)), che vengono istanziati
+passando loro il `deck`, il proprio colore e il proprio obiettivo (come da
+[requisito utente 5](../requirement_specification.md#requisiti-utente)).
 
 Il metodo `showRules` di `GameController` viene implementato in `viewController`, dunque ne viene fatto l'**export**.
 Stessa cosa per i metodi `drawCards` e `claimRoute` che vengono implementati in `drawCardsController` e

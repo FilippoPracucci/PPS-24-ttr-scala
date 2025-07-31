@@ -91,11 +91,12 @@ essere fornita dall'implementazione che definisce anche il tipo `Data`, dovendo 
 ## ObjectivesLoader, RoutesLoader e CitiesLoader
 
 `ObjectivesLoader`, `RoutesLoader` e `CitiesLoader` sono le tre classi che si occupano di leggere e caricare le
-informazioni contenute nei tre file di configurazione "objectives.json", "routes.json" e "cities.json", rispettivamente.
-Ognuna estende `LoaderFromFile` e `JsonReader`, variando il tipo parametrico di `LoaderFromFile` a seconda del tipo dei
-dati caricati. Tutte e tre le classi presentano tra i parametri del costruttore `overload val configFilePath`,
-assegnandogli un valore di default corrispondente ai file sopraindicati. Viene quindi fatto un binding tra l'istanza
-di una classe e il file da leggere, scelta che mira a rendere più semplice e chiaro l'utilizzo di tali istanze.
+informazioni contenute nei tre file di configurazione "objectives.json", "routes.json" e "cities.json", rispettivamente
+(come da [requisito di sistema 4](../../requirement_specification.md#requisiti-di-sistema)). Ognuna estende
+`LoaderFromFile` e `JsonReader`, variando il tipo parametrico di `LoaderFromFile` a seconda del tipo dei dati caricati.
+Tutte e tre le classi presentano tra i parametri del costruttore `overload val configFilePath`, assegnandogli un valore
+di default corrispondente ai file sopraindicati. Viene quindi fatto un binding tra l'istanza di una classe e il file da
+leggere, scelta che mira a rendere più semplice e chiaro l'utilizzo di tali istanze.
 
 ### ObjectivesLoader
 

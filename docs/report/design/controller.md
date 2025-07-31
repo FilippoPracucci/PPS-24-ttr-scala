@@ -48,4 +48,5 @@ Il trait `GameController` rappresenta il *controller* del gioco ed è quindi l'e
 Estende `DrawCardsController` e `ClaimRouteController` per includere le azioni di pescaggio ed occupazione di una
 tratta. Inoltre contiene un `TurnManager`, il quale mantiene lo stato della partita tramite un `GameState` che viene
 rappresentato tramite un'enumerazione dei possibili stati. Espone quindi il `GameState` corrente, oltre al giocatore di
-turno e al metodo `switchTurn` che si occupa di cambiare il turno.
+turno e al metodo `switchTurn` che si occupa di cambiare il turno (come da
+[requisito di sistema 2](../requirement_specification.md#requisiti-di-sistema)).

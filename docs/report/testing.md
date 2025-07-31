@@ -34,4 +34,4 @@ Per misurare la copertura dei test abbiamo utilizzato il tool `Scoverage`, integ
 esclusivamente dei risultati ottenuti sul *model* ed escludendo casi limite derivanti dall'interazione con i file JSON
 utilizzati. L'obiettivo minimo del 90% di coverage, indicato nella Definition of Done, è stato raggiunto.
 
-[Scoverage Report](../../src/main/resources/scoverage-report/index.html){: .btn .btn-blue}
+[Scoverage Report](scoverage-report/index.html){: .btn .btn-blue}

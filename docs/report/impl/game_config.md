@@ -40,7 +40,7 @@ classDiagram
 `GameConfig` è un oggetto creato per contenere valori costanti per il *model* in base alle regole del gioco. Oltre a
 valori costanti di tipi primitivi, contiene anche delle **functions** per fornire dei valori costanti in base a uno o
 più input. Un esempio di **function** è:
-```scala 3
+```scala
 val PointsPerRouteLength: Int => Int =
   case 1 => 1
   case 2 => 2

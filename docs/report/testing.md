@@ -20,7 +20,7 @@ componenti di *view*, qualora possibile, sono stati verificati singolarmente tra
 
 Per effettuare i test del *model* è stata utilizzata la libreria **ScalaTest**, in particolare utilizzando `AnyFlatSpec`
 e `Matchers` per rendere i test più leggibili. Un esempio di test è:
-```scala 3
+```scala
 "A Player" should "be able to draw cards from the deck" in:
   val initialHandCards = player.hand
   player.drawCards(StandardNumberOfCardsToDraw) should be(Right(()))

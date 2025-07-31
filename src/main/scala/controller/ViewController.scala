@@ -4,15 +4,39 @@ import model.map.GameMap
 import view.GameView.City
 import model.utils.GameError
 
-private trait ViewController:
+/** Trait that represents a controller responsible for interactions with the view. */
+trait ViewController:
+  /** Initializes the game view.
+    *
+    * @param gameMap
+    *   the game map to display in the game view
+    */
   def initGameView(gameMap: GameMap): Unit
+
+  /** Updates the view of a route.
+    *
+    * @param connectedCities
+    *   the pair of cities that identifies the route to be updated
+    */
   def updateRouteView(connectedCities: (City, City)): Unit
-  def updateObjectiveView(): Unit
+
+  /** Shows the player that the objective has been completed. */
+  def showObjectiveCompletion(): Unit
+
+  /** Updates the view for the new turn. */
   def updateViewNewTurn(): Unit
+
+  /** Reports an error to the player.
+    *
+    * @param gameError
+    *   the error to report
+    */
   def reportError(gameError: GameError): Unit
+
+  /** Shows the game rules to the player. */
   def showRules(): Unit
 
-private object ViewController:
+object ViewController:
   import model.player.Player
 
   def apply(turnManager: TurnManager, players: List[Player]): ViewController = ViewControllerImpl(turnManager, players)
@@ -53,7 +77,7 @@ private object ViewController:
       gameView.updateRoute(connectedCities, currentPlayer.id.viewColor)
       gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)
 
-    override def updateObjectiveView(): Unit =
+    override def showObjectiveCompletion(): Unit =
       gameView.show(ObjectiveCompletedDescription(currentPlayer.objective.points), ObjectiveCompletedTitle,
         MessageType.Info)
       gameView.updatePlayerScore(currentPlayer.name, currentPlayer.score)

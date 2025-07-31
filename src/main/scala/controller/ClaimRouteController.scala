@@ -80,7 +80,7 @@ object ClaimRouteController:
           .foreach(objective =>
             objective.markAsComplete()
             currentPlayer.addPoints(objective.points)
-            viewController.updateObjectiveView()
+            viewController.showObjectiveCompletion()
           )
 
       private def currentPlayer: Player = turnManager.currentPlayer

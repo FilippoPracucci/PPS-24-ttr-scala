@@ -95,9 +95,9 @@ Il companion object di `GameMap` deve permettere la creazione della mappa utiliz
 cui scopo è quello di caricare l'insieme delle `Route` di cui si comporrà la mappa (maggiori dettagli sui `Loader` sono
 forniti nella sezione apposita). La scelta di avere come parametro dell'`apply` un `Loader` si deve al fatto che si
 intendono collegare i due concetti, lasciando però all'utilizzatore la scelta di quale implementazione di `Loader`
-utilizzare. Il parametro `loader` è un parametro **given**, pensato per semplificare la creazione di mappe
-utilizzando il medesimo `Loader`, fornito come given instance. Nel companion object è presente la given instance di
-default.
+utilizzare. Il parametro `loader` è un **context parameter**, pensato per semplificare la creazione di mappe
+utilizzando il medesimo `Loader`, fornito come **given instance**. Nel companion object è presente la **given instance**
+di default.
 
 La `GameMap` risulta immutabile per quanto rigurda l'insieme delle `Route` e mutabile nell'assegnazione dei player alle
 `Route`. Considerando i metodi che restituiscono l'insieme delle `Route` e una singola `Route`, si denota l'importanza

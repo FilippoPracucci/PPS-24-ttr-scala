@@ -28,7 +28,7 @@ classDiagram
     class ViewController {
         +initGameView(gameMap: GameMap) Unit
         +updateRouteView(connectedCities: (City, City)) Unit
-        +updateObjectiveView() Unit
+        +showObjectiveCompletion() Unit
         +updateViewNewTurn() Unit
         +reportError(gameError: GameError) Unit
         +showRules() Unit
@@ -68,7 +68,7 @@ azioni da effettuare. Espone i metodi:
 punteggi iniziali dei giocatori e gli elementi del giocatore di turno (le sue informazioni, la mano e l'obiettivo);
 - `updateRouteView`: per aggiornare una tratta segnandola come occupata dal giocatore di turno ed aggiornare il suo
 punteggio;
-- `updateObjectiveView`: per comunicare al giocatore il completamento dell'obiettivo ed aggiornarne il punteggio;
+- `showObjectiveCompletion`: per comunicare al giocatore il completamento dell'obiettivo ed aggiornarne il punteggio;
 - `updateViewNewTurn`: per comunicare il messaggio di inizio ultimo round o fine partita in base allo stato attuale del
 gioco ed aggiornare tutta la view in seguito al cambio del turno;
 - `reportError`: per comunicare al giocatore il `GameError` riscontrato;

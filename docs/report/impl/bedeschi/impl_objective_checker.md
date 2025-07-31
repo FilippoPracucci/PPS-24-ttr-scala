@@ -42,7 +42,7 @@ uno spazio di soluzioni e Prolog è un linguaggio particolarmente adatto a risol
 
 `Scala2P` è un object che contiene metodi utili per lavorare con Prolog in Scala. E' stato adattato dal codice del
 [laboratorio 12](https://github.com/unibo-pps/pps-lab12/blob/master/src/main/scala/it/unibo/u12lab/code/Scala2P.scala).
-Utilizza la libreria `alice.tuprolog` ed, oltre a contenere delle **implicit conversions**, contiene i metodi
+Utilizza la libreria **alice.tuprolog** ed, oltre a contenere delle **implicit conversions**, contiene i metodi
 `mkPrologEngine` e `solveWithSuccess`, il primo utilizzato per creare un risolutore Prolog a partire da una teoria, e il
 secondo utilizzato per risolvere un goal dato un risolutore Prolog.
 

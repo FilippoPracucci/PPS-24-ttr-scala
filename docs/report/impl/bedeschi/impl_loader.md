@@ -128,10 +128,10 @@ significati spiegati precedentemente) e`cities` (`Set[City]`). Definisce poi `Da
 implementa il metodo `onSuccess` definendo il side effect da ottenere, ovvero aggiungere ogni città (contenuta in
 `cities` all'interno di `ConfigData`), nella view della mappa. Per ottenere ciò, il costruttore di `CitiesLoader`
 presenta, oltre a `configFilePath`, altri tre parametri: `mapWidth` e `mapHeight`, che rappresentano la larghezza e
-l'altezza in pixel della view della mappa, e `mapView` come parametro **given**, che rappresenta la view della mappa, in
-cui devono essere aggiunte le città. Il metodo `onSuccess`, quindi, si avvale dell'uso del metodo privato `addCity`, che
-si occupa di scalare le coordinate x e y delle città in base a `scaleWidth`/`scaleHeight` e `mapWidth`/`mapHeight` ed
-aggiungere le città così aggiornate all'interno di `mapView`.
+l'altezza in pixel della view della mappa, e `mapView` come **context parameter**, che rappresenta la view della mappa,
+in cui devono essere aggiunte le città. Il metodo `onSuccess`, quindi, si avvale dell'uso del metodo privato `addCity`,
+che si occupa di scalare le coordinate x e y delle città in base a `scaleWidth`/`scaleHeight` e `mapWidth`/`mapHeight`
+ed aggiungere le città così aggiornate all'interno di `mapView`.
 
 ### Conclusione
 

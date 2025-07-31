@@ -34,12 +34,12 @@ classDiagram
     FileReader <|-- LoaderFromFile
 ```
 
-# Loader
+## Loader
 
 `Loader` è un trait che descrive un generico caricatore di dati. Possiede un unico metodo per effettuare il caricamento,
 il quale ha come tipo di ritorno il tipo parametrico `A`, rappresentante il tipo di dato caricato.
 
-# FileReader
+## FileReader
 
 `FileReader` è un trait che descrive un lettore di file. Possiede solo metodi protetti, usati per leggere dati da file,
 ed è pensato per essere un trait di supporto da utilizzare in maniera nascosta, per non esporre dettagli implementativi
@@ -57,7 +57,7 @@ implementazioni.
 Il metodo `readFromFile`, inoltre, ha come tipo di ritorno `Try[Data]`, volendo rappresentare la possibilità di
 fallimento nel leggere il file.
 
-# LoaderFromFile
+## LoaderFromFile
 
 `LoaderFromFile` è un trait che descrive un caricatore di dati letti da file. Estende `Loader` e `FileReader` ed
 introduce il metodo protetto `onSuccess`. E' una **rich interface** in quanto implementa il metodo `load` di

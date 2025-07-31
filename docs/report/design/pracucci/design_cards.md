@@ -75,7 +75,7 @@ estensioni di `Cards`.
 ## Generator
 
 Si tratta di un generatore generico per Cards e chiunque aderisca al suo contratto. Le generazioni consentite sono:
-- `generate()`: per generare un'istanza del tipo passato come _type parameter_;
+- `generate()`: per generare un'istanza del tipo passato come **type parameter**;
 - `generateCards()`: per generare una lista di carte.
 
 La genericità consente di realizzare un'implementazione per `Cards`, una per il `Deck` ed una per l'`Hand` del
@@ -98,7 +98,7 @@ che la riguardano consistono in:
 - `playCards`: giocare una lista di carte presenti nella mano specificando il numero di carte di un determinato colore.
   Questo metodo viene utilizzato per occupare una tratta sulla mappa di gioco;
 - `addCards`: aggiungere una lista di carte. Questo metodo viene usato per aggiungere alla mano del giocatore la lista
-  di carte pescato dal mazzo.
+  di carte pescate dal mazzo.
 
 La mano del giocatore viene creata sfruttando un'istanza del `HandGenerator`, ovvero l'implementazione di `Generator`
 per `Hand`.

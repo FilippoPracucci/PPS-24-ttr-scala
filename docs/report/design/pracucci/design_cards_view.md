@@ -36,4 +36,4 @@ L'entità `CardView`, intesa come rappresentazione di una carta vagone, è reali
 
 Il concetto di `HandView` identifica la rappresentazione della mano del giocatore, la quale è composta da un insieme di
 `CardView`. La rappresentazione consiste in un componente di `scala.swing` ed inoltre mette a disposizione la
-possibilità di aggiornamento, passando la nuova lista di `CardView` che rappresentano la mano.
+possibilità di aggiornamento, passando la nuova lista di `CardView` rappresentante la mano.

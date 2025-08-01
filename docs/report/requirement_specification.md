@@ -22,8 +22,6 @@ Al termine della partita il giocatore con il maggior numero di punti vince.
 
 ## Requisiti di business
 
-[Da rivedere e completare nel caso si utilizzi Prolog ed eventualmente con altri aspetti avanzati usati.]: #
-
 I principali obiettivi posti dalla realizzazione del progetto sono:
 
 - consolidare le competenze acquisite durante il corso, utilizzando tecniche avanzate di Scala, per esempio mixins, monads, etc;
@@ -107,8 +105,6 @@ sequenceDiagram
 
 ## Requisiti funzionali
 
-[Possibilità di aggiungere una breve spiegazione e dettagliare maggiormente i requisiti]: #
-
 ### Requisiti utente
 
 1. La mappa deve essere visualizzata dal giocatore come un insieme di città collegate tramite tratte ferroviarie di diverse
@@ -141,7 +137,6 @@ I sopracitati requisiti di sistema vengono validati tramite test automatizzati.
 
 ## Requisiti non funzionali
 
-[Questi requisiti sono in fase di draft, da essere revisionati]: #
 1. **Performance**: il tempo di risposta di un'azione dell'utente non deve superare i 100 ms, su un'architettura Intel
 i5 con 16 GB di RAM;
 2. **Portabilità**: il gioco deve funzionare su diverse piattaforme (Windows, Linux e MacOS);
@@ -154,5 +149,3 @@ I sopracitati requisiti non funzionali vengono validati tramite User Acceptance 
 1. Utilizzo di Scala come linguaggio di programmazione;
 2. utilizzo di Git come VCS;
 3. deve essere presente la documentazione (Scaladoc) per ogni API pubblica.
-
-[DA COMPLETARE (qualità interna)]: #

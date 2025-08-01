@@ -37,7 +37,7 @@ classDiagram
 
 ## GameControllerImpl
 
-`GameControllerImpl` è l'implementazione di `GameController` fornita dal suo companion object. E' modellato come
+`GameControllerImpl` è l'implementazione di `GameController` fornita dal suo **companion object**. E' modellato come
 **singleton** in quanto deve essere l'unica istanza di `GameController` con cui tutti comunicano. Utilizza un oggetto
 `ImportHelper` all'interno del quale vengono fatti gli **export** di ciò che deve essere importato in
 `GameControllerImpl`. All'interno di `GameControllerImpl` vengono create le istanze dei principali componenti del gioco:
@@ -62,7 +62,7 @@ Stessa cosa per i metodi `drawCards` e `claimRoute` che vengono implementati in 
 ## ViewController e ViewControllerImpl
 
 Il trait `ViewController` rappresenta la parte del *controller* che si interfaccia con la *view*. `ViewControllerImpl` è
-l'implementazione di `ViewController` fornita dal suo companion object. Così come `GameControllerImpl`, utilizza un
+l'implementazione di `ViewController` fornita dal suo **companion object**. Così come `GameControllerImpl`, utilizza un
 oggetto `ImportHelper` all'interno del quale vengono fatti gli **export** di ciò che deve essere importato in
 `ViewControllerImpl`. Contiene le istanze di `GameView` e `HandView` per aggionarle durante la partita in base alle
 azioni da effettuare. Espone i metodi:

@@ -51,17 +51,17 @@ classDiagram
 
 ## SpecificColor
 
-Nel companion object è presente un metodo **unapply** incaricato di estrarre da un'istanza di `SpecificColor` il colore,
-facilitandone il pattern matching.
+Nel **companion object** è presente un metodo `unapply` incaricato di estrarre da un'istanza di `SpecificColor` il
+colore, facilitandone il pattern matching.
 
 ## GameMap e GameMapImpl
 
 In `GameMap` viene utilizzato un **type** `CityName` alias di `String` per migliorare la chiarezza e la leggibilità del
 codice.
 
-Nel companion object viene fornita la **given instance** di default di `Loader[Set[Route]]` corrispondente a
-`RoutesLoader()`, la quale è un'implementazione di `Loader` che carica l'insieme delle `Route` da file JSON (maggiori
-dettagli sul `RoutesLoader` sono presenti nell'[apposita sezione](./impl_loader.md#routesloader)).
+Nel **companion object** viene fornita la **given instance** di default di `Loader[Set[Route]]` corrispondente a
+un'istanza di `RoutesLoader`, la quale è un'implementazione di `Loader` che carica l'insieme delle `Route` da file JSON
+(maggiori dettagli sul `RoutesLoader` sono presenti nell'[apposita sezione](./impl_loader.md#routesloader)).
 
 All'interno dell'implementazione `GameMapImpl` viene utilizzato un **type** `ClaimedRoute` alias di
 `(Route, Option[PlayerId])` per migliorare la chiarezza e la leggibilità del codice, considerando la complessità di un

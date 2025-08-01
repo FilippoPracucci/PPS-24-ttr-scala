@@ -47,11 +47,11 @@ il metodo `addCity` di `MapView` per ogni città da aggiungere. Maggiori dettagl
 
 ## MapViewImpl
 
-`MapViewImpl` è l'implementazione di default di `MapView`, restituita dal metodo `apply` contenuto nel companion object
-di `MapView`. E' un object, inteso come **singleton**, in quanto nel gioco deve essere presente una sola istanza di
-`MapView`. Considerando che la scelta implementativa per la *view* è quella di utilizzare la libreria **Scala Swing**
-(wrapper di **Java Swing**), anche in questa implementazione la si utilizza. Inoltre, per rappresentare la mappa di
-gioco, che è composta da città collegate da tratte ferroviarie, e quindi è un grafo, si utilizza la libreria
+`MapViewImpl` è l'implementazione di default di `MapView`, restituita dal metodo `apply` contenuto nel **companion
+object** di `MapView`. E' un object, inteso come **singleton**, in quanto nel gioco deve essere presente una sola
+istanza di `MapView`. Considerando che la scelta implementativa per la *view* è quella di utilizzare la libreria **Scala
+Swing** (wrapper di **Java Swing**), anche in questa implementazione la si utilizza. Inoltre, per rappresentare la mappa
+di gioco, che è composta da città collegate da tratte ferroviarie, e quindi è un grafo, si utilizza la libreria
 **JGraphX**, che è basata su **Java Swing** e permette di rappresentare grafi (come da
 [requisito utente 1](../../requirement_specification.md#requisiti-utente)). Il fatto che sia ben integrabile con Java
 Swing e quindi con Scala Swing è il motivo per cui si è deciso di utilizzarla.
@@ -71,7 +71,7 @@ presenta inoltre un'etichetta che ne rappresenta la lunghezza, ovvero il numero 
 Nella libreria JGraphX le modifiche al grafo vanno effettuate con attenzione, segnalandone l'inizio e la fine tramite
 metodi appositi. Per facilitare questa operazione ed evitare ripetizioni di codice, è stato introdotto un metodo privato
 incaricato di racchiuderne la gestione. Questo metodo è `changeGraph` e prende in input il parametro `change` come
-**call-by-name** (`=> Unit`), che rappresenta le azioni da eseguite come cambiamento, le quali sono pertanto eseguite
+**call-by-name** (`=> Unit`), che rappresenta le azioni da eseguire come cambiamento, le quali sono pertanto eseguite
 solo nel punto necessario.
 
 ### Interazioni con l'utente
@@ -86,8 +86,8 @@ determinata route al `GameController`.
 
 ### Note sulla libreria JGraphX
 
-Nel corso dell'utilizzo della libreria JGraphX sono emerse alcune stranezze nella sua gestione dei tipi. E' emerso che
-la libreria lavora con i vertici e con gli archi trattandoli come oggetti di tipo `Object` (`java.lang.Object`) nei
+Nel corso dell'utilizzo della libreria **JGraphX** sono emerse alcune stranezze nella sua gestione dei tipi. E' emerso
+che la libreria lavora con i vertici e con gli archi trattandoli come oggetti di tipo `Object` (`java.lang.Object`) nei
 parametri di input dei suoi metodi, così come nei tipi di ritorno. Si è però scoperto che internamente sia i vertici
 che gli archi sono di tipo `mxCell`. Si è quindi deciso, per mantenere un minimo livello di type checking, di
 effettuarne il cast a `mxCell` (in quanto safe). Da segnalare inoltre che nell'inserire un nuovo arco è necessario
@@ -101,7 +101,7 @@ tale concetto.
 Presenta due metodi, `setDefaultStyle`, che è un **extension method**, per impostare lo stile di default del grafo, ed
 `edgeStyle` per ottenere lo stile di un arco, dati in input i parametri di colore e linea tratteggiata/continua.
 
-`MapStyleManager` è l'implementazione di `GraphStyleManager` fornita dall'`apply` contenuto nel companion object di
+`MapStyleManager` è l'implementazione di `GraphStyleManager` fornita dall'`apply` contenuto nel **companion object** di
 `GraphStyleManager`. Per implementare il metodo `setDefaultStyle` utilizza tre metodi d'appoggio `setGraphStyle`,
 `setVertexStyle` e `setEdgeStyle` per impostare rispettivamente, lo stile del componente del grafo, lo stile dei vertici
 del grafo e lo stile degli archi del grafo. Per implementare il metodo `edgeStyle` utilizza un **extension method** di

@@ -20,7 +20,7 @@ classDiagram
     ClaimRouteControllerImpl ..> ObjectiveChecker: «use»
     ClaimRouteController ..> ViewController: «use»
     GameController <|.. GameControllerImpl
-    GameControllerImpl o-- ViewController
+    GameControllerImpl "*" o-- "1" ViewController
     ViewController <|.. ViewControllerImpl
     ViewControllerImpl ..> MapColorConverter: «use»
     class GameController {
@@ -51,7 +51,7 @@ classDiagram
 ## ClaimRouteController e ClaimRouteControllerImpl
 
 `ClaimRouteController` è un trait che rappresenta un controller di gioco responsabile dell'azione di occupazione di una
-tratta ferroviaria. `ClaimRouteControllerImpl` è la sua implementazione di base contenuta nel companion object.
+tratta ferroviaria. `ClaimRouteControllerImpl` è la sua implementazione di base contenuta nel **companion object**.
 Quest'ultima utilizza un oggetto `ImportHelper` all'interno del quale vengono fatti gli **export** di ciò che deve
 essere importato in `ClaimRouteControllerImpl`. Implementa il metodo `claimRoute`, il quale riceve in input la coppia di
 città rappresentante la tratta da occupare, e si occupa quindi di effettuare le azioni necessarie all'occupazione della

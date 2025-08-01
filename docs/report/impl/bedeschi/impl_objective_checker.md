@@ -30,8 +30,8 @@ classDiagram
 
 ## Scelta di Prolog per effettuare il controllo del completamento degli obiettivi
 
-La scelta di Prolog per effettuare il controllo del completamento degli obiettivi deriva dal fatto che il controllo si
-basa sulla mappa di gioco, che di fatto è un grafo di città collegate da tratte ferroviarie. A partire da una città
+La scelta di **Prolog** per effettuare il controllo del completamento degli obiettivi deriva dal fatto che il controllo
+si basa sulla mappa di gioco, che di fatto è un grafo di città collegate da tratte ferroviarie. A partire da una città
 dell'obiettivo è necessario esplorare tutti i cammini percorribili fino all'altra città dell'obiettivo per cercare se
 uno di questi è interamente controllato dal giocatore. Questo controllo presenta quindi un chiaro problema di ricerca in
 uno spazio di soluzioni e Prolog è un linguaggio particolarmente adatto a risolvere questo tipo di problemi.
@@ -46,11 +46,11 @@ secondo utilizzato per risolvere un goal dato un risolutore Prolog.
 
 ## ObjectiveCheckerImpl
 
-`ObjectiveCheckerImpl` è l'implementazione fornita nel companion object di `ObjectiveChecker` per esso. Contiene perciò
-il metodo `check`, che, a partire da un `Objective` e da un `PlayerId`, è in grado di determinare se l'obiettivo è
-stato completato dal giocatore oppure no. Per effettuare questo controllo, `ObjectiveCheckerImpl` si avvale dell'uso di
-`Scala2P` per ottenere il risolutore Prolog fornendogli la teoria adeguata, e per risolvere i goal. Si occupa quindi di
-stabilire la teoria Prolog necessaria e il template dei goal, avvalendosi inoltre di un oggetto privato per contenere
+`ObjectiveCheckerImpl` è l'implementazione fornita nel **companion object** di `ObjectiveChecker` per esso. Contiene
+perciò il metodo `check`, che, a partire da un `Objective` e da un `PlayerId`, è in grado di determinare se l'obiettivo
+è stato completato dal giocatore oppure no. Per effettuare questo controllo, `ObjectiveCheckerImpl` si avvale dell'uso
+di `Scala2P` per ottenere il risolutore Prolog fornendogli la teoria adeguata, e per risolvere i goal. Si occupa quindi
+di stabilire la teoria Prolog necessaria e il template dei goal, avvalendosi inoltre di un oggetto privato per contenere
 gli **extension methods** necessari a convertire elementi di *model* in termini Prolog.
 
 Il metodo `check` costruisce lo specifico goal e lo risolve tramite il metodo `solveWithSuccess` di `Scala2P` con

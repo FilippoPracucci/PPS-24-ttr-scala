@@ -60,15 +60,15 @@ semplice, di cui si fa parsing velocemente utilizzando librerie che sono ormai s
 facilmente leggibile dalle persone rende più facile mantenere i file di configurazione, che nel nostro caso contengono
 principalmente informazioni da mostrare all'utente.
 
-I file di configurazione utilizzati sono contenuti in "src/main/resources/" e posseggono le seguenti strutture:
-- "objectives.json": contiene una lista di obiettivi, ognuno composto dalla coppia di città da collegare e dal
+I file di configurazione utilizzati sono contenuti in `src/main/resources/` e posseggono le seguenti strutture:
+- `objectives.json`: contiene una lista di obiettivi, ognuno composto dalla coppia di città da collegare e dal
 punteggio da assegnare al giocatore quando viene completato; contiene pertanto informazioni rigurdanti il *model*;
-- "routes.json": contiene una lista di tratte ferroviarie, ognuna composta dalla coppia di città che collega, dalla
+- `routes.json`: contiene una lista di tratte ferroviarie, ognuna composta dalla coppia di città che collega, dalla
 sua lunghezza e della meccanica che segue (a sua volta composta dal tipo e dal valore); anch'esso contiene pertanto
 informazioni riguardanti il *model*;
-- "cities.json": contiene due valori `scaleWidth` e `scaleHeight` che rappresentano i massimi valori di larghezza /
+- `cities.json`: contiene due valori `scaleWidth` e `scaleHeight` che rappresentano i massimi valori di larghezza /
 altezza utilizzati come scala, seguiti dalla lista di città, ognuna composta dal nome e dalle coordinate x e y; questo
-file è l'unico che serve alla *view*, la quale necessita di sapere come posizionare le città nella mappa grafica.
+file è l'unico che serve alla *view*, la quale necessita di sapere come posizionare le città nella vista della mappa.
 
 ## JsonReader
 
@@ -91,7 +91,7 @@ creare le classi `ObjectivesLoader`, `RoutesLoader` e `CitiesLoader`.
 ## ObjectivesLoader, RoutesLoader e CitiesLoader
 
 `ObjectivesLoader`, `RoutesLoader` e `CitiesLoader` sono le tre classi che si occupano di leggere e caricare le
-informazioni contenute nei tre file di configurazione "objectives.json", "routes.json" e "cities.json", rispettivamente
+informazioni contenute rispettivamente nei tre file di configurazione `objectives.json`, `routes.json` e `cities.json`
 (come da [requisito di sistema 4](../../requirement_specification.md#requisiti-di-sistema)). Ognuna estende
 `LoaderFromFile` e `JsonReader`, variando il **type parameter** di `LoaderFromFile` a seconda del tipo dei dati
 caricati. Tutte e tre le classi presentano tra i parametri del costruttore `overload val configFilePath`, assegnandogli
@@ -127,10 +127,10 @@ coordinate x e y, e `ConfigData`, che rappresenta l'intero file, ed è composta 
 significati spiegati [precedentemente](#scelta-dei-file-json-per-i-file-di-configurazione-del-gioco)) e`cities`
 (`Set[City]`). Definisce poi `Data` come `ConfigData` e ne fornisce la **given instance** per il suo `ReadWriter`,
 aggiungendo anche quella necessaria per il tipo `City` definito. Infine, implementa il metodo `onSuccess` definendo il
-side effect da ottenere, ovvero aggiungere ogni città (contenuta in `cities` all'interno di `ConfigData`), nella view
+side effect da ottenere, ovvero aggiungere ogni città (contenuta in `cities` all'interno di `ConfigData`), nella *view*
 della mappa. Per ottenere ciò, il costruttore di `CitiesLoader` presenta, oltre a `configFilePath`, altri tre parametri:
-`mapWidth` e `mapHeight`, che rappresentano la larghezza e l'altezza in pixel della view della mappa, e `mapView` come
-**context parameter**, che rappresenta la view della mappa, in cui devono essere aggiunte le città. Il metodo
+`mapWidth` e `mapHeight`, che rappresentano la larghezza e l'altezza in pixel della *view* della mappa, e `mapView` come
+**context parameter**, che rappresenta la *view* della mappa, in cui devono essere aggiunte le città. Il metodo
 `onSuccess`, quindi, si avvale dell'uso del metodo privato `addCity`, che si occupa di scalare le coordinate x e y delle
 città in base a `scaleWidth`/`scaleHeight` e `mapWidth`/`mapHeight` ed aggiungere le città così aggiornate all'interno
 di `mapView`.

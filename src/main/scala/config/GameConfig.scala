@@ -77,6 +77,7 @@ case object GameViewConfig:
   val ObjectiveCompletedTitle = "Objective completed"
   val RulesTitle = "Rules of the game"
 
+  /** Object that contains standard border configurations for the view. */
   case object BorderConfig:
     import scala.swing.*
     import javax.swing.border.Border
@@ -86,6 +87,7 @@ case object GameViewConfig:
     val LineBorder: Int => Border = BorderFactory.createLineBorder(BorderColor, _, true)
     val CompoundBorder: (Border, Border) => Border = Swing.CompoundBorder
 
+  /** Object that contains standard color configurations for the view. */
   case object ColorConfig:
     import java.awt.Color
     import Color.*
@@ -93,6 +95,7 @@ case object GameViewConfig:
     val MapBackgroundColor: Color = LIGHT_GRAY
     val BorderColor: Color = BLACK
 
+  /** Object that contains standard font configurations for the view. */
   case object FontConfig:
     import scala.swing.Font
     import scala.swing.Font.Style

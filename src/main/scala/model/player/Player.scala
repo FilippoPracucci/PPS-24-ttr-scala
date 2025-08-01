@@ -109,16 +109,16 @@ object Player:
 
   export PlayerGameErrors.*
 
-  /** Type alias that represents a player id as PlayerColor. */
+  /** Type alias that represents a player id as [[PlayerColor]]. */
   type PlayerId = PlayerColor
 
   /** Type alias that represents the hand of a player as a list of cards. */
   type Hand = List[Card]
 
-  /** Type alias that represents the trains as Int. */
+  /** Type alias that represents the trains as [[Int]]. */
   type Trains = Int
 
-  /** Create a player, with the given identifier and objective.
+  /** Create a [[Player]], with the given identifier and objective.
     *
     * @param playerId
     *   the player's id.

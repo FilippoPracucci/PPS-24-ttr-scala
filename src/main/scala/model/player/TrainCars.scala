@@ -16,7 +16,16 @@ trait TrainCars:
     */
   def placeTrainCars(n: Int): Unit
 
+/** The factory for [[TrainCars]] instances. */
 object TrainCars:
+
+  /** Create an instance [[TrainCars]] with the specified number of train cars.
+   *
+   * @param numberTrainCars
+   *    the number of train cars.
+   * @return
+   *    the [[TrainCars]] created.
+   */
   def apply(numberTrainCars: Int): TrainCars = TrainCarsImpl(numberTrainCars)
 
   private case class TrainCarsImpl(private var _trainCars: Int) extends TrainCars:

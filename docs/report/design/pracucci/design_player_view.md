@@ -45,9 +45,9 @@ classDiagram
 L'entità `PlayerView`, intesa come rappresentazione di un giocatore, è realizzata tramite un componente di
 `scala.swing`. Inoltre è possibile:
 - `addComponentToInnerPanel(component: Component)`: aggiungere un ulteriore componente al pannello interno della _view_;
-- `updateComponentText(text: String)`: aggiornare il testo.
+- `updateComponentText(text: String)`: aggiornare il testo del componente.
 
-Questo trait ha lo scopo di racchiudere tutti gli aspetti comuni delle rappresentazioni delle singole caratteristiche
+Questo trait ha lo scopo di racchiudere tutti gli aspetti rappresentativi comuni delle singole caratteristiche
 dei giocatori.
 Ogni estensione del trait, come `ObjectiveView`, `ObjectiveViewWithCompletion` e `PlayerInfoView`, viene gestita come
 una decorazione di un'implementazione di base della rappresentazione del giocatore; in questo modo in futuro sarà

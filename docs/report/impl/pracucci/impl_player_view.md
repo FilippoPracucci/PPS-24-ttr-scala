@@ -77,7 +77,7 @@ di componenti, uno associato ad ogni giocatore.
 La classe `BasicPlayerInfoView` consiste in una estensione di `BasicPlayerView` con `PlayerInfoView` come **mixin**,
 decorando il pannello delle informazioni del giocatore con le funzionalità del trait. Le informazioni del giocatore
 vengono mostrate come una stringa formattata con il nome del giocatore e il numero di vagoni rimasti, dove il nome del
-giocatore è del tipo `PlayerName` che equivale a `String`. Analogamente al componente dell'obiettivo si utilizza un
+giocatore è del tipo `PlayerName`, che equivale a `String`. Analogamente al componente dell'obiettivo si utilizza un
 unico componente anche per le informazioni del giocatore, in quanto tramite il metodo `updatePlayerInfo` è possibile
 aggiornare le informazioni del giocatore di turno, senza dover fare uso di una collezione di componenti, uno associato
 ad ogni giocatore.

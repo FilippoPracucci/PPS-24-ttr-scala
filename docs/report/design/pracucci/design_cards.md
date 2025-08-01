@@ -15,16 +15,16 @@ config:
     hideEmptyMembersBox: true
 ---
 classDiagram
-    Hand "1" --|> "1" Cards
-    Color "1..*" --o "*" Card
+    Hand --|> Cards
+    Color "1" --o "*" Card
     Card "1..*" --o "0..1" Cards
-    Deck "1" --|> "1" Cards
+    Deck --|> Cards
     Hand "*" ..> "1" HandGenerator: «use»
     Deck "*" ..> "1" DeckGenerator: «use»
     Cards "*" ..> "1" CardsGenerator: «use»
-    HandGenerator "*" ..|> "1" Generator~T~
-    CardsGenerator "*" ..|> "1" Generator~T~
-    DeckGenerator "*" ..|> "1" Generator~T~
+    HandGenerator ..|> Generator~T~
+    CardsGenerator ..|> Generator~T~
+    DeckGenerator ..|> Generator~T~
     class Color {
         <<Enumeration>>
     }
@@ -68,17 +68,18 @@ Consiste in un'enumerazione dei possibili colori delle carte vagone.
 
 ## Card
 
-L'entità `Card`, intesa come carta vagone, è caratterizzata da un colore. Dato che le entità che ne necessitano, ovvero
-`Deck` e `Hand`, le utilizzano sotto forma di lista, si crea un'entità `Cards`. Dunque sia `Deck` che `Hand` sono delle
-estensioni di `Cards`.
+L'entità `Card`, intesa come carta vagone, è caratterizzata da un colore e viene modellata tramite un trait in modo da
+consentire facilmente una sua estensione e/o decorazione per aggiungere caratteristiche e funzionalità. Dato che le
+entità che ne necessitano, ovvero `Deck` e `Hand`, la utilizzano sotto forma di lista, si crea un'entità `Cards`, la
+quale consiste appunto in una lista di carte. Dunque sia `Deck` che `Hand` sono delle estensioni di `Cards`.
 
 ## Generator
 
-Si tratta di un generatore generico per Cards e chiunque aderisca al suo contratto. Le generazioni consentite sono:
-- `generate()`: per generare un'istanza del tipo passato come **type parameter**;
-- `generateCards()`: per generare una lista di carte.
+Si tratta di un generatore generico per `Cards` e chiunque aderisca al suo contratto. Le generazioni avvengono tramite:
+- `generate`: per generare un'istanza del tipo passato come **type parameter**;
+- `generateCards`: per generare una lista di carte.
 
-La genericità consente di realizzare un'implementazione per `Cards`, una per il `Deck` ed una per l'`Hand` del
+La genericità consente di realizzare tre implementazioni diverse per `Cards`, per il `Deck` e per l'`Hand` del
 giocatore.
 
 ## Deck
@@ -88,8 +89,8 @@ Il concetto di `Deck` rappresenta il mazzo di carte vagone, con il quale è poss
 - `draw`: pescare un qualsiasi numero positivo di carte;
 - `reinsertAtTheBottom`: reinserire una carta in fondo.
 
-Il mazzo di carte viene creato sfruttando un'istanza del `DeckGenerator`, ovvero l'implementazione di `Generator` per il
-`Deck`.
+Il mazzo di carte viene creato per mezzo di un'istanza del `DeckGenerator`, ovvero l'implementazione di `Generator` per
+il `Deck`.
 
 ## Hand
 

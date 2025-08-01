@@ -34,6 +34,8 @@ L'entità `CardView`, intesa come rappresentazione di una carta vagone, è reali
 
 ## HandView
 
-Il concetto di `HandView` identifica la rappresentazione della mano del giocatore, la quale è composta da un insieme di
+Il concetto di `HandView` identifica la rappresentazione della mano del giocatore (come da
+[requisito utente 6](../../requirement_specification.md#requisiti-utente)), la quale è composta da un insieme di
 `CardView`. La rappresentazione consiste in un componente di `scala.swing` ed inoltre mette a disposizione la
-possibilità di aggiornamento, passando la nuova lista di `CardView` rappresentante la mano.
+possibilità di aggiornamento, passando la nuova lista di `CardView` rappresentante la mano, in questo modo non è
+necessario creare molteplici `handComponent`, ma è sufficiente aggiornare l'unica istanza creata.

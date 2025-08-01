@@ -16,7 +16,7 @@ config:
 ---
 classDiagram
     DrawCardsController <|-- GameController
-    ViewController <|-- GameController
+    ViewController "1" --o "*" GameController
     TurnManager "1" --o "1" GameController
     GameState "1" --o "1" TurnManager
     TurnManagerImpl ..|> TurnManager
@@ -75,24 +75,28 @@ questo è utile per mostrare un messaggio informativo ai giocatori;
 - `LAST_ROUND`: stato che indica il fatto che ci si trovi nell'ultimo turno di un giocatore;
 - `END_GAME`: stato che indica il termine della partita.
 
-Infine è presete un metodo `switchTurn` che consiste nella chiamata di un ulteriore metodo privato `updateGameState` e
-nell'aggiornamento del giocatore di turno, passando a quello successivo nella lista. Il metodo `updateGameState` come
-mostrato:
+Infine, per quanto riguarda il compito principale del `TurnManager`, ovvero la gestione della successione ciclica dei
+turni dei giocatori (come da [requisito di sistema 2](../../requirement_specification.md#requisiti-di-sistema)), è
+presente un metodo `switchTurn`, che viene chiamato a seguito di una delle due azioni che un giocatore può effettuare in
+un turno, ovvero pescare dal mazzo o occupare una tratta (come da
+[requisito utente 3](../../requirement_specification.md#requisiti-utente)), il quale consiste nella chiamata di un
+ulteriore metodo privato `updateGameState` e nell'aggiornamento del giocatore di turno, passando a quello successivo
+nella lista. Il metodo `updateGameState` come mostrato:
 ```scala
 private def updateGameState(): Unit =
-    import config.GameConfig.TrainsToStartLastRound
-    _playerStartedLastRound match
+  import config.GameConfig.TrainsToStartLastRound
+  _playerStartedLastRound match
     case Some(player) => _gameState = if currentPlayer == player then END_GAME else LAST_ROUND
     case None if currentPlayer.trains <= TrainsToStartLastRound =>
-        _gameState = START_LAST_ROUND
-        _playerStartedLastRound = Option(currentPlayer)
+      _gameState = START_LAST_ROUND
+      _playerStartedLastRound = Option(currentPlayer)
     case _ => _gameState = IN_GAME
 ```
 effettua un **match-case** sulla variabile contenente l'`Option` del giocatore che ha iniziato l'ultimo round e nel caso
 questo non sia vuoto allora il `GameState` viene modificato a `END_GAME` se il giocatore di turno coincide con colui
 che ha iniziato l'ultimo round, altrimenti a `LAST_ROUND`. Mentre nel caso in cui l'`Option` sia vuoto il `GameState`
 viene modificato a `START_LAST_ROUND` se il numero di treni rimasti al giocatore di turno è inferiore al limite
-presente nel regolamento, altrimenti rimane `END_GAME`.
+presente nel regolamento, altrimenti rimane `IN_GAME`.
 
 ## DrawCardsControllerImpl
 
@@ -105,7 +109,7 @@ altrimenti si mostra un errore chiamando il metodo `reportError` del `ViewContro
 ## CardController
 
 `CardController` viene utilizzato dal `ViewController` per la creazione delle `CardView` di cui si compone la `HandView`
-del giocatori, per fornire alla _view_ il nome della carta, il suo colore e il colore da utilizzare per il suo nome.
+del giocatore, per fornire alla _view_ il nome della carta, il suo colore e il colore da utilizzare per il suo nome.
 Il trait `CardController` contiene un unico **extension method** `cardName`, in cui si fornisce il nome della carta su
 cui viene chiamato. Il trait `CardControllerUtils` è un **mixin** di `CardController` in quanto lo estende aggiungendo
 due **extension method**, già implementati:
@@ -116,4 +120,4 @@ carta.
 Inoltre si realizza una classe privata `BasicCardController` che estende `CardController` fornendo un override di base
 di `cardName`, impostando cioè il suo nome alla stringa equivalente al suo colore.
 Infine si crea un oggetto `CardControllerColor` che estende la classe privata `BasicCardController` decorandola con
-`CardControllerUtils`
+`CardControllerUtils`.

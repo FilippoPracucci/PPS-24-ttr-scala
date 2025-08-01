@@ -22,9 +22,9 @@ classDiagram
     TurnManagerImpl ..|> TurnManager
     DrawCardsController <|.. DrawCardsControllerImpl
     CardControllerUtils --|> CardController
-    BasicCardController --|> CardController
-    CardControllerColor ..|> BasicCardController
-    CardControllerColor ..> CardControllerUtils: «use»
+    BasicCardController ..|> CardController
+    CardControllerColor --|> BasicCardController
+    CardControllerColor --|> CardControllerUtils
     CardControllerColor <.. ViewController
     class GameController {
         <<trait>>

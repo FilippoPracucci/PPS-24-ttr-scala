@@ -37,7 +37,8 @@ classDiagram
 
 ## GameConfig
 
-`GameConfig` è un oggetto creato per contenere valori costanti per il *model* in base alle regole del gioco. Oltre a
+`GameConfig` è un oggetto creato per contenere valori costanti per il *model* in base alle regole del gioco
+(come da [requisito di sistema 4](../requirement_specification.md#requisiti-di-sistema)). Oltre a
 valori costanti di tipi primitivi, contiene anche delle **functions** per fornire dei valori costanti in base a uno o
 più input. Un esempio di **function** è:
 ```scala

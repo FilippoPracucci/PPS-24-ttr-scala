@@ -8,6 +8,18 @@ parent: Report
 
 # Requirement Specification
 
+## Descrizione del progetto
+
+**Ticket to Ride** è un gioco da tavola, nel quale quattro giocatori competono per ottenere punti, che vengono
+guadagnati occupando delle tratte ferroviarie e completando obiettivi. Il tabellone di gioco rappresenta la mappa 
+dell'Europa composta da un insieme di città, connesse tramite tratte ferroviarie, le quali sono caratterizzate da
+un colore. Durante un turno di gioco, un giocatore può pescare 2 carte dal mazzo oppure occupare una tratta.
+Un giocatore per occupare una tratta deve giocare, scartando dalla propria mano, una quantità di carte del colore della
+tratta pari alla lunghezza di quest'ultima.
+Ogni giocatore ha 45 vagoni che vengono piazzati sulla mappa per occupare le tratte e di conseguenza quando un
+giocatore rimane con meno di 3 vagoni inizia l'ultimo round di gioco.
+Al termine della partita il giocatore con il maggior numero di punti vince.
+
 ## Requisiti di business
 
 [Da rivedere e completare nel caso si utilizzi Prolog ed eventualmente con altri aspetti avanzati usati.]: #
@@ -122,7 +134,8 @@ I sopracitati requisiti utente vengono validati tramite User Acceptance Tests.
 2. il sistema deve gestire ciclicamente i turni dei giocatori;
 3. il sistema deve assegnare al giocatore che occupa una tratta i punti corrispondenti, a seconda della lunghezza della tratta,
 e quando termina l'obiettivo;
-4. il sistema deve poter accedere alle decisioni di configurazione, come la mappa di gioco e le carte obiettivo.
+4. il sistema deve poter accedere alle decisioni di configurazione, come la mappa di gioco, le carte obiettivo e i
+valori ottenuti dalle regole.
 
 I sopracitati requisiti di sistema vengono validati tramite test automatizzati.
 

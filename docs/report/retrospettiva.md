@@ -33,15 +33,16 @@ Il flusso di lavoro adottato è **GitFlow**, dove i branch sono stati così util
 totale ne sono stati creati 13. Ognuno di essi, una volta terminato, veniva chiuso tramite **pull request**
 sul branch `develop`, la quale doveva essere accettata dall'altro componente;
 - un branch `hotfix` per risolvere un bug relativo la visualizzazione della GUI su linux che era presente nel branch
-`main`.
+`main`;
 - un branch `release` per ogni release, seguendo il **Semantic Versioning**, il quale veniva chiuso sia su `main` che
 `develop` tramite due **pull request** separate;
 - un branch `refactor` in cui sono stati eseguiti i refactor finali.
 
 Per quanto riguarda le **GitHub Actions**, sono state realizzate prima di iniziare lo sviluppo e questo ha aiutato
 notevolmente l'integrità continua del software, grazie soprattutto al controllo della correttezza dei test ad ogni
-**push**. Inoltre ha permesso anche la **Continuous Delivery (CD)** grazie alla release automatica in seguito a **pull
-request** e **push** sul branch `main` con tag semantico `v*.*.*`.
+**push** e alla coerenza di stile garantita dall'utilizzo di **Scalafmt**. Inoltre ha permesso anche la
+**Continuous Delivery (CD)** grazie alla release automatica in seguito a **push** sul branch `main` con tag semantico
+`v*.*.*`.
 
 ## Release incrementali
 

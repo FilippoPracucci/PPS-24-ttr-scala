@@ -21,7 +21,7 @@ classDiagram
     ObjectiveCompletion --|> Objective
     BasicObjective ..|> Objective
     ObjectiveWithCompletion --|> BasicObjective
-    ObjectiveWithCompletion ..|> ObjectiveCompletion
+    ObjectiveWithCompletion --|> ObjectiveCompletion
     class Player {
         <<trait>>
         + id: PlayerId

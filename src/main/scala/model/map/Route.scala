@@ -9,6 +9,7 @@ trait City:
     */
   def name: String
 
+/** Companion object for [[City]]. */
 object City:
   /** Creates a [[City]].
     *
@@ -46,6 +47,7 @@ trait Route:
     */
   def mechanic: Mechanic
 
+/** Companion object for [[Route]]. */
 object Route:
   import model.utils.Color
 
@@ -61,6 +63,7 @@ object Route:
       */
     def color: Color
 
+  /** Companion object for [[SpecificColor]]. */
   object SpecificColor:
     /** Creates a [[SpecificColor]] mechanic.
       *

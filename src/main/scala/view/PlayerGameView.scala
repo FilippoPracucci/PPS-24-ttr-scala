@@ -59,6 +59,7 @@ trait PlayerGameView:
     */
   def updatePlayerScore(player: PlayerName, score: Points): Unit
 
+/** Companion object for [[PlayerGameView]]. */
 object PlayerGameView:
   import player.{BasicObjectiveView, BasicPlayerInfoView, PlayerScoresView}
   import scala.swing.{BoxPanel, MainFrame}

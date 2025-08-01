@@ -19,6 +19,7 @@ trait GraphStyleManager:
     */
   def edgeStyle(color: Color, dashed: Boolean): String
 
+/** Companion object for [[GraphStyleManager]]. */
 object GraphStyleManager:
   /** Creates a [[GraphStyleManager]].
     *

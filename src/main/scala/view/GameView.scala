@@ -45,6 +45,7 @@ trait GameView[Color] extends PlayerGameView:
   /** Show the message of end game to the user and then close the interface. */
   def endGame(playerScores: Seq[(PlayerName, Points)]): Unit
 
+/** Companion object for [[GameView]]. */
 object GameView:
   /** Type alias that represents a city as [[String]] by its name. */
   type City = String

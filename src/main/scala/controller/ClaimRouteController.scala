@@ -14,6 +14,7 @@ trait ClaimRouteController:
     */
   def claimRoute(connectedCities: (City, City)): Unit
 
+/** Companion object for [[ClaimRouteController]]. */
 object ClaimRouteController:
   /** Creates a [[ClaimRouteController]].
     *

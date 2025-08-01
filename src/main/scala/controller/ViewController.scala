@@ -36,6 +36,7 @@ trait ViewController:
   /** Shows the game rules to the player. */
   def showRules(): Unit
 
+/** Companion object for [[ViewController]]. */
 object ViewController:
   import model.player.Player
 

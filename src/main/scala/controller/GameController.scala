@@ -7,6 +7,7 @@ trait GameController extends DrawCardsController with ClaimRouteController:
   /** Show the rules of the game. */
   def showRules(): Unit
 
+/** Companion object for [[GameController]]. */
 object GameController:
   /** Returns the singleton instance of [[GameController]].
     *

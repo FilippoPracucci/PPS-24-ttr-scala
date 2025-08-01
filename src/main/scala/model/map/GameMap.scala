@@ -46,6 +46,7 @@ trait GameMap:
     */
   def claimRoute(connectedCities: (CityName, CityName), playerId: PlayerId): Either[GameError, Unit]
 
+/** Companion object for [[GameMap]]. */
 object GameMap:
   /** Type alias that represents the name of a city as [[String]]. */
   type CityName = String

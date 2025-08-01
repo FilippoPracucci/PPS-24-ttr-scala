@@ -18,6 +18,7 @@ trait ObjectiveChecker:
     */
   def check(objective: Objective, playerId: PlayerId): Boolean
 
+/** Companion object for [[ObjectiveChecker]]. */
 object ObjectiveChecker:
   /** Creates an [[ObjectiveChecker]] that performs checks based on the specified game map.
     *

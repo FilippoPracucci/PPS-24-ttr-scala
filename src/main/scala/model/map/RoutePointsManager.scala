@@ -11,6 +11,7 @@ trait RoutePointsManager:
     */
   extension (route: Route) def points: Points
 
+/** Companion object for [[RoutePointsManager]]. */
 object RoutePointsManager:
   /** Creates a [[RoutePointsManager]] that calculates the points based on the length of the route.
     *

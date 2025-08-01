@@ -49,6 +49,7 @@ trait MapView:
     */
   def updateRoute(connectedCities: (City, City), color: Color): Unit
 
+/** Companion object for [[MapView]]. */
 object MapView:
   import controller.GameController
 

@@ -1,7 +1,7 @@
 ---
 
 title: ObjectiveChecker
-nav_order: 4
+nav_order: 3
 parent: Implementazione Bedeschi Federica
 
 ---
@@ -17,8 +17,6 @@ config:
 classDiagram
     class ObjectiveChecker {
         <<trait>>
-    }
-    class ObjectiveCheckerImpl {
         +check(objective: Objective, playerId: PlayerId) Boolean
     }
     class Scala2P {
@@ -75,8 +73,8 @@ città dell'obiettivo le cui tratte siano occupate dal player possessore dell'ob
 - il grafo della mappa è un grafo non orientato, ovvero un arco collegante due nodi rappresenta tale collegamento a
 prescindere dall'ordine in cui questi sono indicati; questo problema è risolto dal predicato `connected`, che indica che
 due nodi sono collegati se un arco è presente nel grafo con i due nodi indicati in qualunque ordine;
-- il grafo della mappa è un grafo ciclico; questo problema è risolto dal predicato `any_path` a 6 termini e dal
-predicato `not_member` nel seguente modo: `any_path` utilizza una lista di nodi visitati, e, durante l'esplorazione di
-un cammino, non prosegue se incontra un nodo già visitato (ovvero presente nella lista, effettuando il controllo tramite 
-il predicato `not_member`), altrimenti aggiunge il nuovo nodo incontrato alla lista dei nodi visitati e continua
-l'esplorazione.
+- il grafo della mappa è un grafo ciclico, ovvero un grafo che contiene al suo interno dei cicli; questo problema è
+risolto dal predicato `any_path` a 6 termini e dal predicato `not_member` nel seguente modo: `any_path` utilizza una
+lista di nodi visitati, e, durante l'esplorazione di un cammino, non prosegue se incontra un nodo già visitato (ovvero
+presente nella lista, effettuando il controllo tramite il predicato `not_member`), altrimenti aggiunge il nuovo nodo
+incontrato alla lista dei nodi visitati e continua l'esplorazione.

@@ -1,7 +1,7 @@
 ---
 
 title: MapView
-nav_order: 5
+nav_order: 4
 parent: Implementazione Bedeschi Federica
 
 ---
@@ -43,7 +43,7 @@ classDiagram
 
 `CitiesLoader` è la classe che viene utilizzata per caricare le città all'interno della `MapView`. Per fare ciò invoca
 il metodo `addCity` di `MapView` per ogni città da aggiungere. Maggiori dettagli sull'implementazione interna di
-`CitiesLoader` sono forniti nella sezione "loader".
+`CitiesLoader` sono forniti nell'[apposita sezione](./impl_loader.md#citiesloader).
 
 ## MapViewImpl
 
@@ -53,10 +53,11 @@ di `MapView`. E' un object, inteso come **singleton**, in quanto nel gioco deve 
 (wrapper di **Java Swing**), anche in questa implementazione la si utilizza. Inoltre, per rappresentare la mappa di
 gioco, che è composta da città collegate da tratte ferroviarie, e quindi è un grafo, si utilizza la libreria
 **JGraphX**, che è basata su **Java Swing** e permette di rappresentare grafi (come da
-[requisito utente 1](../../requirement_specification.md#requisiti-utente)).
+[requisito utente 1](../../requirement_specification.md#requisiti-utente)). Il fatto che sia ben integrabile con Java
+Swing e quindi con Scala Swing è il motivo per cui si è deciso di utilizzarla.
 
 `MapViewImpl` contiene quindi il grafo (di tipo `mxGraph`), il relativo componente Swing, e una `Map` da nomi di città
-a vertici per poter recuperare un arco dati due nomi di città. Utilizza inoltre un `GraphStyleManager` per impostare lo
+a vertici, utile per recuperare un arco dati due nomi di città. Utilizza inoltre un `GraphStyleManager` per impostare lo
 stile di default del grafo e ottenere i nuovi stili degli archi da inserire o modificare. Oltre al metodo `addCity`,
 citato precedentemente, implementa i metodi `addRoute` e `updateRoute`. `addRoute` si occupa di aggiungere una nuova
 route (ovvero un nuovo arco) al grafo, e serve in fase di configurazione per la creazione della mappa (ovvero del
@@ -91,7 +92,8 @@ parametri di input dei suoi metodi, così come nei tipi di ritorno. Si è però 
 che gli archi sono di tipo `mxCell`. Si è quindi deciso, per mantenere un minimo livello di type checking, di
 effettuarne il cast a `mxCell` (in quanto safe). Da segnalare inoltre che nell'inserire un nuovo arco è necessario
 passare una stringa `null` per segnalare l'assegnamento automatico degli ID. Nel tentativo di rendere più trasparente e
-chiaro tale significato, nel metodo `addRoute` è stata introdotta una `val AutomaticId: String = null`.
+chiaro tale significato, nel metodo `addRoute` è stata introdotta una `val AutomaticId: String = null` rappresentante
+tale concetto.
 
 ## GraphStyleManager e MapStyleManager
 

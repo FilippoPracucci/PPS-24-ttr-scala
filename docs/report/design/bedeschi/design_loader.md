@@ -37,7 +37,7 @@ classDiagram
 ## Loader
 
 `Loader` è un trait che descrive un generico caricatore di dati. Possiede un unico metodo per effettuare il caricamento,
-il quale ha come tipo di ritorno il tipo parametrico `A`, rappresentante il tipo di dato caricato.
+il quale ha come tipo di ritorno il **type parameter** `A`, rappresentante il tipo di dato caricato.
 
 ## FileReader
 

@@ -1,6 +1,6 @@
 ---
 
-title: LoaderImpl
+title: Loader
 nav_order: 2
 parent: Implementazione Bedeschi Federica
 
@@ -58,7 +58,7 @@ rigurdanti le tratte ferroviarie, le città, e gli obiettivi. Si è scelto di ut
 JSON è uno standard molto diffuso, facilmente leggibile sia dalle persone che dai computer, e con una struttura
 semplice, di cui si fa parsing velocemente utilizzando librerie che sono ormai stabili. In particolare, il fatto che sia
 facilmente leggibile dalle persone rende più facile mantenere i file di configurazione, che nel nostro caso contengono
-principlamente informazioni da mostrare all'utente.
+principalmente informazioni da mostrare all'utente.
 
 I file di configurazione utilizzati sono contenuti in "src/main/resources/" e posseggono le seguenti strutture:
 - "objectives.json": contiene una lista di obiettivi, ognuno composto dalla coppia di città da collegare e dal
@@ -85,18 +85,18 @@ rappresenta un lettore e scrittore, utilizzato in questo caso per valori di tipo
 essere fornita dall'implementazione che definisce anche il tipo `Data`, dovendo questa fornire il modo in cui leggere
 `Data`.
 
-`JsonReader` risulta quindi utilizzabile come **mixin**, e viene infatti utilizzato per creare le classi
-`ObjectivesLoader`, `RoutesLoader` e `CitiesLoader`.
+`JsonReader` risulta quindi utilizzabile come **mixin**, e viene infatti utilizzato insieme a `LoaderFromFile` per
+creare le classi `ObjectivesLoader`, `RoutesLoader` e `CitiesLoader`.
 
 ## ObjectivesLoader, RoutesLoader e CitiesLoader
 
 `ObjectivesLoader`, `RoutesLoader` e `CitiesLoader` sono le tre classi che si occupano di leggere e caricare le
 informazioni contenute nei tre file di configurazione "objectives.json", "routes.json" e "cities.json", rispettivamente
 (come da [requisito di sistema 4](../../requirement_specification.md#requisiti-di-sistema)). Ognuna estende
-`LoaderFromFile` e `JsonReader`, variando il tipo parametrico di `LoaderFromFile` a seconda del tipo dei dati caricati.
-Tutte e tre le classi presentano tra i parametri del costruttore `overload val configFilePath`, assegnandogli un valore
-di default corrispondente ai file sopraindicati. Viene quindi fatto un binding tra l'istanza di una classe e il file da
-leggere, scelta che mira a rendere più semplice e chiaro l'utilizzo di tali istanze.
+`LoaderFromFile` e `JsonReader`, variando il **type parameter** di `LoaderFromFile` a seconda del tipo dei dati
+caricati. Tutte e tre le classi presentano tra i parametri del costruttore `overload val configFilePath`, assegnandogli
+un valore di default corrispondente ai file sopraindicati. Viene quindi fatto un binding tra l'istanza di una classe e
+il file da leggere, scelta che mira a rendere più semplice e chiaro l'utilizzo di tali istanze.
 
 ### ObjectivesLoader
 
@@ -122,17 +122,18 @@ specifica meccanica di tipo `Mechanic`.
 
 `CitiesLoader` estende, oltre a `JsonReader`, `LoaderFromFile[Unit]`, definendo il caso particolare in cui il loader
 esegue delle azioni che causano un side effect. Al suo interno definisce due `case class` protette, `City` e
-`ConfigData`, utilizzate per rappresentare le corrispondenti strutture JSON, overro `City` composta da un nome e dalle
+`ConfigData`, utilizzate per rappresentare le corrispondenti strutture JSON, ovvero `City` composta da un nome e dalle
 coordinate x e y, e `ConfigData`, che rappresenta l'intero file, ed è composta da `scaleWidth`, `scaleHeight` (coi
-significati spiegati precedentemente) e`cities` (`Set[City]`). Definisce poi `Data` come `ConfigData` e ne fornisce la
-**given instance** per il suo `ReadWriter`, aggiungendo anche quella necessaria per il tipo `City` definito. Infine,
-implementa il metodo `onSuccess` definendo il side effect da ottenere, ovvero aggiungere ogni città (contenuta in
-`cities` all'interno di `ConfigData`), nella view della mappa. Per ottenere ciò, il costruttore di `CitiesLoader`
-presenta, oltre a `configFilePath`, altri tre parametri: `mapWidth` e `mapHeight`, che rappresentano la larghezza e
-l'altezza in pixel della view della mappa, e `mapView` come **context parameter**, che rappresenta la view della mappa,
-in cui devono essere aggiunte le città. Il metodo `onSuccess`, quindi, si avvale dell'uso del metodo privato `addCity`,
-che si occupa di scalare le coordinate x e y delle città in base a `scaleWidth`/`scaleHeight` e `mapWidth`/`mapHeight`
-ed aggiungere le città così aggiornate all'interno di `mapView`.
+significati spiegati [precedentemente](#scelta-dei-file-json-per-i-file-di-configurazione-del-gioco)) e`cities`
+(`Set[City]`). Definisce poi `Data` come `ConfigData` e ne fornisce la **given instance** per il suo `ReadWriter`,
+aggiungendo anche quella necessaria per il tipo `City` definito. Infine, implementa il metodo `onSuccess` definendo il
+side effect da ottenere, ovvero aggiungere ogni città (contenuta in `cities` all'interno di `ConfigData`), nella view
+della mappa. Per ottenere ciò, il costruttore di `CitiesLoader` presenta, oltre a `configFilePath`, altri tre parametri:
+`mapWidth` e `mapHeight`, che rappresentano la larghezza e l'altezza in pixel della view della mappa, e `mapView` come
+**context parameter**, che rappresenta la view della mappa, in cui devono essere aggiunte le città. Il metodo
+`onSuccess`, quindi, si avvale dell'uso del metodo privato `addCity`, che si occupa di scalare le coordinate x e y delle
+città in base a `scaleWidth`/`scaleHeight` e `mapWidth`/`mapHeight` ed aggiungere le città così aggiornate all'interno
+di `mapView`.
 
 ### Conclusione
 

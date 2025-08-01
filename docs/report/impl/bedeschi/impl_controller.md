@@ -1,7 +1,7 @@
 ---
 
 title: ClaimRouteController
-nav_order: 6
+nav_order: 5
 parent: Implementazione
 
 ---
@@ -17,6 +17,7 @@ config:
 classDiagram
     ClaimRouteController --|> GameController
     ClaimRouteController <|.. ClaimRouteControllerImpl
+    ClaimRouteControllerImpl ..> ObjectiveChecker: «use»
     ClaimRouteController ..> ViewController: «use»
     GameController <|.. GameControllerImpl
     GameControllerImpl o-- ViewController
@@ -36,6 +37,9 @@ classDiagram
     }
     class ClaimRouteControllerImpl {
         -claimRoute(connectedCities: (City, City), routeLength: Int, routePoints: Points)(nCards: Int, color: Color) Unit
+    }
+    class ObjectiveChecker {
+        <<trait>>
     }
     class MapColorConverter {
         <<object>>
@@ -61,13 +65,14 @@ uno stato di gioco incoerente (ad esempio l'aggiornamento della mappa potrebbe a
 libera, ma il giocatore potrebbe non avere abbastanza carte, o non avere abbastanza treni da piazzare, ecc). Per questo 
 motivo viene utilizzato un **for-yield** per effettuare prima tutti i controlli (come da
 [requisito utente 4](../../requirement_specification.md#requisiti-utente)) e solo dopo eseguire effettivamente le
-operazioni, al termine delle quali viene controllato il completamento dell'obiettivo, viene aggiornato il punteggio del
-giocatore (come da [requisito di sistema 3](../../requirement_specification.md#requisiti-di-sistema)) e viene infine
-cambiato il turno ed aggiornata la *view*. Per rendere possibile un **for-yield** di questo tipo si sfrutta il tipo
-`Either` con tipo d'errore `GameError`, che, combinato col **for-yield**, permette di gestire una sequenza di azioni
-(che possono fallire con un errore sottotipo di `GameError`) in maniera chiara, portando ad una maggiore leggibilità del
-codice. Infine, in caso di fallimento, l'errore generato viene mostrato al giocatore tramite il `ViewController` che
-aggiorna la `GameView`.
+operazioni, al termine delle quali viene controllato il completamento dell'obiettivo (tramite un'istanza di
+`ObjectiveChecker`), viene aggiornato il punteggio del giocatore (come da
+[requisito di sistema 3](../../requirement_specification.md#requisiti-di-sistema)) e viene infine cambiato il turno ed
+aggiornata la *view*. Per rendere possibile un **for-yield** di questo tipo si sfrutta il tipo `Either` con tipo
+d'errore `GameError`, che, combinato col **for-yield**, permette di gestire una sequenza di azioni (che possono fallire
+con un errore sottotipo di `GameError`) in maniera chiara, portando ad una maggiore leggibilità del codice. Infine, in
+caso di fallimento, l'errore generato viene mostrato al giocatore tramite il `ViewController` che aggiorna la
+`GameView`.
 
 ## MapColorConverter
 

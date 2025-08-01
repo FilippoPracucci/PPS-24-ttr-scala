@@ -71,7 +71,7 @@ comportamenti.
 
 `Route` è un trait che descrive una tratta ferroviaria. Non fornendo metodi per modificarne lo stato, è pensato per
 modellare una `Route` **immutabile**. Una `Route` è identificabile tramite la coppia di `City` che collega (in cui
-l'ordine non rilevante), e possiede due caratteristiche: la lunghezza della tratta e la meccanica che segue (come da
+l'ordine non è rilevante), e possiede due caratteristiche: la lunghezza della tratta e la meccanica che segue (come da
 [requisito utente 1](../../requirement_specification.md#requisiti-utente)).
 
 La meccanica è modellata tramite il trait `Mechanic`, che può essere esteso per creare un insieme di meccaniche
@@ -91,15 +91,16 @@ l'impossibilità di effettuare l'azione richiesta. Il metodo `getPlayerClaimingR
 coppia di città che non corrisponde a una `Route` esistente, mentre il metodo `claimRoute` può fallire per lo stesso
 motivo ma anche nel caso in cui una `Route` sia già occupata (perciò non occupabile nuovamente). Questi due casi
 distinti vanno gestiti tramite due errori differenti. Questi errori, inoltre, potrebbero essere recuperabili nella
-gestione del gioco, e gestiti di conseguenza, come meglio spiegato nell'apposita sezione.
+gestione del gioco, e gestiti di conseguenza, come meglio spiegato nell'[apposita sezione](./design_errors.md).
 
 Il companion object di `GameMap` deve permettere la creazione della mappa utilizzando un `Loader` di `Set[Route]`, il
 cui scopo è quello di caricare l'insieme delle `Route` di cui si comporrà la mappa (maggiori dettagli sui `Loader` sono
-forniti nella sezione apposita). La scelta di avere come parametro dell'`apply` un `Loader` si deve al fatto che si
-intendono collegare i due concetti, lasciando però all'utilizzatore la scelta di quale implementazione di `Loader`
-utilizzare. Il parametro `loader` è un **context parameter**, pensato per semplificare la creazione di mappe
-utilizzando il medesimo `Loader`, fornito come **given instance**. Nel companion object è presente la **given instance**
-di default.
+forniti nelle relative sezioni di [design](./design_loader.md). e
+[implementazione](../../impl/bedeschi/impl_loader.md)). La scelta di avere come parametro dell'`apply` un `Loader` si
+deve al fatto che si intendono collegare i due concetti, lasciando però all'utilizzatore la scelta di quale
+implementazione di `Loader` utilizzare. Il parametro `loader` è un **context parameter**, pensato per semplificare la
+creazione di mappe utilizzando il medesimo `Loader`, fornito come **given instance**. Nel companion object è presente la
+**given instance** di default.
 
 La `GameMap` risulta immutabile per quanto rigurda l'insieme delle `Route` e mutabile nell'assegnazione dei player alle
 `Route`. Considerando i metodi che restituiscono l'insieme delle `Route` e una singola `Route`, si denota l'importanza

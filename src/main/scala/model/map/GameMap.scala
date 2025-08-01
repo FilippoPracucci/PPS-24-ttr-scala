@@ -8,7 +8,7 @@ import model.player.Player.PlayerId
 trait GameMap:
   import GameMap.CityName
 
-  /** Returns the set of routes of the [[GameMap]]
+  /** Returns the set of routes of the [[GameMap]].
     *
     * @return
     *   the set of routes of the [[GameMap]]
@@ -18,7 +18,7 @@ trait GameMap:
   /** Gets the player that claims the route connecting the specified cities.
     *
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names as String
+    *   the pair of cities connected by the route, specifying their names as [[String]]
     * @return
     *   a [[Right]] of an [[Option]] containing the player claiming the route or [[None]] if no player claims it,
     *   [[Left]] containing the error [[GameMap.NonExistentRoute]] if the route doesn't exist
@@ -28,7 +28,7 @@ trait GameMap:
   /** Gets the route connecting the specified cities.
     *
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names as String
+    *   the pair of cities connected by the route, specifying their names as [[String]]
     * @return
     *   an [[Option]] containing the requested [[Route]], [[None]] if the route doesn't exist
     */

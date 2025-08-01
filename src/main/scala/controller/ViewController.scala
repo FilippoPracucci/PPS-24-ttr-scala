@@ -39,6 +39,15 @@ trait ViewController:
 object ViewController:
   import model.player.Player
 
+  /** Creates a [[ViewController]].
+    *
+    * @param turnManager
+    *   the turn manager
+    * @param players
+    *   the list of players
+    * @return
+    *   the created [[ViewController]]
+    */
   def apply(turnManager: TurnManager, players: List[Player]): ViewController = ViewControllerImpl(turnManager, players)
 
   private object ImportHelper:

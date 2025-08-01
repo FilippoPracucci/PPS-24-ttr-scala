@@ -3,8 +3,7 @@ package view.map
 import com.mxgraph.swing.mxGraphComponent
 import MapView.Color
 
-/** Trait that represents a style manager for a graph component. It provides a way to set the style of graph components.
-  */
+/** Trait that represents a style manager for a graph component. */
 trait GraphStyleManager:
   /** Sets the style of a graph component. */
   extension (graphComponent: mxGraphComponent) def setDefaultStyle(): Unit

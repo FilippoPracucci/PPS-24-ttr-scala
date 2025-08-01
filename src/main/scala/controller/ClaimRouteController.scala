@@ -10,7 +10,7 @@ trait ClaimRouteController:
   /** Claims the route connecting the specified cities.
     *
     * @param connectedCities
-    *   the pair of cities connected by the route, specifying their names
+    *   the pair of cities connected by the route
     */
   def claimRoute(connectedCities: (City, City)): Unit
 

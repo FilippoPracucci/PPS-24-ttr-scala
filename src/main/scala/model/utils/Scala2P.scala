@@ -1,6 +1,6 @@
 package model.utils
 
-/** Object that provides utility methods to set theories and resolve Prolog goals in Scala. Adapted from
+/** Object that provides utility methods to set theories and solve Prolog goals in Scala. Adapted from
   * https://github.com/unibo-pps/pps-lab12/blob/master/src/main/scala/it/unibo/u12lab/code/Scala2P.scala
   */
 object Scala2P:

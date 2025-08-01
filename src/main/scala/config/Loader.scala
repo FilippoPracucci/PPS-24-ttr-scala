@@ -83,14 +83,14 @@ trait FileReader:
     */
   protected def readFromSource(source: Source): Data
 
-/** Trait that represents a JSON file reader. */
+/** Trait that represents a JSON file reader using the uPickle library. */
 trait JsonReader extends FileReader:
   import scala.io.Source
   import upickle.default.*
 
   final override protected def fileExtension: String = "json"
 
-  /** The given instance to read and write values of type [[Data]] using the upickle library, to be defined in the
+  /** The given instance to read and write values of type [[Data]] using the uPickle library, to be defined in the
     * implementation.
     *
     * @return

@@ -1,7 +1,6 @@
 package model.map
 
-/** Trait that represents a city.
-  */
+/** Trait that represents a city. */
 trait City:
   /** Gets the name of the city.
     *
@@ -22,8 +21,7 @@ object City:
 
   private case class CityImpl(override val name: String) extends City
 
-/** Trait that represents a route between two cities.
-  */
+/** Trait that represents a route between two cities. */
 trait Route:
   import Route.Mechanic
 
@@ -51,12 +49,10 @@ trait Route:
 object Route:
   import model.utils.Color
 
-  /** Trait that represents the mechanic of a route.
-    */
+  /** Trait that represents the mechanic of a route. */
   trait Mechanic
 
-  /** Trait that represents the mechanic in which a route has a specific color.
-    */
+  /** Trait that represents the mechanic in which a route has a specific color. */
   trait SpecificColor extends Mechanic:
     /** Returns the color of the route.
       *
